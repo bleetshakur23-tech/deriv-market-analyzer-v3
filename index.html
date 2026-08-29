@@ -6070,4 +6070,1325 @@ function findBestOverUnderSignal(
                     ),
 
                 reason:
-                    "Green digit is below/e
+                    "Green digit is below/equal to the barrier, red digit is above the barrier, and lower digits have the stronger distribution."
+            });
+        }
+    }
+
+
+    if(!candidates.length){
+        return null;
+    }
+
+
+    /*
+       Sort strongest confidence first.
+    */
+
+    candidates.sort(
+        (a,b) =>
+            b.confidence -
+            a.confidence
+    );
+
+
+    const best =
+        candidates[0];
+
+
+    /*
+       Require at least 3 recent digits from
+       the opposite side before entering.
+
+       OVER -> recent lower digits
+       UNDER -> recent upper digits
+    */
+
+    if(
+        best.oppositeStreak <
+        3
+    ){
+
+        return null;
+    }
+
+
+    const minimum =
+        Number(
+            document.getElementById(
+                "maveyConfidence"
+            ).value
+        );
+
+
+    if(
+        best.confidence <
+        minimum
+    ){
+
+        return null;
+    }
+
+
+    return best;
+}
+
+
+/* =========================================================
+   LOWER STREAK
+========================================================= */
+
+function countRecentLower(
+    data,
+    barrier
+){
+
+    let count = 0;
+
+
+    for(
+        let i=data.length-1;
+        i>=0;
+        i--
+    ){
+
+        if(
+            data[i].digit <=
+            barrier
+        ){
+
+            count++;
+
+        }
+        else{
+
+            break;
+        }
+    }
+
+
+    return count;
+}
+
+
+/* =========================================================
+   UPPER STREAK
+========================================================= */
+
+function countRecentUpper(
+    data,
+    barrier
+){
+
+    let count = 0;
+
+
+    for(
+        let i=data.length-1;
+        i>=0;
+        i--
+    ){
+
+        if(
+            data[i].digit >
+            barrier
+        ){
+
+            count++;
+
+        }
+        else{
+
+            break;
+        }
+    }
+
+
+    return count;
+}
+
+
+/* =========================================================
+   MAVEY TRADE DECISION
+========================================================= */
+
+function attemptMaveyTrade(
+    state,
+    signal
+){
+
+    if(!maveyRunning){
+        return;
+    }
+
+
+    if(
+        !accountWS ||
+        accountWS.readyState !==
+        WebSocket.OPEN
+    ){
+
+        return;
+    }
+
+
+    if(state.trade){
+
+        /*
+           This market already has a contract.
+           MAVEY continues analyzing but doesn't
+           stack another trade on the same market.
+        */
+
+        return;
+    }
+
+
+    const maxTrades =
+        Number(
+            document.getElementById(
+                "maveyMaxTrades"
+            ).value
+        );
+
+
+    const activeTrades =
+        Object.values(
+            maveyMarkets
+        )
+        .filter(
+            m =>
+                m.trade
+        )
+        .length;
+
+
+    if(
+        activeTrades >=
+        maxTrades
+    ){
+
+        return;
+    }
+
+
+    /*
+       Prevent repeated entry on the exact same
+       signal before a new tick pattern develops.
+    */
+
+    const now =
+        Date.now();
+
+
+    if(
+        now -
+        state.lastTradeTime <
+        2500
+    ){
+
+        return;
+    }
+
+
+    const minimum =
+        Number(
+            document.getElementById(
+                "maveyConfidence"
+            ).value
+        );
+
+
+    if(
+        signal.confidence <
+        minimum
+    ){
+
+        return;
+    }
+
+
+    /*
+       Prevent immediately repeating an identical
+       signal if it has already been attempted.
+    */
+
+    if(
+        state.lastAttemptedSignal ===
+        signal.type + ":" +
+        String(
+            signal.barrier
+        )
+    ){
+
+        return;
+    }
+
+
+    state.lastAttemptedSignal =
+        signal.type + ":" +
+        String(
+            signal.barrier
+        );
+
+
+    state.lastTradeTime =
+        now;
+
+
+    requestMaveyProposal(
+        state,
+        signal
+    );
+}
+
+
+/* =========================================================
+   MAVEY PROPOSAL
+========================================================= */
+
+function requestMaveyProposal(
+    state,
+    signal
+){
+
+    if(
+        !accountWS ||
+        accountWS.readyState !==
+        WebSocket.OPEN
+    ){
+
+        return;
+    }
+
+
+    const stake =
+        Number(
+            document.getElementById(
+                "maveyStake"
+            ).value
+        );
+
+
+    const duration =
+        Number(
+            document.getElementById(
+                "maveyDuration"
+            ).value
+        );
+
+
+    if(
+        !Number.isFinite(
+            stake
+        ) ||
+        stake <= 0
+    ){
+
+        log(
+            "MAVEY invalid stake."
+        );
+
+        return;
+    }
+
+
+    if(
+        !Number.isFinite(
+            duration
+        ) ||
+        duration < 1
+    ){
+
+        log(
+            "MAVEY invalid duration."
+        );
+
+        return;
+    }
+
+
+    const requestId =
+        reqId();
+
+
+    const proposal = {
+
+        proposal:1,
+
+        amount:stake,
+
+        basis:"stake",
+
+        contract_type:
+            signal.type,
+
+        currency:
+            accountCurrency,
+
+        duration:
+            duration,
+
+        duration_unit:
+            "t",
+
+        underlying_symbol:
+            state.symbol,
+
+        req_id:
+            requestId
+    };
+
+
+    if(
+        signal.type ===
+        "DIGITOVER" ||
+
+        signal.type ===
+        "DIGITUNDER"
+    ){
+
+        proposal.barrier =
+            String(
+                signal.barrier
+            );
+    }
+
+
+    /*
+       Store by request ID.
+    */
+
+    maveyPendingRequests[
+        requestId
+    ] = {
+
+        state,
+
+        signal,
+
+        proposal
+    };
+
+
+    state.trade =
+        {
+
+            phase:
+                "PROPOSAL",
+
+            requestId,
+
+            signal,
+
+            proposal,
+
+            contractId:
+                null,
+
+            buyRequestId:
+                null
+        };
+
+
+    log(
+        "MAVEY signal on " +
+        state.name +
+        ": " +
+        signal.type +
+        (
+            signal.barrier !== null &&
+            signal.barrier !== undefined
+                ? " " +
+                  signal.barrier
+                : ""
+        ) +
+        " • confidence " +
+        signal.confidence.toFixed(2) +
+        "%"
+    );
+
+
+    accountWS.send(
+        JSON.stringify(
+            proposal
+        )
+    );
+}
+
+
+/* =========================================================
+   MAVEY PROPOSAL RESPONSE
+========================================================= */
+
+function handleMaveyProposal(
+    data
+){
+
+    const pending =
+        maveyPendingRequests[
+            data.req_id
+        ];
+
+
+    if(!pending){
+        return;
+    }
+
+
+    delete maveyPendingRequests[
+        data.req_id
+    ];
+
+
+    const state =
+        pending.state;
+
+
+    const signal =
+        pending.signal;
+
+
+    if(
+        !state.trade
+    ){
+
+        return;
+    }
+
+
+    if(!data.proposal){
+
+        log(
+            "MAVEY proposal failed on " +
+            state.name
+        );
+
+        state.trade =
+            null;
+
+        return;
+    }
+
+
+    const proposalId =
+        data.proposal.id;
+
+
+    const askPrice =
+        Number(
+            data.proposal.ask_price
+        );
+
+
+    if(!proposalId){
+
+        log(
+            "MAVEY proposal had no ID."
+        );
+
+        state.trade =
+            null;
+
+        return;
+    }
+
+
+    const buyRequestId =
+        reqId();
+
+
+    state.trade.phase =
+        "BUY";
+
+
+    state.trade.buyRequestId =
+        buyRequestId;
+
+
+    maveyPendingBuys[
+        buyRequestId
+    ] = {
+
+        state,
+
+        signal,
+
+        proposalId,
+
+        askPrice
+    };
+
+
+    log(
+        "MAVEY buying " +
+        state.name +
+        " • " +
+        signal.type
+    );
+
+
+    accountWS.send(
+        JSON.stringify({
+
+            buy:
+                proposalId,
+
+            price:
+                askPrice,
+
+            req_id:
+                buyRequestId
+
+        })
+    );
+}
+
+
+/* =========================================================
+   MAVEY BUY RESPONSE
+========================================================= */
+
+function handleMaveyBuy(
+    data
+){
+
+    const pending =
+        maveyPendingBuys[
+            data.req_id
+        ];
+
+
+    if(!pending){
+        return;
+    }
+
+
+    delete maveyPendingBuys[
+        data.req_id
+    ];
+
+
+    const state =
+        pending.state;
+
+
+    if(
+        !data.buy
+    ){
+
+        log(
+            "MAVEY buy failed on " +
+            state.name
+        );
+
+        state.trade =
+            null;
+
+        return;
+    }
+
+
+    const buy =
+        data.buy;
+
+
+    const contractId =
+        buy.contract_id;
+
+
+    state.trade.phase =
+        "OPEN";
+
+
+    state.trade.contractId =
+        contractId;
+
+
+    state.trade.buy =
+        buy;
+
+
+    maveyTradeCount++;
+
+
+    log(
+        "MAVEY contract opened: " +
+        state.name +
+        " • " +
+        contractId
+    );
+
+
+    requestMaveyContractStatus(
+        contractId
+    );
+}
+
+
+/* =========================================================
+   MAVEY CONTRACT STATUS
+========================================================= */
+
+function requestMaveyContractStatus(
+    contractId
+){
+
+    if(
+        !accountWS ||
+        accountWS.readyState !==
+        WebSocket.OPEN
+    ){
+
+        return;
+    }
+
+
+    accountWS.send(
+        JSON.stringify({
+
+            proposal_open_contract:1,
+
+            contract_id:
+                contractId,
+
+            subscribe:1,
+
+            req_id:
+                reqId()
+
+        })
+    );
+}
+
+
+/* =========================================================
+   FIND MAVEY CONTRACT
+========================================================= */
+
+function findMaveyTradeByContract(
+    contractId
+){
+
+    if(!contractId){
+        return null;
+    }
+
+
+    for(
+        const state of
+        Object.values(
+            maveyMarkets
+        )
+    ){
+
+        if(
+            state.trade &&
+            state.trade.contractId ===
+            contractId
+        ){
+
+            return state;
+        }
+    }
+
+
+    return null;
+}
+
+
+/* =========================================================
+   MAVEY CONTRACT UPDATE
+========================================================= */
+
+function handleMaveyContractUpdate(
+    contract,
+    state
+){
+
+    if(
+        !state.trade
+    ){
+
+        return;
+    }
+
+
+    if(
+        !(
+            contract.is_sold ||
+            contract.status ===
+            "won" ||
+            contract.status ===
+            "lost"
+        )
+    ){
+
+        return;
+    }
+
+
+    const profit =
+        Number(
+            contract.profit || 0
+        );
+
+
+    const result =
+        contract.status ===
+        "won"
+            ? "WIN"
+            : "LOSS";
+
+
+    tradeCounter++;
+
+
+    addMaveyTradeHistory(
+        state,
+        result,
+        profit,
+        contract
+    );
+
+
+    log(
+        "MAVEY settled " +
+        state.name +
+        " • " +
+        result +
+        " • P/L " +
+        profit.toFixed(2)
+    );
+
+
+    requestBalance();
+
+
+    state.trade =
+        null;
+
+
+    /*
+       IMPORTANT:
+
+       We do NOT stop MAVEY after a loss.
+
+       We also do NOT increase stake after a loss.
+
+       The market goes back into analysis.
+    */
+
+    if(maveyRunning){
+
+        state.lastAttemptedSignal =
+            null;
+
+        evaluateMaveyMarket(
+            state
+        );
+    }
+
+
+    renderMaveyMarkets();
+}
+
+
+/* =========================================================
+   MAVEY HISTORY
+========================================================= */
+
+function addMaveyTradeHistory(
+    state,
+    result,
+    profit,
+    contract
+){
+
+    const body =
+        document.getElementById(
+            "tradeHistoryBody"
+        );
+
+
+    const row =
+        document.createElement(
+            "tr"
+        );
+
+
+    const resultClass =
+        result ===
+        "WIN"
+            ? "win"
+            : "loss";
+
+
+    const stake =
+        Number(
+            document.getElementById(
+                "maveyStake"
+            ).value
+        );
+
+
+    const signal =
+        state.trade &&
+        state.trade.signal
+            ? state.trade.signal
+            : null;
+
+
+    const type =
+        signal
+            ? signal.type
+            : "MAVEY";
+
+
+    const barrier =
+        signal &&
+        signal.barrier !== null &&
+        signal.barrier !== undefined
+            ? " " +
+              signal.barrier
+            : "";
+
+
+    row.innerHTML = `
+
+        <td>
+            ${tradeCounter}
+        </td>
+
+        <td>
+            ${escapeHTML(
+                type +
+                barrier
+            )}
+        </td>
+
+        <td>
+            ${escapeHTML(
+                state.symbol
+            )}
+        </td>
+
+        <td>
+            ${stake.toFixed(2)}
+        </td>
+
+        <td class="${resultClass}">
+            ${result}
+        </td>
+
+        <td class="${resultClass}">
+            ${profit.toFixed(2)}
+        </td>
+
+        <td>
+            MAVEY SETTLED
+        </td>
+    `;
+
+
+    body.prepend(
+        row
+    );
+}
+
+
+/* =========================================================
+   MAVEY MARKET DISPLAY
+========================================================= */
+
+function renderMaveyMarkets(){
+
+    const box =
+        document.getElementById(
+            "maveyMarkets"
+        );
+
+
+    const states =
+        Object.values(
+            maveyMarkets
+        );
+
+
+    if(!states.length){
+
+        box.innerHTML =
+            "MAVEY is waiting for synthetic markets.";
+
+        return;
+    }
+
+
+    box.innerHTML =
+        states
+            .slice(0,12)
+            .map(
+                state => {
+
+                    const signal =
+                        state.lastSignal;
+
+
+                    let signalText =
+                        "ANALYZING";
+
+
+                    if(signal){
+
+                        signalText =
+                            signal.type +
+                            (
+                                signal.barrier !== null &&
+                                signal.barrier !== undefined
+                                    ? " " +
+                                      signal.barrier
+                                    : ""
+                            ) +
+                            " • " +
+                            signal.confidence.toFixed(2) +
+                            "%";
+                    }
+
+
+                    const tradeText =
+                        state.trade
+                            ? (
+                                "TRADE " +
+                                state.trade.phase
+                              )
+                            : "READY";
+
+
+                    const ticksCount =
+                        state.ticks.length;
+
+
+                    const green =
+                        ticksCount
+                            ? getGreenDigit(
+                                state.ticks
+                            )
+                            : "—";
+
+
+                    const red =
+                        ticksCount
+                            ? getRedDigit(
+                                state.ticks
+                            )
+                            : "—";
+
+
+                    return `
+
+                        <div class="mavey-market">
+
+                            <div
+                                class="mavey-market-head">
+
+                                <span>
+                                    ${escapeHTML(
+                                        state.name
+                                    )}
+                                </span>
+
+                                <span
+                                    class="mavey-purple">
+
+                                    ${escapeHTML(
+                                        state.symbol
+                                    )}
+
+                                </span>
+
+                            </div>
+
+
+                            <div class="mavey-signal">
+
+                                Green:
+                                <span
+                                    class="mavey-green">
+
+                                    ${green}
+
+                                </span>
+
+                                &nbsp; | &nbsp;
+
+                                Red:
+                                <span
+                                    class="mavey-red">
+
+                                    ${red}
+
+                                </span>
+
+                                &nbsp; | &nbsp;
+
+                                ${escapeHTML(
+                                    signalText
+                                )}
+
+                                &nbsp; | &nbsp;
+
+                                ${escapeHTML(
+                                    tradeText
+                                )}
+
+                            </div>
+
+
+                            <div class="muted small">
+
+                                ${ticksCount}
+                                ticks collected
+
+                            </div>
+
+                        </div>
+                    `;
+                }
+            )
+            .join("");
+}
+
+
+/* =========================================================
+   GREEN DIGIT
+========================================================= */
+
+function getGreenDigit(
+    data
+){
+
+    const counts =
+        Array(10).fill(0);
+
+
+    data
+        .slice(-1000)
+        .forEach(
+            tick => {
+
+                if(
+                    Number.isInteger(
+                        tick.digit
+                    )
+                ){
+
+                    counts[
+                        tick.digit
+                    ]++;
+                }
+            }
+        );
+
+
+    return counts.indexOf(
+        Math.max(
+            ...counts
+        )
+    );
+}
+
+
+/* =========================================================
+   RED DIGIT
+========================================================= */
+
+function getRedDigit(
+    data
+){
+
+    const counts =
+        Array(10).fill(0);
+
+
+    data
+        .slice(-1000)
+        .forEach(
+            tick => {
+
+                if(
+                    Number.isInteger(
+                        tick.digit
+                    )
+                ){
+
+                    counts[
+                        tick.digit
+                    ]++;
+                }
+            }
+        );
+
+
+    return counts.indexOf(
+        Math.min(
+            ...counts
+        )
+    );
+}
+
+
+/* =========================================================
+   STARTUP
+========================================================= */
+
+function startup(){
+
+    updateDurationUI();
+
+
+    const saved =
+        localStorage.getItem(
+            "deriv_v6_pat"
+        );
+
+
+    if(saved){
+
+        PAT =
+            saved;
+
+        log(
+            "Saved Deriv authentication found."
+        );
+
+
+        loadAccounts();
+    }
+
+
+    log(
+        "Deriv Market Analyzer V6 + MAVEY loaded."
+    );
+
+
+    log(
+        "Select a market and press START ANALYZER."
+    );
+}
+
+
+/* =========================================================
+   DOM READY
+========================================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    startup
+);
+
+
+/* =========================================================
+   INITIAL SETTINGS
+========================================================= */
+
+updateDurationUI();
+
+
+/* =========================================================
+   PATCH PUBLIC MESSAGE HANDLER FOR MAVEY HISTORY
+========================================================= */
+
+const originalHandlePublicMessage =
+    handlePublicMessage;
+
+
+/*
+   Replace the function behavior while retaining
+   the normal V6 behavior.
+*/
+
+handlePublicMessage =
+function(data){
+
+    if(
+        data &&
+        data.msg_type ===
+        "history"
+    ){
+
+        processMaveyHistoryMessage(
+            data
+        );
+    }
+
+
+    originalHandlePublicMessage(
+        data
+    );
+};
+
+
+/* =========================================================
+   PERIODIC MAVEY SCANNER
+========================================================= */
+
+setInterval(
+    () => {
+
+        if(!maveyRunning){
+            return;
+        }
+
+
+        if(
+            Date.now() -
+            maveyLastScan <
+            MAVEY_SCAN_INTERVAL
+        ){
+
+            return;
+        }
+
+
+        maveyLastScan =
+            Date.now();
+
+
+        scanMaveyMarkets();
+
+
+        /*
+           Analyze every watched market.
+
+           This is deliberately separate from
+           the normal V6 analyzer.
+        */
+
+        Object.values(
+            maveyMarkets
+        ).forEach(
+            state => {
+
+                if(
+                    state.ticks.length >=
+                    100
+                ){
+
+                    evaluateMaveyMarket(
+                        state
+                    );
+                }
+            }
+        );
+
+
+        renderMaveyMarkets();
+
+    },
+    1000
+);
+
+</script>
+
+</body>
+</html>

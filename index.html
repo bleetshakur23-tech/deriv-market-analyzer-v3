@@ -4839,126 +4839,75 @@ function executeManualTrade(){
     symbol: selectedSymbol
 */
 
-function requestProposal(cfg){
+function requestProposal(cfg) {
 
-    if(
-        !accountWS ||
-        accountWS.readyState !==
-        WebSocket.OPEN
-    ){
-
-        alert(
-            "Connect Deriv account first."
-        );
-
+    if (!accountWS || accountWS.readyState !== WebSocket.OPEN) {
+        alert("Connect Deriv account first.");
         return;
-
     }
 
-
-    if(!selectedSymbol){
-
-        alert(
-            "No market selected."
-        );
-
+    if (!selectedSymbol) {
+        alert("Select a market first.");
         return;
-
     }
 
-
-    if(tradeInProgress){
-
+    if (tradeInProgress) {
         return;
-
     }
 
+    const amount = Number(cfg.stake);
+    const duration = Number(cfg.duration);
 
-    const amount =
-        Number(cfg.stake);
-
-
-    if(!(amount > 0)){
-
-        alert(
-            "Invalid stake."
-        );
-
+    if (!(amount > 0)) {
+        alert("Invalid stake.");
         return;
-
     }
 
+    if (!(duration > 0)) {
+        alert("Invalid duration.");
+        return;
+    }
 
     tradeInProgress = true;
-
     pendingProposal = cfg;
 
-
-    setTradeState(
-        "REQUESTING PROPOSAL...",
-        "warning"
-    );
-
-
-    if(
-        cfg.strategy.startsWith("MAUVEY")
-    ){
-
-        updateMauveyLiveDisplay();
-
-    }
-
+    setTradeState("REQUESTING PROPOSAL...", "warning");
 
     const proposal = {
-
-        proposal:1,
-
-        amount:amount,
-
-        basis:"stake",
-
-        contract_type:
-            cfg.type,
-
-        currency:
-            accountCurrency,
-
-        duration:
-            Number(cfg.duration),
-
-        duration_unit:
-            cfg.unit,
-
-        underlying_symbol:
-            selectedSymbol,
-
-        req_id:
-            reqId()
-
+        proposal: 1,
+        amount: amount,
+        basis: "stake",
+        contract_type: cfg.type,
+        currency: accountCurrency,
+        duration: duration,
+        duration_unit: cfg.unit,
+        underlying_symbol: selectedSymbol,
+        req_id: reqId()
     };
 
-
-    if(
-        [
-            "DIGITOVER",
-            "DIGITUNDER",
-            "DIGITMATCH",
-            "DIGITDIFF"
-        ].includes(cfg.type)
-    ){
-
-        proposal.barrier =
-            String(cfg.barrier);
-
+    if (
+        cfg.type === "DIGITOVER" ||
+        cfg.type === "DIGITUNDER" ||
+        cfg.type === "DIGITMATCH" ||
+        cfg.type === "DIGITDIFF"
+    ) {
+        proposal.barrier = String(cfg.barrier);
     }
 
+    log("Sending proposal:");
+    log(JSON.stringify(proposal));
 
-    log(
-        "Requesting proposal: " +
-        cfg.strategy +
-        " • " +
-        selectedSymbol
-    );
+    try {
+        accountWS.send(JSON.stringify(proposal));
+    } catch (error) {
+        tradeInProgress = false;
+        pendingProposal = null;
+
+        setTradeState("SEND ERROR", "danger");
+
+        log("Proposal send failed: " + error.message);
+    }
+}
 
 
     accountWS.send(

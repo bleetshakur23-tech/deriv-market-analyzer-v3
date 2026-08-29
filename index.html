@@ -112,10 +112,16 @@ button {
     color: white;
     font-weight: bold;
     cursor: pointer;
+    transition: 0.15s;
 }
 
 button:hover {
     opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+button:active {
+    transform: scale(0.98);
 }
 
 button.secondary {
@@ -137,6 +143,7 @@ button.orange {
 button:disabled {
     opacity: 0.45;
     cursor: not-allowed;
+    transform: none;
 }
 
 .grid {
@@ -185,8 +192,13 @@ button:disabled {
     border: 1px solid transparent;
 }
 
+.market:hover {
+    border-color: #4c5580;
+}
+
 .market.selected {
     border-color: #6870ff;
+    background: #111936;
 }
 
 .market-name {
@@ -448,28 +460,24 @@ button:disabled {
 
         <div class="stat">
             <small>Connection</small>
-            <strong id="accountConnection">NOT CONNECTED</strong>
+            <strong id="accountConnection">
+                NOT CONNECTED
+            </strong>
         </div>
 
         <div class="stat">
             <small>Account</small>
-            <strong id="accountMode">
-                —
-            </strong>
+            <strong id="accountMode">—</strong>
         </div>
 
         <div class="stat">
             <small>Balance</small>
-            <strong id="balance">
-                —
-            </strong>
+            <strong id="balance">—</strong>
         </div>
 
         <div class="stat">
             <small>KES Value</small>
-            <strong id="balanceKES">
-                —
-            </strong>
+            <strong id="balanceKES">—</strong>
         </div>
 
     </div>
@@ -482,13 +490,15 @@ button:disabled {
             CONNECT MARKET DATA
         </button>
 
-        <button onclick="connectWithPAT()"
-                class="secondary">
+        <button
+            onclick="connectWithPAT()"
+            class="secondary">
             CONNECT DERIV ACCOUNT
         </button>
 
-        <button onclick="switchAccountMode()"
-                class="orange">
+        <button
+            onclick="switchAccountMode()"
+            class="orange">
             SWITCH DEMO / REAL
         </button>
 
@@ -499,7 +509,7 @@ button:disabled {
     <div class="form-group">
 
         <label class="form-label">
-            USD → KES exchange rate
+            USD ↔ KES exchange rate
         </label>
 
         <input
@@ -513,7 +523,7 @@ button:disabled {
     </div>
 
     <div class="muted small">
-        The KES figure is a currency conversion display.
+        This is only a currency-conversion display.
         Trading remains in the account's actual currency.
     </div>
 
@@ -528,7 +538,8 @@ button:disabled {
 
     <div class="controls">
 
-        <select id="category">
+        <select id="category"
+                onchange="renderMarkets()">
 
             <option value="all">
                 All Markets
@@ -563,6 +574,7 @@ button:disabled {
         <input
             id="search"
             placeholder="Search market..."
+            oninput="renderMarkets()"
         >
 
         <button onclick="loadMarkets()">
@@ -590,34 +602,26 @@ button:disabled {
 
     <h2>Selected Market</h2>
 
-    <div class="grid">
+    <div class="grid four">
 
         <div class="stat">
             <small>Market</small>
-            <strong id="selectedName">
-                None
-            </strong>
+            <strong id="selectedName">None</strong>
         </div>
 
         <div class="stat">
             <small>Symbol</small>
-            <strong id="selectedSymbol">
-                —
-            </strong>
+            <strong id="selectedSymbol">—</strong>
         </div>
 
         <div class="stat">
             <small>Price</small>
-            <strong id="price">
-                —
-            </strong>
+            <strong id="price">—</strong>
         </div>
 
         <div class="stat">
             <small>Last Digit</small>
-            <strong id="lastDigit">
-                —
-            </strong>
+            <strong id="lastDigit">—</strong>
         </div>
 
     </div>
@@ -641,24 +645,15 @@ button:disabled {
 
             <select id="sample">
 
-                <option value="50">
-                    50 ticks
-                </option>
+                <option value="50">50 ticks</option>
 
-                <option value="100">
-                    100 ticks
-                </option>
+                <option value="100">100 ticks</option>
 
-                <option value="250">
-                    250 ticks
-                </option>
+                <option value="250">250 ticks</option>
 
-                <option value="500">
-                    500 ticks
-                </option>
+                <option value="500">500 ticks</option>
 
-                <option value="1000"
-                        selected>
+                <option value="1000" selected>
                     1,000 ticks
                 </option>
 
@@ -678,22 +673,15 @@ button:disabled {
 
             <select id="minConfidence">
 
-                <option value="50">
-                    50%
-                </option>
+                <option value="50">50%</option>
 
-                <option value="60"
-                        selected>
+                <option value="60" selected>
                     60%
                 </option>
 
-                <option value="70">
-                    70%
-                </option>
+                <option value="70">70%</option>
 
-                <option value="80">
-                    80%
-                </option>
+                <option value="80">80%</option>
 
             </select>
 
@@ -745,8 +733,9 @@ button:disabled {
                 Contract
             </label>
 
-            <select id="contractType"
-                    onchange="updateDurationUI()">
+            <select
+                id="contractType"
+                onchange="updateDurationUI()">
 
                 <option value="CALL">
                     Rise
@@ -808,8 +797,7 @@ button:disabled {
                 Duration unit
             </label>
 
-            <select id="durationUnit"
-                    disabled>
+            <select id="durationUnit">
 
                 <option value="s">
                     Seconds
@@ -841,8 +829,9 @@ button:disabled {
         </div>
 
 
-        <div class="form-group"
-             id="barrierGroup">
+        <div
+            class="form-group"
+            id="barrierGroup">
 
             <label class="form-label">
                 Digit / Barrier
@@ -870,10 +859,14 @@ button:disabled {
     <br>
 
     <div class="warning">
+
         <strong>Important:</strong>
-        Analyzer mode does not automatically trade.
-        You must explicitly enable Auto Trade or press
-        EXECUTE TRADE.
+
+        The analyzer does not trade merely because a
+        signal appears. Manual execution requires the
+        EXECUTE TRADE button. Auto trading requires
+        AUTO TRADE to be enabled.
+
     </div>
 
     <br>
@@ -881,7 +874,9 @@ button:disabled {
     <button
         class="orange"
         onclick="executeManualTrade()">
+
         EXECUTE TRADE
+
     </button>
 
 </div>
@@ -900,49 +895,38 @@ button:disabled {
 
             <div>
 
-                <div class="form-group">
+                <label class="form-label">
+                    Auto trade
+                </label>
 
-                    <label class="form-label">
-                        Auto trade
-                    </label>
+                <button
+                    id="autoBtn"
+                    onclick="toggleAutoTrade()">
 
-                    <button
-                        id="autoBtn"
-                        onclick="toggleAutoTrade()">
-                        AUTO TRADE OFF
-                    </button>
+                    AUTO TRADE OFF
 
-                </div>
+                </button>
 
             </div>
 
             <div>
 
-                <div class="form-group">
+                <label class="form-label">
+                    Maximum trades
+                </label>
 
-                    <label class="form-label">
-                        Maximum trades
-                    </label>
-
-                    <input
-                        id="maxTrades"
-                        type="number"
-                        min="1"
-                        value="10"
-                    >
-
-                </div>
+                <input
+                    id="maxTrades"
+                    type="number"
+                    min="1"
+                    value="10"
+                >
 
             </div>
 
         </div>
 
-        <p class="muted small">
-            When enabled, the analyzer waits for a
-            qualifying signal, executes one trade,
-            waits for the actual result, shows the
-            result popup, then returns to analysis.
-        </p>
+        <br>
 
         <div id="autoStatus">
             Auto trading is OFF.
@@ -953,7 +937,7 @@ button:disabled {
 </div>
 
 
-<!-- ANALYSIS -->
+<!-- SUMMARY -->
 
 <div class="grid four">
 
@@ -982,6 +966,8 @@ button:disabled {
 </div>
 
 
+<!-- SIGNAL -->
+
 <div class="card">
 
     <h2>Current Signal</h2>
@@ -1002,6 +988,8 @@ button:disabled {
 </div>
 
 
+<!-- DIGITS -->
+
 <div class="card">
 
     <h2>Digit Distribution</h2>
@@ -1012,6 +1000,8 @@ button:disabled {
 
 </div>
 
+
+<!-- STATISTICS -->
 
 <div class="card">
 
@@ -1024,6 +1014,8 @@ button:disabled {
 </div>
 
 
+<!-- PATTERNS -->
+
 <div class="card">
 
     <h2>Pattern Intelligence</h2>
@@ -1031,14 +1023,14 @@ button:disabled {
     <div class="grid">
 
         <div class="stat">
-            <small>Longest Streak</small>
+            <small>Longest Same-Digit Streak</small>
             <strong id="longestStreak">
                 0
             </strong>
         </div>
 
         <div class="stat">
-            <small>Current Streak</small>
+            <small>Current Same-Digit Streak</small>
             <strong id="currentStreak">
                 0
             </strong>
@@ -1063,6 +1055,8 @@ button:disabled {
 </div>
 
 
+<!-- TRANSITIONS -->
+
 <div class="card">
 
     <h2>Digit Transition Analysis</h2>
@@ -1079,6 +1073,8 @@ button:disabled {
 </div>
 
 
+<!-- WINDOWS -->
+
 <div class="card">
 
     <h2>Multi-Window Analysis</h2>
@@ -1089,6 +1085,8 @@ button:disabled {
 
 </div>
 
+
+<!-- BACKTEST -->
 
 <div class="card">
 
@@ -1175,8 +1173,9 @@ button:disabled {
 
 <!-- RESULT POPUP -->
 
-<div id="resultPopup"
-     class="popup-overlay">
+<div
+    id="resultPopup"
+    class="popup-overlay">
 
     <div class="popup">
 
@@ -1184,24 +1183,31 @@ button:disabled {
             CONTRACT RESULT
         </div>
 
-        <div id="popupResult"
-             class="popup-result">
+        <div
+            id="popupResult"
+            class="popup-result">
+
             —
+
         </div>
 
-        <div id="popupProfit"
-             class="popup-profit">
+        <div
+            id="popupProfit"
+            class="popup-profit">
+
             —
+
         </div>
 
-        <div id="popupDetails"
-             class="muted">
+        <div
+            id="popupDetails"
+            class="muted">
+
         </div>
 
         <br>
 
-        <button
-            onclick="closeResultPopup()">
+        <button onclick="closeResultPopup()">
             CONTINUE
         </button>
 
@@ -1262,15 +1268,15 @@ let tradeNumber = 0;
 
 let totalAutoTrades = 0;
 
-let signalHistory = [];
-
-let tradeHistory = [];
-
 let requestCounter = 1000;
 
-let pendingRequests = new Map();
-
 let currentContractId = null;
+
+let currentTrade = null;
+
+let currentSignal = null;
+
+let contractMonitorTimer = null;
 
 
 /* =========================================================
@@ -1278,9 +1284,7 @@ let currentContractId = null;
 ========================================================= */
 
 function reqId() {
-
     requestCounter++;
-
     return requestCounter;
 }
 
@@ -1296,10 +1300,14 @@ function log(message) {
     const line =
         document.createElement("div");
 
-    line.className = "log-line";
+    line.className =
+        "log-line";
 
     line.textContent =
-        "[" + time + "] " + message;
+        "[" +
+        time +
+        "] " +
+        message;
 
     box.prepend(line);
 }
@@ -1322,15 +1330,10 @@ function setStatus(message, online) {
 function escapeHTML(text) {
 
     return String(text)
-
         .replace(/&/g, "&amp;")
-
         .replace(/</g, "&lt;")
-
         .replace(/>/g, "&gt;")
-
         .replace(/"/g, "&quot;")
-
         .replace(/'/g, "&#039;");
 }
 
@@ -1361,7 +1364,7 @@ async function connectWithPAT() {
 
     const pat =
         prompt(
-            "Paste your Deriv PAT token here:"
+            "Paste your Deriv Personal Access Token here:"
         );
 
     if (!pat) {
@@ -1392,16 +1395,8 @@ async function connectWithPAT() {
                 }
             );
 
-
         const data =
             await response.json();
-
-
-        console.log(
-            "Deriv account response:",
-            data
-        );
-
 
         if (!response.ok) {
 
@@ -1420,7 +1415,6 @@ async function connectWithPAT() {
             return;
         }
 
-
         accounts =
             Array.isArray(data.data)
                 ? data.data
@@ -1428,23 +1422,20 @@ async function connectWithPAT() {
                     ? [data.data]
                     : [];
 
-
         if (!accounts.length) {
 
             alert(
-                "No Options trading account was returned."
+                "No Deriv trading account was returned."
             );
 
             return;
         }
-
 
         log(
             "Found " +
             accounts.length +
             " account(s)."
         );
-
 
         chooseInitialAccount();
 
@@ -1462,8 +1453,8 @@ async function connectWithPAT() {
             error.message
         );
 
+        derivPAT = null;
     }
-
 }
 
 
@@ -1478,7 +1469,6 @@ function chooseInitialAccount() {
                 ).toLowerCase() === "demo"
         );
 
-
     const real =
         accounts.find(
             account =>
@@ -1488,13 +1478,10 @@ function chooseInitialAccount() {
                 ).toLowerCase() === "real"
         );
 
-
     selectedAccount =
         demo || real || accounts[0];
 
-
     connectSelectedAccount();
-
 }
 
 
@@ -1509,7 +1496,6 @@ function switchAccountMode() {
         return;
     }
 
-
     const currentType =
         String(
             selectedAccount &&
@@ -1517,12 +1503,10 @@ function switchAccountMode() {
             ""
         ).toLowerCase();
 
-
     const wanted =
         currentType === "demo"
             ? "real"
             : "demo";
-
 
     const target =
         accounts.find(
@@ -1532,7 +1516,6 @@ function switchAccountMode() {
                     ""
                 ).toLowerCase() === wanted
         );
-
 
     if (!target) {
 
@@ -1544,7 +1527,6 @@ function switchAccountMode() {
 
         return;
     }
-
 
     if (wanted === "real") {
 
@@ -1560,14 +1542,12 @@ function switchAccountMode() {
         }
     }
 
-
     stopAutoTrade();
 
     selectedAccount =
         target;
 
     connectSelectedAccount();
-
 }
 
 
@@ -1577,11 +1557,10 @@ async function connectSelectedAccount() {
         return;
     }
 
-
     if (
         derivAccountSocket &&
-        derivAccountSocket.readyState !==
-            WebSocket.CLOSED
+        derivAccountSocket.readyState ===
+            WebSocket.OPEN
     ) {
 
         try {
@@ -1590,10 +1569,8 @@ async function connectSelectedAccount() {
         catch (e) {}
     }
 
-
     const accountId =
         selectedAccount.account_id;
-
 
     if (!accountId) {
 
@@ -1604,32 +1581,24 @@ async function connectSelectedAccount() {
         return;
     }
 
-
     accountCurrency =
         selectedAccount.currency ||
         "USD";
 
-
     updateAccountUI();
-
 
     log(
         "Requesting authenticated WebSocket..."
     );
 
-
     try {
 
         const response =
             await fetch(
-
                 REST_BASE +
                 "/accounts/" +
-                encodeURIComponent(
-                    accountId
-                ) +
+                encodeURIComponent(accountId) +
                 "/otp",
-
                 {
                     method: "POST",
 
@@ -1644,10 +1613,8 @@ async function connectSelectedAccount() {
                 }
             );
 
-
         const data =
             await response.json();
-
 
         if (!response.ok) {
 
@@ -1664,12 +1631,10 @@ async function connectSelectedAccount() {
             return;
         }
 
-
         const wsUrl =
             data &&
             data.data &&
             data.data.url;
-
 
         if (!wsUrl) {
 
@@ -1680,10 +1645,8 @@ async function connectSelectedAccount() {
             return;
         }
 
-
         derivAccountSocket =
             new WebSocket(wsUrl);
-
 
         derivAccountSocket.onopen =
             function() {
@@ -1698,16 +1661,12 @@ async function connectSelectedAccount() {
                 ).textContent =
                     "CONNECTED";
 
-
                 log(
                     "Authenticated account connection established."
                 );
 
-
                 requestAccountData();
-
             };
-
 
         derivAccountSocket.onmessage =
             function(event) {
@@ -1731,30 +1690,21 @@ async function connectSelectedAccount() {
                     return;
                 }
 
-
                 handleAccountMessage(data);
-
             };
 
-
         derivAccountSocket.onerror =
-            function(error) {
+            function() {
 
-                console.error(
-                    error
+                log(
+                    "Authenticated WebSocket error."
                 );
 
                 setStatus(
                     "ACCOUNT CONNECTION ERROR",
                     false
                 );
-
-                log(
-                    "Authenticated WebSocket error."
-                );
-
             };
-
 
         derivAccountSocket.onclose =
             function() {
@@ -1767,11 +1717,9 @@ async function connectSelectedAccount() {
                     "accountConnection"
                 ).textContent =
                     "DISCONNECTED";
-
             };
 
     }
-
     catch (error) {
 
         log(
@@ -1779,12 +1727,8 @@ async function connectSelectedAccount() {
             error.message
         );
 
-        alert(
-            error.message
-        );
-
+        alert(error.message);
     }
-
 }
 
 
@@ -1798,19 +1742,13 @@ function requestAccountData() {
         return;
     }
 
-
     derivAccountSocket.send(
         JSON.stringify({
-
             balance: 1,
-
             subscribe: 1,
-
             req_id: reqId()
-
         })
     );
-
 }
 
 
@@ -1824,14 +1762,11 @@ function handleAccountMessage(data) {
 
         log(
             "Deriv error: " +
-            JSON.stringify(
-                data.error
-            )
+            JSON.stringify(data.error)
         );
 
         return;
     }
-
 
     if (
         data.msg_type ===
@@ -1841,62 +1776,50 @@ function handleAccountMessage(data) {
         const b =
             data.balance;
 
+        if (b) {
 
-        accountBalance =
-            Number(
-                b.balance
-            );
+            accountBalance =
+                Number(b.balance);
 
+            accountCurrency =
+                b.currency ||
+                accountCurrency;
 
-        accountCurrency =
-            b.currency ||
-            accountCurrency;
-
-
-        updateBalanceDisplay();
+            updateBalanceDisplay();
+        }
 
         return;
     }
-
 
     if (
         data.msg_type ===
         "proposal"
     ) {
 
-        handleProposal(
-            data
-        );
+        handleProposal(data);
 
         return;
     }
-
 
     if (
         data.msg_type ===
         "buy"
     ) {
 
-        handleBuy(
-            data
-        );
+        handleBuy(data);
 
         return;
     }
-
 
     if (
         data.msg_type ===
         "proposal_open_contract"
     ) {
 
-        handleContractUpdate(
-            data
-        );
+        handleContractUpdate(data);
 
         return;
     }
-
 }
 
 
@@ -1909,12 +1832,10 @@ function updateAccountUI() {
             ""
         ).toLowerCase();
 
-
     const mode =
         document.getElementById(
             "accountMode"
         );
-
 
     if (type === "demo") {
 
@@ -1924,7 +1845,6 @@ function updateAccountUI() {
             "</span>";
 
     }
-
     else if (type === "real") {
 
         mode.innerHTML =
@@ -1933,14 +1853,13 @@ function updateAccountUI() {
             "</span>";
 
     }
-
     else {
 
         mode.textContent =
             type || "—";
-
     }
 
+    updateBalanceDisplay();
 }
 
 
@@ -1956,7 +1875,6 @@ function updateBalanceDisplay() {
             "balanceKES"
         );
 
-
     if (
         accountBalance === null ||
         Number.isNaN(accountBalance)
@@ -1971,12 +1889,10 @@ function updateBalanceDisplay() {
         return;
     }
 
-
     balanceElement.textContent =
         accountBalance.toFixed(2) +
         " " +
         accountCurrency;
-
 
     const rate =
         Number(
@@ -1985,9 +1901,8 @@ function updateBalanceDisplay() {
             ).value
         );
 
-
     if (
-        accountCurrency ===
+        accountCurrency.toUpperCase() ===
         "USD" &&
         rate > 0
     ) {
@@ -2000,9 +1915,8 @@ function updateBalanceDisplay() {
             ).toFixed(2);
 
     }
-
     else if (
-        accountCurrency ===
+        accountCurrency.toUpperCase() ===
         "KES" &&
         rate > 0
     ) {
@@ -2015,14 +1929,11 @@ function updateBalanceDisplay() {
             ).toFixed(2);
 
     }
-
     else {
 
         kesElement.textContent =
             "—";
-
     }
-
 }
 
 
@@ -2043,23 +1954,19 @@ function connectPublic() {
         return;
     }
 
-
     setStatus(
         "CONNECTING TO MARKET DATA...",
         false
     );
 
-
     log(
         "Opening public Deriv market connection..."
     );
-
 
     publicSocket =
         new WebSocket(
             PUBLIC_WS
         );
-
 
     publicSocket.onopen =
         function() {
@@ -2077,7 +1984,6 @@ function connectPublic() {
 
         };
 
-
     publicSocket.onmessage =
         function(event) {
 
@@ -2092,10 +1998,8 @@ function connectPublic() {
 
             }
             catch (error) {
-
                 return;
             }
-
 
             if (data.error) {
 
@@ -2108,7 +2012,6 @@ function connectPublic() {
 
                 return;
             }
-
 
             if (
                 data.msg_type ===
@@ -2130,34 +2033,26 @@ function connectPublic() {
                 return;
             }
 
-
             if (
                 data.msg_type ===
                 "history"
             ) {
 
-                loadHistory(
-                    data
-                );
+                loadHistory(data);
 
                 return;
             }
-
 
             if (
                 data.msg_type ===
                 "tick"
             ) {
 
-                receiveTick(
-                    data
-                );
+                receiveTick(data);
 
                 return;
             }
-
         };
-
 
     publicSocket.onerror =
         function() {
@@ -2170,9 +2065,7 @@ function connectPublic() {
             log(
                 "Public WebSocket error."
             );
-
         };
-
 
     publicSocket.onclose =
         function() {
@@ -2185,9 +2078,7 @@ function connectPublic() {
             log(
                 "Public WebSocket closed."
             );
-
         };
-
 }
 
 
@@ -2206,1779 +2097,6 @@ function loadMarkets() {
         return;
     }
 
-
     publicSocket.send(
         JSON.stringify({
-
-            active_symbols:
-                "full",
-
-            req_id:
-                reqId()
-
-        })
-    );
-
-}
-
-
-/* =========================================================
-   MARKET RENDERING
-========================================================= */
-
-function renderMarkets() {
-
-    const list =
-        document.getElementById(
-            "marketList"
-        );
-
-
-    const search =
-        document
-            .getElementById(
-                "search"
-            )
-            .value
-            .toLowerCase()
-            .trim();
-
-
-    const category =
-        document.getElementById(
-            "category"
-        ).value;
-
-
-    const filtered =
-        markets.filter(
-            function(market) {
-
-                const name =
-                    String(
-                        market.underlying_symbol_name ||
-                        ""
-                    ).toLowerCase();
-
-
-                const symbol =
-                    String(
-                        market.underlying_symbol ||
-                        ""
-                    ).toLowerCase();
-
-
-                const type =
-                    String(
-                        market.market ||
-                        market.underlying_symbol_type ||
-                        ""
-                    ).toLowerCase();
-
-
-                const searchOK =
-                    !search ||
-                    name.includes(search) ||
-                    symbol.includes(search);
-
-
-                let categoryOK =
-                    true;
-
-
-                if (
-                    category !==
-                    "all"
-                ) {
-
-                    if (
-                        category ===
-                        "forex"
-                    ) {
-
-                        categoryOK =
-                            type ===
-                            "forex";
-
-                    }
-
-                    else if (
-                        category ===
-                        "crypto"
-                    ) {
-
-                        categoryOK =
-                            type.includes(
-                                "crypto"
-                            );
-
-                    }
-
-                    else if (
-                        category ===
-                        "synthetic"
-                    ) {
-
-                        categoryOK =
-                            type.includes(
-                                "synthetic"
-                            ) ||
-
-                            name.includes(
-                                "volatility"
-                            ) ||
-
-                            name.includes(
-                                "crash"
-                            ) ||
-
-                            name.includes(
-                                "boom"
-                            ) ||
-
-                            name.includes(
-                                "jump"
-                            );
-
-                    }
-
-                    else {
-
-                        categoryOK =
-                            type.includes(
-                                category
-                            );
-
-                    }
-
-                }
-
-
-                return (
-                    searchOK &&
-                    categoryOK
-                );
-
-            }
-        );
-
-
-    document.getElementById(
-        "marketCount"
-    ).textContent =
-        filtered.length +
-        " of " +
-        markets.length +
-        " markets";
-
-
-    list.innerHTML =
-        "";
-
-
-    filtered
-        .slice(0, 500)
-        .forEach(
-            function(market) {
-
-                const symbol =
-                    market.underlying_symbol;
-
-
-                const name =
-                    market.underlying_symbol_name ||
-                    symbol;
-
-
-                const div =
-                    document.createElement(
-                        "div"
-                    );
-
-
-                div.className =
-                    "market";
-
-
-                if (
-                    symbol ===
-                    selectedSymbol
-                ) {
-
-                    div.classList.add(
-                        "selected"
-                    );
-
-                }
-
-
-                div.innerHTML =
-
-                    "<div class='market-name'>" +
-
-                    escapeHTML(
-                        name
-                    ) +
-
-                    "</div>" +
-
-                    "<div class='market-info'>" +
-
-                    escapeHTML(
-                        symbol
-                    ) +
-
-                    " • " +
-
-                    escapeHTML(
-                        market.market ||
-                        market.underlying_symbol_type ||
-                        ""
-                    ) +
-
-                    "</div>";
-
-
-                div.onclick =
-                    function() {
-
-                        selectMarket(
-                            market
-                        );
-
-                    };
-
-
-                list.appendChild(
-                    div
-                );
-
-            }
-        );
-
-}
-
-
-/* =========================================================
-   SELECT MARKET
-========================================================= */
-
-function selectMarket(market) {
-
-    selectedSymbol =
-        market.underlying_symbol;
-
-
-    selectedName =
-        market.underlying_symbol_name ||
-        selectedSymbol;
-
-
-    document.getElementById(
-        "selectedName"
-    ).textContent =
-        selectedName;
-
-
-    document.getElementById(
-        "selectedSymbol"
-    ).textContent =
-        selectedSymbol;
-
-
-    ticks =
-        [];
-
-
-    renderMarkets();
-
-
-    log(
-        "Selected market: " +
-        selectedName +
-        " (" +
-        selectedSymbol +
-        ")"
-    );
-
-
-    if (
-        !publicSocket ||
-        publicSocket.readyState !==
-            WebSocket.OPEN
-    ) {
-
-        return;
-    }
-
-
-    publicSocket.send(
-        JSON.stringify({
-
-            ticks_history:
-                selectedSymbol,
-
-            count:
-                5000,
-
-            end:
-                "latest",
-
-            style:
-                "ticks",
-
-            req_id:
-                reqId()
-
-        })
-    );
-
-
-    publicSocket.send(
-        JSON.stringify({
-
-            ticks:
-                selectedSymbol,
-
-            subscribe:
-                1,
-
-            req_id:
-                reqId()
-
-        })
-    );
-
-}
-
-
-/* =========================================================
-   HISTORY
-========================================================= */
-
-function loadHistory(data) {
-
-    if (!data.history) {
-        return;
-    }
-
-
-    const prices =
-        data.history.prices ||
-        [];
-
-
-    const times =
-        data.history.times ||
-        [];
-
-
-    ticks =
-        [];
-
-
-    for (
-        let i = 0;
-        i < prices.length;
-        i++
-    ) {
-
-        const price =
-            Number(
-                prices[i]
-            );
-
-
-        ticks.push({
-
-            price:
-                price,
-
-            digit:
-                getDigit(
-                    price
-                ),
-
-            time:
-                times[i]
-
-        });
-
-    }
-
-
-    log(
-        "Loaded " +
-        ticks.length +
-        " historical ticks."
-    );
-
-
-    analyze();
-
-    showTicks();
-
-}
-
-
-/* =========================================================
-   LIVE TICKS
-========================================================= */
-
-function receiveTick(data) {
-
-    if (!data.tick) {
-        return;
-    }
-
-
-    const price =
-        Number(
-            data.tick.quote
-        );
-
-
-    const digit =
-        getDigit(
-            price
-        );
-
-
-    ticks.push({
-
-        price:
-            price,
-
-        digit:
-            digit,
-
-        time:
-            data.tick.epoch
-
-    });
-
-
-    if (
-        ticks.length >
-        5000
-    ) {
-
-        ticks =
-            ticks.slice(
-                -5000
-            );
-
-    }
-
-
-    document.getElementById(
-        "price"
-    ).textContent =
-        price;
-
-
-    document.getElementById(
-        "lastDigit"
-    ).textContent =
-        digit;
-
-
-    analyze();
-
-    showTicks();
-
-}
-
-
-/* =========================================================
-   DIGIT
-========================================================= */
-
-function getDigit(price) {
-
-    const text =
-        String(
-            price
-        );
-
-
-    const numbers =
-        text.replace(
-            /[^0-9]/g,
-            ""
-        );
-
-
-    if (!numbers) {
-        return null;
-    }
-
-
-    return Number(
-        numbers[
-            numbers.length - 1
-        ]
-    );
-
-}
-
-
-/* =========================================================
-   ANALYZER
-========================================================= */
-
-function analyze() {
-
-    const sample =
-        Number(
-            document.getElementById(
-                "sample"
-            ).value
-        );
-
-
-    const data =
-        ticks.slice(
-            -sample
-        );
-
-
-    document.getElementById(
-        "count"
-    ).textContent =
-        ticks.length;
-
-
-    document.getElementById(
-        "window"
-    ).textContent =
-        data.length;
-
-
-    if (
-        data.length <
-        10
-    ) {
-
-        document.getElementById(
-            "engine"
-        ).textContent =
-            "COLLECTING";
-
-        return;
-    }
-
-
-    const counts =
-        Array(
-            10
-        ).fill(
-            0
-        );
-
-
-    data.forEach(
-        function(tick) {
-
-            if (
-                Number.isInteger(
-                    tick.digit
-                )
-            ) {
-
-                counts[
-                    tick.digit
-                ]++;
-
-            }
-
-        }
-    );
-
-
-    const total =
-        counts.reduce(
-            function(a, b) {
-                return a + b;
-            },
-            0
-        );
-
-
-    if (!total) {
-        return;
-    }
-
-
-    renderDigits(
-        counts,
-        total
-    );
-
-
-    statistics(
-        counts,
-        total
-    );
-
-
-    patterns(
-        data
-    );
-
-
-    transitions(
-        data
-    );
-
-
-    windows();
-
-
-    generateSignal(
-        counts,
-        total,
-        data
-    );
-
-
-    backtest(
-        data
-    );
-
-}
-
-
-/* =========================================================
-   DIGIT DISTRIBUTION
-========================================================= */
-
-function renderDigits(
-    counts,
-    total
-) {
-
-    let html =
-        "";
-
-
-    counts.forEach(
-        function(
-            count,
-            digit
-        ) {
-
-            const pct =
-                count /
-                total *
-                100;
-
-
-            html +=
-
-                "<div class='digit'>" +
-
-                "<div class='digit-row'>" +
-
-                "<strong>" +
-                digit +
-                "</strong>" +
-
-                "<span>" +
-                pct.toFixed(2) +
-                "%</span>" +
-
-                "</div>" +
-
-                "<div class='bar'>" +
-
-                "<div class='fill' style='width:" +
-                Math.min(
-                    100,
-                    pct * 5
-                ) +
-                "%'></div>" +
-
-                "</div>" +
-
-                "<small>" +
-                count +
-                " occurrences" +
-                "</small>" +
-
-                "</div>";
-
-        }
-    );
-
-
-    document.getElementById(
-        "digits"
-    ).innerHTML =
-        html;
-
-}
-
-
-/* =========================================================
-   STATISTICS
-========================================================= */
-
-function statistics(
-    counts,
-    total
-) {
-
-    const max =
-        Math.max(
-            ...counts
-        );
-
-
-    const min =
-        Math.min(
-            ...counts
-        );
-
-
-    const hot =
-        counts.indexOf(
-            max
-        );
-
-
-    const cold =
-        counts.indexOf(
-            min
-        );
-
-
-    const even =
-        counts[0] +
-        counts[2] +
-        counts[4] +
-        counts[6] +
-        counts[8];
-
-
-    const odd =
-        total -
-        even;
-
-
-    document.getElementById(
-        "hotDigit"
-    ).textContent =
-        hot;
-
-
-    document.getElementById(
-        "coldDigit"
-    ).textContent =
-        cold;
-
-
-    document.getElementById(
-        "stats"
-    ).innerHTML =
-
-        line(
-            "Hot Digit",
-            hot +
-            " (" +
-            (
-                max /
-                total *
-                100
-            ).toFixed(2) +
-            "%)"
-        ) +
-
-        line(
-            "Cold Digit",
-            cold +
-            " (" +
-            (
-                min /
-                total *
-                100
-            ).toFixed(2) +
-            "%)"
-        ) +
-
-        line(
-            "Even",
-            (
-                even /
-                total *
-                100
-            ).toFixed(2) +
-            "%"
-        ) +
-
-        line(
-            "Odd",
-            (
-                odd /
-                total *
-                100
-            ).toFixed(2) +
-            "%"
-        );
-
-}
-
-
-/* =========================================================
-   PATTERNS
-========================================================= */
-
-function patterns(data) {
-
-    let longest =
-        1;
-
-
-    let current =
-        1;
-
-
-    for (
-        let i = 1;
-        i < data.length;
-        i++
-    ) {
-
-        if (
-            data[i].digit ===
-            data[i - 1].digit
-        ) {
-
-            current++;
-
-        }
-
-        else {
-
-            current =
-                1;
-
-        }
-
-
-        longest =
-            Math.max(
-                longest,
-                current
-            );
-
-    }
-
-
-    current =
-        1;
-
-
-    for (
-        let i =
-            data.length - 1;
-        i > 0;
-        i--
-    ) {
-
-        if (
-            data[i].digit ===
-            data[i - 1].digit
-        ) {
-
-            current++;
-
-        }
-
-        else {
-
-            break;
-
-        }
-
-    }
-
-
-    document.getElementById(
-        "longestStreak"
-    ).textContent =
-        longest;
-
-
-    document.getElementById(
-        "currentStreak"
-    ).textContent =
-        current;
-
-}
-
-
-/* =========================================================
-   TRANSITIONS
-========================================================= */
-
-function transitions(data) {
-
-    const matrix =
-        Array.from(
-            {
-                length:
-                    10
-            },
-            function() {
-
-                return Array(
-                    10
-                ).fill(
-                    0
-                );
-
-            }
-        );
-
-
-    for (
-        let i = 1;
-        i < data.length;
-        i++
-    ) {
-
-        const previous =
-            data[i - 1].digit;
-
-
-        const next =
-            data[i].digit;
-
-
-        if (
-            Number.isInteger(
-                previous
-            ) &&
-            Number.isInteger(
-                next
-            )
-        ) {
-
-            matrix[
-                previous
-            ][
-                next
-            ]++;
-
-        }
-
-    }
-
-
-    const recent =
-        data[
-            data.length - 1
-        ].digit;
-
-
-    if (
-        !Number.isInteger(
-            recent
-        )
-    ) {
-
-        return;
-
-    }
-
-
-    const row =
-        matrix[
-            recent
-        ];
-
-
-    const total =
-        row.reduce(
-            function(a, b) {
-                return a + b;
-            },
-            0
-        );
-
-
-    if (!total) {
-
-        document.getElementById(
-            "transitions"
-        ).textContent =
-            "Not enough transition data.";
-
-        return;
-
-    }
-
-
-    const ranking =
-        row
-            .map(
-                function(
-                    count,
-                    digit
-                ) {
-
-                    return {
-                        digit:
-                            digit,
-
-                        count:
-                            count
-                    };
-
-                }
-            )
-            .sort(
-                function(a, b) {
-
-                    return (
-                        b.count -
-                        a.count
-                    );
-
-                }
-            )
-            .slice(
-                0,
-                5
-            );
-
-
-    document.getElementById(
-        "transitions"
-    ).innerHTML =
-
-        "<p>After digit " +
-        recent +
-        ":</p>" +
-
-        ranking
-            .map(
-                function(item) {
-
-                    return line(
-                        "Digit " +
-                        item.digit,
-
-                        (
-                            item.count /
-                            total *
-                            100
-                        ).toFixed(2) +
-                        "%"
-                    );
-
-                }
-            )
-            .join("");
-
-}
-
-
-/* =========================================================
-   MULTI WINDOWS
-========================================================= */
-
-function windows() {
-
-    const sizes =
-        [
-            50,
-            100,
-            250,
-            500,
-            1000
-        ];
-
-
-    let html =
-        "";
-
-
-    sizes.forEach(
-        function(size) {
-
-            if (
-                ticks.length <
-                size
-            ) {
-                return;
-            }
-
-
-            const data =
-                ticks.slice(
-                    -size
-                );
-
-
-            const counts =
-                Array(
-                    10
-                ).fill(
-                    0
-                );
-
-
-            data.forEach(
-                function(tick) {
-
-                    if (
-                        Number.isInteger(
-                            tick.digit
-                        )
-                    ) {
-
-                        counts[
-                            tick.digit
-                        ]++;
-
-                    }
-
-                }
-            );
-
-
-            const max =
-                Math.max(
-                    ...counts
-                );
-
-
-            const min =
-                Math.min(
-                    ...counts
-                );
-
-
-            const hot =
-                counts.indexOf(
-                    max
-                );
-
-
-            const cold =
-                counts.indexOf(
-                    min
-                );
-
-
-            html +=
-
-                "<div class='analysis-line'>" +
-
-                "<span>" +
-                size +
-                " ticks</span>" +
-
-                "<span>" +
-
-                "Hot " +
-                hot +
-                " (" +
-                (
-                    max /
-                    size *
-                    100
-                ).toFixed(2) +
-                "%)" +
-
-                " • Cold " +
-                cold +
-                " (" +
-                (
-                    min /
-                    size *
-                    100
-                ).toFixed(2) +
-                "%)" +
-
-                "</span>" +
-
-                "</div>";
-
-        }
-    );
-
-
-    document.getElementById(
-        "windows"
-    ).innerHTML =
-        html ||
-        "Not enough data.";
-
-}
-
-
-/* =========================================================
-   SIGNAL ENGINE
-========================================================= */
-
-function generateSignal(
-    counts,
-    total,
-    data
-) {
-
-    if (
-        total <
-        100
-    ) {
-
-        document.getElementById(
-            "engine"
-        ).textContent =
-            "COLLECTING";
-
-
-        document.getElementById(
-            "signal"
-        ).innerHTML =
-
-            "<div class='signal-title'>" +
-            "COLLECTING DATA" +
-            "</div>" +
-
-            "<p>Need at least 100 valid ticks.</p>";
-
-
-        return;
-
-    }
-
-
-    const max =
-        Math.max(
-            ...counts
-        );
-
-
-    const hot =
-        counts.indexOf(
-            max
-        );
-
-
-    const hotPct =
-        max /
-        total *
-        100;
-
-
-    const deviation =
-        Math.abs(
-            hotPct -
-            10
-        );
-
-
-    const half =
-        Math.floor(
-            data.length /
-            2
-        );
-
-
-    const first =
-        data.slice(
-            0,
-            half
-        );
-
-
-    const second =
-        data.slice(
-            half
-        );
-
-
-    const firstCount =
-        first.filter(
-            function(tick) {
-
-                return (
-                    tick.digit ===
-                    hot
-                );
-
-            }
-        ).length;
-
-
-    const secondCount =
-        second.filter(
-            function(tick) {
-
-                return (
-                    tick.digit ===
-                    hot
-                );
-
-            }
-        ).length;
-
-
-    const firstPct =
-        first.length
-            ? firstCount /
-              first.length *
-              100
-            : 0;
-
-
-    const secondPct =
-        second.length
-            ? secondCount /
-              second.length *
-              100
-            : 0;
-
-
-    const momentum =
-        secondPct -
-        firstPct;
-
-
-    let score =
-        0;
-
-
-    if (
-        deviation >=
-        2
-    ) {
-        score += 15;
-    }
-
-
-    if (
-        deviation >=
-        4
-    ) {
-        score += 15;
-    }
-
-
-    if (
-        Math.abs(
-            momentum
-        ) >=
-        2
-    ) {
-        score += 15;
-    }
-
-
-    if (
-        Math.abs(
-            momentum
-        ) >=
-        4
-    ) {
-        score += 15;
-    }
-
-
-    if (
-        total >=
-        500
-    ) {
-        score += 10;
-    }
-
-
-    if (
-        total >=
-        1000
-    ) {
-        score += 10;
-    }
-
-
-    const recentDigits =
-        data
-            .slice(
-                -20
-            )
-            .map(
-                tick =>
-                    tick.digit
-            );
-
-
-    let recentHotCount =
-        0;
-
-
-    recentDigits.forEach(
-        digit => {
-
-            if (
-                digit ===
-                hot
-            ) {
-
-                recentHotCount++;
-
-            }
-
-        }
-    );
-
-
-    const recentPct =
-        recentDigits.length
-            ? recentHotCount /
-              recentDigits.length *
-              100
-            : 0;
-
-
-    if (
-        Math.abs(
-            recentPct -
-            10
-        ) >=
-        5
-    ) {
-
-        score += 10;
-
-    }
-
-
-    score =
-        Math.min(
-            100,
-            score
-        );
-
-
-    let level =
-        "NO SIGNAL";
-
-
-    if (
-        score >=
-        70
-    ) {
-
-        level =
-            "STRONG WATCH";
-
-    }
-
-    else if (
-        score >=
-        50
-    ) {
-
-        level =
-            "MODERATE WATCH";
-
-    }
-
-    else if (
-        score >=
-        30
-    ) {
-
-        level =
-            "WEAK WATCH";
-
-    }
-
-
-    document.getElementById(
-        "engine"
-    ).textContent =
-        level;
-
-
-    document.getElementById(
-        "signal"
-    ).innerHTML =
-
-        "<div class='signal-title'>" +
-        level +
-        "</div>" +
-
-        "<p>Hot digit: " +
-        hot +
-        "</p>" +
-
-        "<p>Frequency: " +
-        hotPct.toFixed(2) +
-        "%</p>" +
-
-        "<p>Recent frequency: " +
-        recentPct.toFixed(2) +
-        "%</p>" +
-
-        "<p>Deviation from expected 10%: " +
-        deviation.toFixed(2) +
-        " percentage points</p>" +
-
-        "<p>Momentum: " +
-        (
-            momentum >= 0
-                ? "+"
-                : ""
-        ) +
-        momentum.toFixed(2) +
-        " percentage points</p>" +
-
-        "<p>Statistical score: " +
-        score +
-        "/100</p>" +
-
-        "<div class='progress'>" +
-
-        "<div class='progress-fill' style='width:" +
-        score +
-        "%'></div>" +
-
-        "</div>" +
-
-        "<p class='muted'>" +
-        "This score measures historical statistical conditions. " +
-        "It does not guarantee the next outcome." +
-        "</p>";
-
-
-    signalHistory.push({
-
-        time:
-            Date.now(),
-
-        hot:
-            hot,
-
-        score:
-            score,
-
-        level:
-            level
-
-    });
-
-
-    if (
-        signalHistory.length >
-        100
-    ) {
-
-        signalHistory =
-            signalHistory.slice(
-                -100
-            );
-
-    }
-
-
-    checkAutoTrade(
-        score,
-        hot
-    );
-
-}
-
-
-/* =========================================================
-   BACKTEST
-========================================================= */
-
-function backtest(data) {
-
-    if (
-        data.length <
-        200
-    ) {
-
-        document.getElementById(
-            "backtest"
-        ).textContent =
-            "Need at least 200 ticks.";
-
-        return;
-
-    }
-
-
-    const lookback =
-        100;
-
-
-    let signals =
-        0;
-
-
-    let hits =
-        0;
-
-
-    for (
-        let i =
-            lookback;
-        i <
-            data.length - 1;
-        i++
-    ) {
-
-        const sample =
-            data.slice(
-                i -
-                lookback,
-                i
-            );
-
-
-        const counts =
-            Array(
-                10
-            ).fill(
-                0
-            );
-
-
-        sample.forEach(
-            function(tick) {
-
-                if (
-                    Number.isInteger(
-                        tick.digit
-                    )
-                ) {
-
-                    counts[
-                        tick.digit
-                    ]++;
-
-                }
-
-            }
-        );
-
-
-        const max =
-            Math.max(
-                ...counts
-            );
-
-
-        const hot =
-            counts.indexOf(
-                max
-            );
-
-
-        const pct =
-            max /
-            lookback *
-            100;
-
-
-        if (
-            pct >=
-            13
-        ) {
-
-            signals++;
-
-
-            if (
-                data[i].digit ===
-                hot
-            ) {
-
-                hits++;
-
-            }
-
-        }
-
-    }
-
-
-    const rate =
-        signals
-            ? hits /
-              signals *
-              100
-            : 0;
-
-
-    document.getElementById(
-        "backtest"
-    ).innerHTML =
-
-        "<div class='grid'>" +
-
-        "<div class='stat'>" +
-        "<small>Signals</small>" +
-        "<strong>" +
-        signals +
-        "</strong>" +
-        "</div>" +
-
-        "<div class='stat'>" +
-        "<small>Hits</small>" +
-        "<strong>" +
-        hits +
-        "</strong>" +
-        "</div>" +
-
-        "<div class='stat'>" +
-        "<small>Misses</small>" +
-        "<strong>" +
-        (
-            signals -
-            hits
-        ) +
-        "</strong>" +
-        "</div>" +
-
-        "<div class='stat'>" +
-        "<small>Hit Rate</small>" +
-        "<strong>" +
-        rate.toFixed(2) +
-        "%</strong>" +
-        "</div>" +
-
-        "</div>";
-
-}
-
-
-/* =========================================================
-   ANALYZER START / STOP
-========================================================= */
-
-function startAnalyzer() {
-
-    if (!selectedSymbol) {
-
-        alert(
-            "Select a market first."
-        );
-
-        return;
-
-    }
-
-
-    analyzerRunning =
-        true;
-
-
-    document.getElementById(
+           (

@@ -3,40 +3,37 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-
 <title>Deriv Market Analyzer V7 - MAUVEY</title>
 
 <style>
-*{
-    box-sizing:border-box;
-}
+*{box-sizing:border-box}
 
 body{
     margin:0;
     background:#070c17;
     color:#fff;
-    font-family:Arial,sans-serif;
+    font-family:Arial,sans-serif
 }
 
 header{
     padding:18px;
     background:#0d1425;
-    border-bottom:1px solid #273451;
+    border-bottom:1px solid #273451
 }
 
 header h1{
-    margin:0 0 6px;
+    margin:0 0 6px
 }
 
 header p{
     margin:0;
-    color:#91a0bd;
+    color:#91a0bd
 }
 
 main{
     max-width:1250px;
     margin:auto;
-    padding:15px;
+    padding:15px
 }
 
 .card{
@@ -44,49 +41,49 @@ main{
     border:1px solid #273451;
     border-radius:15px;
     padding:16px;
-    margin-bottom:15px;
+    margin-bottom:15px
 }
 
 h2{
-    margin-top:0;
+    margin-top:0
 }
 
 .status{
     padding:13px;
     border-radius:9px;
     margin-bottom:15px;
-    font-weight:bold;
+    font-weight:bold
 }
 
 .online{
     background:#153b2b;
-    color:#72e5a5;
+    color:#72e5a5
 }
 
 .offline{
     background:#3b1822;
-    color:#ff9cab;
+    color:#ff9cab
 }
 
 .warning{
     background:#302717;
     color:#ffd166;
     padding:12px;
-    border-radius:9px;
+    border-radius:9px
 }
 
 .success{
     background:#153b2b;
     color:#72e5a5;
     padding:12px;
-    border-radius:9px;
+    border-radius:9px
 }
 
 .danger{
     background:#3b1822;
     color:#ff9cab;
     padding:12px;
-    border-radius:9px;
+    border-radius:9px
 }
 
 button,
@@ -97,105 +94,105 @@ select{
     border:0;
     border-radius:9px;
     padding:0 12px;
-    font-size:15px;
+    font-size:15px
 }
 
 input,
 select{
     background:#202b45;
     color:#fff;
-    outline:none;
+    outline:none
 }
 
 button{
     background:#5b61f0;
     color:#fff;
     font-weight:bold;
-    cursor:pointer;
+    cursor:pointer
 }
 
 button:disabled{
     opacity:.45;
-    cursor:not-allowed;
+    cursor:not-allowed
 }
 
 button.secondary{
-    background:#273451;
+    background:#273451
 }
 
 button.green{
-    background:#168b55;
+    background:#168b55
 }
 
 button.red{
-    background:#a83b4c;
+    background:#a83b4c
 }
 
 button.orange{
-    background:#c98218;
+    background:#c98218
 }
 
 button.mauvey{
     background:#8b4de8;
     font-size:18px;
-    min-height:55px;
+    min-height:55px
 }
 
 .grid{
     display:grid;
     grid-template-columns:repeat(2,1fr);
-    gap:12px;
+    gap:12px
 }
 
 .grid.four{
-    grid-template-columns:repeat(4,1fr);
+    grid-template-columns:repeat(4,1fr)
 }
 
 .controls{
     display:grid;
     grid-template-columns:repeat(3,1fr);
-    gap:10px;
+    gap:10px
 }
 
 .stat{
     background:#0d1425;
     padding:15px;
-    border-radius:10px;
+    border-radius:10px
 }
 
 .stat small{
     display:block;
     color:#91a0bd;
-    margin-bottom:7px;
+    margin-bottom:7px
 }
 
 .stat strong{
-    font-size:20px;
+    font-size:20px
 }
 
 .muted{
-    color:#91a0bd;
+    color:#91a0bd
 }
 
 .small{
-    font-size:12px;
+    font-size:12px
 }
 
 .form-label{
     display:block;
     color:#91a0bd;
     margin-bottom:6px;
-    font-size:13px;
+    font-size:13px
 }
 
 .form-group{
-    margin-bottom:10px;
+    margin-bottom:10px
 }
 
 .market-list{
     max-height:330px;
     overflow-y:auto;
-    margin-top:12px;
+    margin-top:12px
 }
 
 .market{
@@ -204,46 +201,46 @@ button.mauvey{
     margin-bottom:7px;
     border-radius:9px;
     cursor:pointer;
-    border:1px solid transparent;
+    border:1px solid transparent
 }
 
 .market.selected{
-    border-color:#6870ff;
+    border-color:#6870ff
 }
 
 .market-name{
-    font-weight:bold;
+    font-weight:bold
 }
 
 .market-info{
     color:#91a0bd;
     font-size:12px;
-    margin-top:4px;
+    margin-top:4px
 }
 
 .digits{
     display:grid;
     grid-template-columns:repeat(5,1fr);
-    gap:8px;
+    gap:8px
 }
 
 .digit{
     background:#0d1425;
     padding:12px;
-    border-radius:9px;
+    border-radius:9px
 }
 
 .digit.green-digit{
-    border:2px solid #168b55;
+    border:2px solid #168b55
 }
 
 .digit.red-digit{
-    border:2px solid #a83b4c;
+    border:2px solid #a83b4c
 }
 
 .digit-row{
     display:flex;
-    justify-content:space-between;
+    justify-content:space-between
 }
 
 .bar{
@@ -251,12 +248,12 @@ button.mauvey{
     background:#283450;
     border-radius:5px;
     margin-top:8px;
-    overflow:hidden;
+    overflow:hidden
 }
 
 .fill{
     height:100%;
-    background:#6870ff;
+    background:#6870ff
 }
 
 .analysis-line{
@@ -264,36 +261,36 @@ button.mauvey{
     justify-content:space-between;
     gap:10px;
     padding:9px 0;
-    border-bottom:1px solid #202b45;
+    border-bottom:1px solid #202b45
 }
 
 .signal{
     background:#0d1425;
     padding:18px;
-    border-radius:12px;
+    border-radius:12px
 }
 
 .signal-title{
     font-size:27px;
-    font-weight:bold;
+    font-weight:bold
 }
 
 .progress{
     height:9px;
     background:#283450;
     border-radius:10px;
-    overflow:hidden;
+    overflow:hidden
 }
 
 .progress-fill{
     height:100%;
-    background:#6870ff;
+    background:#6870ff
 }
 
 .tick-list{
     display:flex;
     flex-wrap:wrap;
-    gap:6px;
+    gap:6px
 }
 
 .tick{
@@ -301,108 +298,88 @@ button.mauvey{
     padding:7px;
     border-radius:7px;
     font-family:monospace;
-    font-size:12px;
+    font-size:12px
 }
 
 .trade-history{
-    overflow-x:auto;
+    overflow-x:auto
 }
 
 .trade-table{
     width:100%;
     border-collapse:collapse;
-    min-width:850px;
+    min-width:750px
 }
 
 .trade-table th,
 .trade-table td{
     padding:9px;
     border-bottom:1px solid #273451;
-    text-align:left;
+    text-align:left
 }
 
 .win{
     color:#72e5a5;
-    font-weight:bold;
+    font-weight:bold
 }
 
 .loss{
     color:#ff9cab;
-    font-weight:bold;
+    font-weight:bold
 }
 
 .neutral{
     color:#ffd166;
-    font-weight:bold;
+    font-weight:bold
 }
 
 .log{
     background:#050912;
     border-radius:10px;
     padding:12px;
-    max-height:300px;
+    max-height:260px;
     overflow-y:auto;
     font-family:monospace;
-    font-size:12px;
+    font-size:12px
 }
 
 .log-line{
     margin-bottom:5px;
-    color:#aab6d0;
+    color:#aab6d0
 }
 
 .account-mode{
     padding:8px 12px;
     border-radius:20px;
     display:inline-block;
-    font-weight:bold;
+    font-weight:bold
 }
 
 .demo{
     background:#253b67;
-    color:#9fc0ff;
+    color:#9fc0ff
 }
 
 .real{
     background:#54252e;
-    color:#ff9cab;
+    color:#ff9cab
+}
+
+.auto-box{
+    border:1px solid #273451;
+    padding:15px;
+    border-radius:12px
+}
+
+.auto-active{
+    border-color:#8b4de8
 }
 
 .mauvey-box{
     border:2px solid #8b4de8;
     padding:18px;
     border-radius:14px;
-    background:#100d1c;
-}
-
-.mauvey-live{
-    border-color:#72e5a5;
-}
-
-.strategy-box{
-    background:#0d1425;
-    border-radius:12px;
-    padding:15px;
-}
-
-.strategy-badge{
-    display:inline-block;
-    padding:7px 12px;
-    border-radius:20px;
-    background:#253b67;
-    color:#9fc0ff;
-    font-weight:bold;
-}
-
-.batch{
-    background:#0d1425;
-    padding:15px;
-    border-radius:12px;
-}
-
-.batch-number{
-    font-size:30px;
-    font-weight:bold;
+    background:#100d1c
 }
 
 .popup-overlay{
@@ -413,7 +390,7 @@ button.mauvey{
     z-index:9999;
     align-items:center;
     justify-content:center;
-    padding:20px;
+    padding:20px
 }
 
 .popup{
@@ -422,26 +399,26 @@ button.mauvey{
     border:1px solid #273451;
     border-radius:18px;
     padding:25px;
-    text-align:center;
+    text-align:center
 }
 
 .popup-result{
     font-size:42px;
     font-weight:bold;
-    margin:15px 0;
+    margin:15px 0
 }
 
 .popup-profit{
     font-size:25px;
-    margin-bottom:15px;
+    margin-bottom:15px
 }
 
 .hidden{
-    display:none!important;
+    display:none!important
 }
 
 .center{
-    text-align:center;
+    text-align:center
 }
 
 @media(max-width:699px){
@@ -449,11 +426,29 @@ button.mauvey{
     .grid,
     .grid.four,
     .controls{
-        grid-template-columns:1fr;
+        grid-template-columns:1fr
     }
 
     .digits{
-        grid-template-columns:repeat(2,1fr);
+        grid-template-columns:repeat(2,1fr)
+    }
+
+    header h1{
+        font-size:24px
+    }
+
+    main{
+        padding:10px
+    }
+
+    .card{
+        padding:13px
+    }
+
+    button,
+    input,
+    select{
+        min-height:48px
     }
 }
 </style>
@@ -463,7 +458,7 @@ button.mauvey{
 
 <header>
     <h1>Deriv Market Analyzer V7</h1>
-    <p>MAUVEY • Independent Statistical Strategy Engine</p>
+    <p>MAUVEY • Statistical Market Analyzer • Contract Execution</p>
 </header>
 
 <main>
@@ -472,8 +467,6 @@ button.mauvey{
     DISCONNECTED
 </div>
 
-<!-- ACCOUNT -->
-
 <div class="card">
 
 <h2>Account</h2>
@@ -481,23 +474,23 @@ button.mauvey{
 <div class="grid four">
 
 <div class="stat">
-<small>Connection</small>
-<strong id="accountConnection">NOT CONNECTED</strong>
+    <small>Connection</small>
+    <strong id="accountConnection">NOT CONNECTED</strong>
 </div>
 
 <div class="stat">
-<small>Account</small>
-<strong id="accountMode">—</strong>
+    <small>Account</small>
+    <strong id="accountMode">—</strong>
 </div>
 
 <div class="stat">
-<small>Balance</small>
-<strong id="balance">—</strong>
+    <small>Balance</small>
+    <strong id="balance">—</strong>
 </div>
 
 <div class="stat">
-<small>KES Value</small>
-<strong id="balanceKES">—</strong>
+    <small>KES Value</small>
+    <strong id="balanceKES">—</strong>
 </div>
 
 </div>
@@ -507,15 +500,15 @@ button.mauvey{
 <div class="controls">
 
 <button onclick="connectPublic()">
-CONNECT MARKET DATA
+    CONNECT MARKET DATA
 </button>
 
 <button class="secondary" onclick="connectAccount()">
-CONNECT DERIV ACCOUNT
+    CONNECT DERIV ACCOUNT
 </button>
 
 <button class="orange" onclick="switchAccountMode()">
-SWITCH DEMO / REAL
+    SWITCH DEMO / REAL
 </button>
 
 </div>
@@ -523,20 +516,26 @@ SWITCH DEMO / REAL
 <br>
 
 <label class="form-label">
-USD → KES exchange rate
+    USD → KES exchange rate
 </label>
 
 <input
-id="fxRate"
-type="number"
-step="0.01"
-value="129.50"
-oninput="updateBalanceDisplay()">
+    id="fxRate"
+    type="number"
+    step="0.01"
+    value="129.50"
+    oninput="updateBalanceDisplay()"
+>
+
+<br><br>
+
+<div class="muted small">
+    V7 market analysis and MAUVEY strategy are separate.
+    MAUVEY uses only its own strategy checks below.
+</div>
 
 </div>
 
-
-<!-- MARKETS -->
 
 <div class="card">
 
@@ -545,259 +544,166 @@ oninput="updateBalanceDisplay()">
 <div class="controls">
 
 <select id="category" onchange="renderMarkets()">
-<option value="all">All Markets</option>
-<option value="forex">Forex</option>
-<option value="synthetic">Synthetic Indices</option>
-<option value="crypto">Cryptocurrency</option>
-<option value="commodities">Commodities</option>
-<option value="indices">Indices</option>
+
+<option value="all">
+    All Markets
+</option>
+
+<option value="forex">
+    Forex
+</option>
+
+<option value="synthetic">
+    Synthetic Indices
+</option>
+
+<option value="crypto">
+    Cryptocurrency
+</option>
+
+<option value="commodities">
+    Commodities
+</option>
+
+<option value="indices">
+    Indices
+</option>
+
 </select>
 
 <input
-id="search"
-placeholder="Search market..."
-oninput="renderMarkets()">
+    id="search"
+    placeholder="Search market..."
+    oninput="renderMarkets()"
+>
 
 <button onclick="loadMarkets()">
-REFRESH MARKETS
+    REFRESH MARKETS
 </button>
 
 </div>
 
 <div id="marketCount" class="muted">
-No markets loaded
+    No markets loaded
 </div>
 
 <div id="marketList" class="market-list">
-Connect to load markets.
+    Connect to load markets.
 </div>
 
 </div>
 
-
-<!-- MAUVEY -->
 
 <div class="card">
 
-<div id="mauveyBox" class="mauvey-box">
-
-<h2>MAUVEY</h2>
-
-<p class="muted">
-MAUVEY independently scans the available markets,
-selects the strongest qualifying strategy, waits for
-its trigger and executes a complete trade batch.
-</p>
+<h2>Selected Market</h2>
 
 <div class="grid four">
 
 <div class="stat">
-<small>MAUVEY</small>
-<strong id="mauveyState">OFF</strong>
+    <small>Market</small>
+    <strong id="selectedName">None</strong>
 </div>
 
 <div class="stat">
-<small>Strategy</small>
-<strong id="mauveyStrategy">SCANNING</strong>
+    <small>Symbol</small>
+    <strong id="selectedSymbol">—</strong>
 </div>
 
 <div class="stat">
-<small>Market</small>
-<strong id="mauveyMarket">—</strong>
+    <small>Price</small>
+    <strong id="price">—</strong>
 </div>
 
 <div class="stat">
-<small>Confidence</small>
-<strong id="mauveyConfidence">—</strong>
-</div>
-
-</div>
-
-<br>
-
-<div class="grid">
-
-<div>
-<label class="form-label">
-MAUVEY
-</label>
-
-<button
-id="mauveyBtn"
-class="mauvey"
-onclick="toggleMauvey()">
-START MAUVEY
-</button>
-</div>
-
-<div>
-<label class="form-label">
-Maximum trades per batch
-</label>
-
-<input
-id="mauveyMaxTrades"
-type="number"
-min="1"
-max="100"
-value="10">
-</div>
-
-</div>
-
-<br>
-
-<div id="mauveyStatus" class="warning">
-MAUVEY is OFF.
+    <small>Last Digit</small>
+    <strong id="lastDigit">—</strong>
 </div>
 
 </div>
 
 </div>
 
-
-<!-- CURRENT MAUVEY BATCH -->
 
 <div class="card">
 
-<h2>MAUVEY Batch</h2>
-
-<div class="grid four">
-
-<div class="batch">
-<small class="muted">Batch Strategy</small>
-<div id="batchStrategy" class="batch-number">—</div>
-</div>
-
-<div class="batch">
-<small class="muted">Trades Completed</small>
-<div id="batchCompleted" class="batch-number">0</div>
-</div>
-
-<div class="batch">
-<small class="muted">Trades Remaining</small>
-<div id="batchRemaining" class="batch-number">0</div>
-</div>
-
-<div class="batch">
-<small class="muted">Batch Target</small>
-<div id="batchTarget" class="batch-number">0</div>
-</div>
-
-</div>
-
-<br>
-
-<div class="progress">
-<div
-id="batchProgress"
-class="progress-fill"
-style="width:0%">
-</div>
-</div>
-
-<br>
-
-<div id="batchStatus" class="warning">
-No active batch.
-</div>
-
-</div>
-
-
-<!-- MAUVEY SIGNAL -->
-
-<div class="card">
-
-<h2>MAUVEY Signal</h2>
-
-<div id="mauveySignal" class="signal">
-
-<div class="signal-title">
-NO SIGNAL
-</div>
-
-<p class="muted">
-Start MAUVEY to begin independent scanning.
-</p>
-
-</div>
-
-</div>
-
-
-<!-- SELECTED MARKET -->
-
-<div class="card">
-
-<h2>Current Market</h2>
-
-<div class="grid four">
-
-<div class="stat">
-<small>Market</small>
-<strong id="selectedName">None</strong>
-</div>
-
-<div class="stat">
-<small>Symbol</small>
-<strong id="selectedSymbol">—</strong>
-</div>
-
-<div class="stat">
-<small>Price</small>
-<strong id="price">—</strong>
-</div>
-
-<div class="stat">
-<small>Last Digit</small>
-<strong id="lastDigit">—</strong>
-</div>
-
-</div>
-
-</div>
-
-
-<!-- ANALYZER -->
-
-<div class="card">
-
-<h2>Market Analysis</h2>
+<h2>Analyzer</h2>
 
 <div class="grid">
 
 <div class="form-group">
 
 <label class="form-label">
-Analysis window
+    Analysis window
 </label>
 
-<select id="sample" onchange="analyzeCurrentMarket()">
-<option value="50">50 ticks</option>
-<option value="100">100 ticks</option>
-<option value="250">250 ticks</option>
-<option value="500">500 ticks</option>
-<option value="1000" selected>1,000 ticks</option>
-<option value="5000">5,000 ticks</option>
+<select id="sample" onchange="analyze()">
+
+<option value="50">
+    50 ticks
+</option>
+
+<option value="100">
+    100 ticks
+</option>
+
+<option value="250">
+    250 ticks
+</option>
+
+<option value="500">
+    500 ticks
+</option>
+
+<option value="1000" selected>
+    1,000 ticks
+</option>
+
+<option value="5000">
+    5,000 ticks
+</option>
+
 </select>
 
 </div>
 
+
 <div class="form-group">
 
 <label class="form-label">
-Minimum confidence
+    Minimum confidence
 </label>
 
-<select id="minConfidence">
-<option value="50">50%</option>
-<option value="55">55%</option>
-<option value="60" selected>60%</option>
-<option value="65">65%</option>
-<option value="70">70%</option>
-<option value="75">75%</option>
-<option value="80">80%</option>
+<select id="minConfidence" onchange="analyze()">
+
+<option value="50">
+    50%
+</option>
+
+<option value="55">
+    55%
+</option>
+
+<option value="60" selected>
+    60%
+</option>
+
+<option value="65">
+    65%
+</option>
+
+<option value="70">
+    70%
+</option>
+
+<option value="75">
+    75%
+</option>
+
+<option value="80">
+    80%
+</option>
+
 </select>
 
 </div>
@@ -809,15 +715,19 @@ Minimum confidence
 <div class="grid">
 
 <button
-class="green"
-onclick="startAnalyzer()">
-START ANALYZER
+    id="startAnalyzerBtn"
+    class="green"
+    onclick="startAnalyzer()"
+>
+    START ANALYZER
 </button>
 
 <button
-class="red"
-onclick="stopAnalyzer()">
-STOP ANALYZER
+    id="stopAnalyzerBtn"
+    class="red"
+    onclick="stopAnalyzer()"
+>
+    STOP ANALYZER
 </button>
 
 </div>
@@ -825,13 +735,69 @@ STOP ANALYZER
 <br>
 
 <div id="analyzerState" class="warning">
-Analyzer stopped.
+    Analyzer stopped.
 </div>
 
 </div>
 
 
-<!-- MANUAL TRADE -->
+<div class="card">
+
+<div class="mauvey-box">
+
+<h2>MAUVEY</h2>
+
+<p class="muted">
+    MAUVEY is independent from the general V7 signal.
+    It continuously follows one qualifying strategy on the selected
+    market until stopped or its trade limit is reached, then rescans.
+</p>
+
+<div class="grid">
+
+<div>
+
+<label class="form-label">
+    MAUVEY
+</label>
+
+<button
+    id="mauveyBtn"
+    class="mauvey"
+    onclick="toggleMauvey()"
+>
+    START MAUVEY
+</button>
+
+</div>
+
+<div>
+
+<label class="form-label">
+    Maximum MAUVEY trades
+</label>
+
+<input
+    id="mauveyMaxTrades"
+    type="number"
+    min="1"
+    value="10"
+>
+
+</div>
+
+</div>
+
+<br>
+
+<div id="mauveyStatus" class="warning">
+    MAUVEY is OFF.
+</div>
+
+</div>
+
+</div>
+
 
 <div class="card">
 
@@ -842,104 +808,131 @@ Analyzer stopped.
 <div class="form-group">
 
 <label class="form-label">
-Contract
+    Contract
 </label>
 
-<select id="contractType" onchange="updateDurationUI()">
+<select
+    id="contractType"
+    onchange="updateDurationUI()"
+>
 
-<option value="CALL">Rise</option>
-<option value="PUT">Fall</option>
+<option value="CALL">
+    Rise
+</option>
 
-<option value="DIGITEVEN">Even</option>
-<option value="DIGITODD">Odd</option>
+<option value="PUT">
+    Fall
+</option>
 
-<option value="DIGITOVER">Over</option>
-<option value="DIGITUNDER">Under</option>
+<option value="DIGITEVEN">
+    Even
+</option>
 
-<option value="DIGITMATCH">Matches</option>
-<option value="DIGITDIFF">Differs</option>
+<option value="DIGITODD">
+    Odd
+</option>
+
+<option value="DIGITOVER">
+    Over
+</option>
+
+<option value="DIGITUNDER">
+    Under
+</option>
+
+<option value="DIGITMATCH">
+    Matches
+</option>
+
+<option value="DIGITDIFF">
+    Differs
+</option>
 
 </select>
 
 </div>
 
+
 <div class="form-group">
 
 <label class="form-label">
-Duration
+    Duration
 </label>
 
 <input
-id="duration"
-type="number"
-min="1"
-value="1">
+    id="duration"
+    type="number"
+    min="1"
+    value="1"
+>
 
 </div>
+
 
 <div class="form-group">
 
 <label class="form-label">
-Unit
+    Unit
 </label>
 
 <select id="durationUnit">
-<option value="t">Ticks</option>
-<option value="s">Seconds</option>
+
+<option value="s">
+    Seconds
+</option>
+
+<option value="t">
+    Ticks
+</option>
+
 </select>
 
 </div>
 
 </div>
+
 
 <div class="controls">
 
 <div class="form-group">
 
 <label class="form-label">
-Stake
+    Stake
 </label>
 
 <input
-id="stake"
-type="number"
-min="0.01"
-step="0.01"
-value="1">
+    id="stake"
+    type="number"
+    min="0.01"
+    step="0.01"
+    value="1"
+>
 
 </div>
 
-<div class="form-group" id="barrierGroup">
+
+<div
+    class="form-group"
+    id="barrierGroup"
+>
 
 <label class="form-label">
-Digit / Barrier
+    Digit / Barrier
 </label>
 
-<select id="barrier">
-
-<option value="0">0</option>
-<option value="1">1</option>
-<option value="2">2</option>
-<option value="3">3</option>
-<option value="4">4</option>
-<option value="5">5</option>
-<option value="6">6</option>
-<option value="7">7</option>
-<option value="8">8</option>
-<option value="9">9</option>
-
-</select>
+<select id="barrier"></select>
 
 </div>
+
 
 <div class="form-group">
 
 <label class="form-label">
-Trade status
+    Trade status
 </label>
 
 <div id="tradeState" class="warning">
-READY
+    READY
 </div>
 
 </div>
@@ -948,41 +941,59 @@ READY
 
 <br>
 
-<button class="orange" onclick="executeManualTrade()">
-EXECUTE MANUAL TRADE
+<button
+    class="orange"
+    onclick="executeManualTrade()"
+>
+    EXECUTE MANUAL TRADE
 </button>
 
 </div>
 
 
-<!-- STATISTICS -->
-
 <div class="grid four">
 
 <div class="stat">
-<small>Total Ticks</small>
-<strong id="count">0</strong>
+    <small>Total Ticks</small>
+    <strong id="count">0</strong>
 </div>
 
 <div class="stat">
-<small>Sample</small>
-<strong id="window">0</strong>
+    <small>Sample</small>
+    <strong id="window">0</strong>
 </div>
 
 <div class="stat">
-<small>Expected Digit</small>
-<strong>10%</strong>
+    <small>Expected Digit</small>
+    <strong>10%</strong>
 </div>
 
 <div class="stat">
-<small>Engine</small>
-<strong id="engine">WAITING</strong>
+    <small>Engine</small>
+    <strong id="engine">WAITING</strong>
 </div>
 
 </div>
 
 
-<!-- DIGITS -->
+<div class="card">
+
+<h2>Current Signal</h2>
+
+<div id="signal" class="signal">
+
+<div class="signal-title">
+    NO SIGNAL
+</div>
+
+<p class="muted">
+    Start the analyzer and collect data.
+</p>
+
+</div>
+
+</div>
+
 
 <div class="card">
 
@@ -993,20 +1004,16 @@ EXECUTE MANUAL TRADE
 </div>
 
 
-<!-- STATISTICS -->
-
 <div class="card">
 
 <h2>Statistical Summary</h2>
 
 <div id="stats">
-Waiting for data...
+    Waiting for data...
 </div>
 
 </div>
 
-
-<!-- PATTERNS -->
 
 <div class="card">
 
@@ -1015,57 +1022,51 @@ Waiting for data...
 <div class="grid four">
 
 <div class="stat">
-<small>Longest Same-Digit Streak</small>
-<strong id="longestStreak">0</strong>
+    <small>Longest Same-Digit Streak</small>
+    <strong id="longestStreak">0</strong>
 </div>
 
 <div class="stat">
-<small>Current Same-Digit Streak</small>
-<strong id="currentStreak">0</strong>
+    <small>Current Same-Digit Streak</small>
+    <strong id="currentStreak">0</strong>
 </div>
 
 <div class="stat">
-<small>Green Digit</small>
-<strong id="hotDigit">—</strong>
+    <small>Green Digit</small>
+    <strong id="hotDigit">—</strong>
 </div>
 
 <div class="stat">
-<small>Red Digit</small>
-<strong id="coldDigit">—</strong>
+    <small>Red Digit</small>
+    <strong id="coldDigit">—</strong>
 </div>
 
 </div>
 
 </div>
 
-
-<!-- TRANSITIONS -->
 
 <div class="card">
 
 <h2>Digit Transition Analysis</h2>
 
 <div id="transitions">
-Waiting for data...
+    Waiting for data...
 </div>
 
 </div>
 
-
-<!-- MULTI WINDOWS -->
 
 <div class="card">
 
 <h2>Multi-Window Analysis</h2>
 
 <div id="windows">
-Waiting...
+    Waiting...
 </div>
 
 </div>
 
-
-<!-- RECENT TICKS -->
 
 <div class="card">
 
@@ -1075,8 +1076,6 @@ Waiting...
 
 </div>
 
-
-<!-- TRADE HISTORY -->
 
 <div class="card">
 
@@ -1089,13 +1088,13 @@ Waiting...
 <thead>
 
 <tr>
-<th>#</th>
-<th>Strategy</th>
-<th>Market</th>
-<th>Stake</th>
-<th>Result</th>
-<th>P/L</th>
-<th>Status</th>
+    <th>#</th>
+    <th>Strategy</th>
+    <th>Market</th>
+    <th>Stake</th>
+    <th>Result</th>
+    <th>P/L</th>
+    <th>Status</th>
 </tr>
 
 </thead>
@@ -1109,44 +1108,54 @@ Waiting...
 </div>
 
 
-<!-- SYSTEM LOG -->
-
 <div class="card">
 
 <h2>System Log</h2>
 
-<div id="systemLog" class="log"></div>
+<div
+    id="systemLog"
+    class="log"
+></div>
 
 </div>
 
 </main>
 
 
-<!-- RESULT POPUP -->
-
-<div id="resultPopup" class="popup-overlay">
+<div
+    id="resultPopup"
+    class="popup-overlay"
+>
 
 <div class="popup">
 
 <div class="muted">
-CONTRACT RESULT
+    CONTRACT RESULT
 </div>
 
-<div id="popupResult" class="popup-result">
-—
+<div
+    id="popupResult"
+    class="popup-result"
+>
+    —
 </div>
 
-<div id="popupProfit" class="popup-profit">
-—
+<div
+    id="popupProfit"
+    class="popup-profit"
+>
+    —
 </div>
 
-<div id="popupDetails" class="muted">
-</div>
+<div
+    id="popupDetails"
+    class="muted"
+></div>
 
 <br>
 
 <button onclick="closeResultPopup()">
-CONTINUE
+    CONTINUE
 </button>
 
 </div>
@@ -1157,84 +1166,48 @@ CONTINUE
 <script>
 
 /* =========================================================
-   CONFIG
+   CONFIG / STATE
+   MAUVEY STRATEGIES ARE KEPT SEPARATE FROM GENERAL ANALYSIS.
 ========================================================= */
 
-const APP_ID =
-"34fv9KSI5Got7lmvR0eqY";
+const APP_ID="34fv9KSI5Got7lmvR0eqY";
 
-const PUBLIC_WS =
+const PUBLIC_WS=
 "wss://api.derivws.com/trading/v1/options/ws/public";
 
-const API_BASE =
+const API_BASE=
 "https://api.derivws.com/trading/v1/options";
 
+let publicWS=null;
+let accountWS=null;
+let PAT=null;
+let accounts=[];
+let selectedAccount=null;
+let accountBalance=null;
+let accountCurrency="USD";
 
-/* =========================================================
-   STATE
-========================================================= */
+let markets=[];
+let selectedSymbol=null;
+let selectedName=null;
+let ticks=[];
 
-let publicWS = null;
-let accountWS = null;
+let analyzerRunning=false;
+let mauveyRunning=false;
+let tradeInProgress=false;
 
-let PAT = null;
+let tradeCounter=0;
+let mauveyTradeCount=0;
 
-let accounts = [];
-let selectedAccount = null;
+let currentContractId=null;
+let requestIdCounter=1000;
 
-let accountBalance = null;
-let accountCurrency = "USD";
+let lastSignal=null;
+let pendingProposal=null;
+let lastTradeTick=null;
 
-let markets = [];
+let mauveyStrategy=null;
+let mauveyWaitTimer=null;
 
-let selectedSymbol = null;
-let selectedName = null;
-
-let marketTicks = {};
-let ticks = [];
-
-let analyzerRunning = false;
-
-let mauveyRunning = false;
-
-let tradeInProgress = false;
-
-let currentContractId = null;
-
-let requestIdCounter = 1000;
-
-let tradeCounter = 0;
-
-let mauveyTradeCount = 0;
-
-let mauveyBatchTarget = 0;
-
-let mauveyCurrentStrategy = null;
-
-let mauveyCurrentMarket = null;
-
-let mauveyCurrentBarrier = null;
-
-let mauveySignalReady = false;
-
-let mauveyLastTriggerTick = null;
-
-let mauveyWaitingForTrigger = false;
-
-let mauveyScanning = false;
-
-let pendingTradeContext = null;
-
-let reconnectTimer = null;
-
-let subscriptions = {};
-
-let scanTimer = null;
-
-
-/* =========================================================
-   HELPERS
-========================================================= */
 
 function reqId(){
     return ++requestIdCounter;
@@ -1243,22 +1216,20 @@ function reqId(){
 
 function log(message){
 
-    const box =
+    const box=
         document.getElementById("systemLog");
 
-    if(!box){
-        return;
-    }
+    if(!box)return;
 
-    const row =
+    const row=
         document.createElement("div");
 
-    row.className = "log-line";
+    row.className="log-line";
 
-    row.textContent =
-        "[" +
-        new Date().toLocaleTimeString() +
-        "] " +
+    row.textContent=
+        "["+
+        new Date().toLocaleTimeString()+
+        "] "+
         message;
 
     box.prepend(row);
@@ -1267,24 +1238,24 @@ function log(message){
 
 function setStatus(text,online){
 
-    const el =
+    const el=
         document.getElementById("status");
 
-    el.textContent = text;
+    el.textContent=text;
 
-    el.className =
-        "status " +
-        (online ? "online" : "offline");
+    el.className=
+        "status "+
+        (online?"online":"offline");
 }
 
 
-function escapeHTML(value){
+function escapeHTML(v){
 
-    return String(value)
+    return String(v)
         .replace(/&/g,"&amp;")
         .replace(/</g,"&lt;")
         .replace(/>/g,"&gt;")
-        .replace(/"/g,"&quot;")
+        .replace(/\"/g,"&quot;")
         .replace(/'/g,"&#039;");
 }
 
@@ -1300,25 +1271,32 @@ function line(name,value){
 }
 
 
-function sleep(ms){
-    return new Promise(resolve => setTimeout(resolve,ms));
+function setTradeState(text,kind="warning"){
+
+    const el=
+        document.getElementById("tradeState");
+
+    el.className=kind;
+    el.textContent=text;
 }
 
 
-/* =========================================================
-   ACCOUNT
-========================================================= */
+function sleep(ms){
+
+    return new Promise(r=>setTimeout(r,ms));
+}
+
+
+/* ACCOUNT */
 
 async function connectAccount(){
 
-    const token =
+    const token=
         prompt("Paste your Deriv PAT token:");
 
-    if(!token){
-        return;
-    }
+    if(!token)return;
 
-    PAT = token.trim();
+    PAT=token.trim();
 
     localStorage.setItem(
         "deriv_v7_pat",
@@ -1331,55 +1309,53 @@ async function connectAccount(){
 
 async function loadAccounts(){
 
-    if(!PAT){
-        return;
-    }
+    if(!PAT)return;
 
     log("Checking Deriv account...");
 
     try{
 
-        const response =
+        const response=
             await fetch(
-                API_BASE + "/accounts",
+                API_BASE+"/accounts",
                 {
-                    method:"GET",
                     headers:{
                         "Authorization":
-                            "Bearer " + PAT,
+                            "Bearer "+PAT,
                         "Deriv-App-ID":
                             APP_ID
                     }
                 }
             );
 
-        const data =
+        const data=
             await response.json();
 
         if(!response.ok){
 
             log(
-                "Account error: " +
+                "Account error: "+
                 JSON.stringify(data)
             );
 
+            localStorage.removeItem(
+                "deriv_v7_pat"
+            );
+
+            PAT=null;
+
             alert(
-                "Deriv authentication failed.\n\n" +
+                "Deriv authentication failed.\n\n"+
                 JSON.stringify(data)
             );
 
             return;
         }
 
-        if(Array.isArray(data.data)){
-            accounts = data.data;
-        }
-        else if(data.data){
-            accounts = [data.data];
-        }
-        else{
-            accounts = [];
-        }
+        accounts=
+            Array.isArray(data.data)
+                ?data.data
+                :(data.data?[data.data]:[]);
 
         if(!accounts.length){
 
@@ -1391,40 +1367,34 @@ async function loadAccounts(){
         }
 
         log(
-            "Found " +
-            accounts.length +
+            "Found "+
+            accounts.length+
             " account(s)."
         );
 
         chooseAccount();
 
-    }
-    catch(error){
+    }catch(e){
 
         log(
-            "Account request failed: " +
-            error.message
+            "Account request failed: "+
+            e.message
         );
 
-        alert(error.message);
+        alert(e.message);
     }
 }
 
 
 function chooseAccount(){
 
-    const demo =
+    selectedAccount=
         accounts.find(
-            a =>
+            a=>
                 String(
-                    a.account_type || ""
-                ).toLowerCase() === "demo"
-        );
-
-    selectedAccount =
-        demo || accounts[0];
-
-    updateAccountUI();
+                    a.account_type||""
+                ).toLowerCase()==="demo"
+        )||accounts[0];
 
     connectAuthenticatedSocket();
 }
@@ -1441,61 +1411,49 @@ async function switchAccountMode(){
         return;
     }
 
-    const current =
+    const current=
         String(
-            selectedAccount.account_type || ""
+            selectedAccount.account_type||""
         ).toLowerCase();
 
-    const targetType =
-        current === "demo"
-            ? "real"
-            : "demo";
+    const targetType=
+        current==="demo"
+            ?"real"
+            :"demo";
 
-    const target =
+    const target=
         accounts.find(
-            a =>
+            a=>
                 String(
-                    a.account_type || ""
-                ).toLowerCase() === targetType
+                    a.account_type||""
+                ).toLowerCase()===targetType
         );
 
     if(!target){
 
         alert(
-            "No " +
-            targetType +
+            "No "+
+            targetType+
             " Options account is available."
         );
 
         return;
     }
 
-    if(targetType === "real"){
-
-        if(
-            !confirm(
-                "REAL ACCOUNT SELECTED.\n\n" +
-                "Trades can use real money.\n\n" +
-                "Continue?"
-            )
-        ){
-            return;
-        }
+    if(
+        targetType==="real"&&
+        !confirm(
+            "REAL ACCOUNT SELECTED.\n\n"+
+            "Trades can use real money.\n\n"+
+            "Continue?"
+        )
+    ){
+        return;
     }
 
     stopMauvey();
 
-    selectedAccount = target;
-
-    if(accountWS){
-
-        try{
-            accountWS.close();
-        }
-        catch{}
-    }
-
-    accountWS = null;
+    selectedAccount=target;
 
     await connectAuthenticatedSocket();
 }
@@ -1503,24 +1461,23 @@ async function switchAccountMode(){
 
 async function connectAuthenticatedSocket(){
 
-    if(!PAT || !selectedAccount){
-        return;
-    }
+    if(!PAT||!selectedAccount)return;
 
     if(
-        accountWS &&
+        accountWS&&
         (
-            accountWS.readyState === WebSocket.OPEN ||
-            accountWS.readyState === WebSocket.CONNECTING
+            accountWS.readyState===WebSocket.OPEN||
+            accountWS.readyState===WebSocket.CONNECTING
         )
     ){
 
+        updateAccountUI();
         requestBalance();
 
         return;
     }
 
-    const accountId =
+    const accountId=
         selectedAccount.account_id;
 
     if(!accountId){
@@ -1530,9 +1487,8 @@ async function connectAuthenticatedSocket(){
         return;
     }
 
-    accountCurrency =
-        selectedAccount.currency ||
-        "USD";
+    accountCurrency=
+        selectedAccount.currency||"USD";
 
     updateAccountUI();
 
@@ -1542,45 +1498,43 @@ async function connectAuthenticatedSocket(){
 
     try{
 
-        const response =
+        const response=
             await fetch(
-                API_BASE +
-                "/accounts/" +
-                encodeURIComponent(accountId) +
+                API_BASE+
+                "/accounts/"+
+                encodeURIComponent(accountId)+
                 "/otp",
                 {
                     method:"POST",
                     headers:{
                         "Authorization":
-                            "Bearer " + PAT,
+                            "Bearer "+PAT,
                         "Deriv-App-ID":
                             APP_ID
                     }
                 }
             );
 
-        const data =
+        const data=
             await response.json();
 
         if(!response.ok){
 
             log(
-                "OTP error: " +
+                "OTP error: "+
                 JSON.stringify(data)
             );
 
             alert(
-                "Could not authenticate trading connection.\n\n" +
+                "Could not authenticate trading connection.\n\n"+
                 JSON.stringify(data)
             );
 
             return;
         }
 
-        const wsURL =
-            data &&
-            data.data &&
-            data.data.url;
+        const wsURL=
+            data?.data?.url;
 
         if(!wsURL){
 
@@ -1591,10 +1545,10 @@ async function connectAuthenticatedSocket(){
             return;
         }
 
-        accountWS =
+        accountWS=
             new WebSocket(wsURL);
 
-        accountWS.onopen = () => {
+        accountWS.onopen=()=>{
 
             log(
                 "Authenticated trading connection established."
@@ -1602,8 +1556,7 @@ async function connectAuthenticatedSocket(){
 
             document.getElementById(
                 "accountConnection"
-            ).textContent =
-                "CONNECTED";
+            ).textContent="CONNECTED";
 
             setStatus(
                 "DERIV ACCOUNT CONNECTED",
@@ -1614,70 +1567,46 @@ async function connectAuthenticatedSocket(){
         };
 
 
-        accountWS.onmessage =
-            event => {
+        accountWS.onmessage=e=>{
 
-                let message;
+            try{
 
-                try{
-                    message =
-                        JSON.parse(event.data);
-                }
-                catch{
-                    return;
-                }
+                handleAccountMessage(
+                    JSON.parse(e.data)
+                );
 
-                handleAccountMessage(message);
-            };
+            }catch{}
+        };
 
 
-        accountWS.onerror = () => {
+        accountWS.onerror=()=>{
 
             log(
                 "Authenticated WebSocket error."
             );
 
-            document.getElementById(
-                "accountConnection"
-            ).textContent =
-                "ERROR";
+            setStatus(
+                "ACCOUNT CONNECTION ERROR",
+                false
+            );
         };
 
 
-        accountWS.onclose = () => {
+        accountWS.onclose=()=>{
 
             log(
                 "Authenticated WebSocket closed."
             );
 
-            accountWS = null;
+            accountWS=null;
 
             document.getElementById(
                 "accountConnection"
-            ).textContent =
+            ).textContent=
                 "DISCONNECTED";
 
-            /*
-             * IMPORTANT:
-             * Do NOT stop MAUVEY here.
-             *
-             * MAUVEY owns its strategy state.
-             * A temporary connection failure should
-             * only pause execution until the account
-             * connection is restored.
-             */
-
-            if(
-                mauveyRunning &&
-                !reconnectTimer
-            ){
-
-                log(
-                    "MAUVEY remains active while account connection reconnects."
-                );
-
-                scheduleAccountReconnect();
-            }
+            if(mauveyRunning)
+                stopMauvey();
 
             setStatus(
                 "ACCOUNT CONNECTION CLOSED",
@@ -1685,53 +1614,20 @@ async function connectAuthenticatedSocket(){
             );
         };
 
-    }
-    catch(error){
+    }catch(e){
 
         log(
-            "Authentication connection failed: " +
-            error.message
+            "Authentication connection failed: "+
+            e.message
         );
     }
-}
-
-
-function scheduleAccountReconnect(){
-
-    if(reconnectTimer){
-        return;
-    }
-
-    reconnectTimer =
-        setTimeout(
-            async () => {
-
-                reconnectTimer = null;
-
-                if(
-                    mauveyRunning &&
-                    PAT &&
-                    selectedAccount
-                ){
-
-                    log(
-                        "Attempting account reconnection..."
-                    );
-
-                    await connectAuthenticatedSocket();
-                }
-
-            },
-            3000
-        );
 }
 
 
 function requestBalance(){
 
     if(
-        !accountWS ||
-        accountWS.readyState !== WebSocket.OPEN
+        accountWS?.readyState!==WebSocket.OPEN
     ){
         return;
     }
@@ -1751,37 +1647,31 @@ function handleAccountMessage(data){
     if(data.error){
 
         log(
-            "Deriv error: " +
+            "Deriv error: "+
             JSON.stringify(data.error)
         );
 
-        if(tradeInProgress){
+        tradeInProgress=false;
 
-            tradeInProgress = false;
+        setTradeState(
+            "ERROR",
+            "danger"
+        );
 
-            setTradeState(
-                "ERROR"
-            );
-
-            /*
-             * Do not destroy MAUVEY's strategy.
-             * It can continue once connection is ready.
-             */
-        }
+        if(mauveyRunning)
+            scheduleMauveyRetry(3000);
 
         return;
     }
 
 
-    if(data.msg_type === "balance"){
+    if(data.msg_type==="balance"){
 
-        accountBalance =
-            Number(
-                data.balance.balance
-            );
+        accountBalance=
+            Number(data.balance.balance);
 
-        accountCurrency =
-            data.balance.currency ||
+        accountCurrency=
+            data.balance.currency||
             accountCurrency;
 
         updateBalanceDisplay();
@@ -1790,7 +1680,7 @@ function handleAccountMessage(data){
     }
 
 
-    if(data.msg_type === "proposal"){
+    if(data.msg_type==="proposal"){
 
         handleProposal(data);
 
@@ -1798,7 +1688,7 @@ function handleAccountMessage(data){
     }
 
 
-    if(data.msg_type === "buy"){
+    if(data.msg_type==="buy"){
 
         handleBuy(data);
 
@@ -1807,7 +1697,7 @@ function handleAccountMessage(data){
 
 
     if(
-        data.msg_type ===
+        data.msg_type===
         "proposal_open_contract"
     ){
 
@@ -1818,67 +1708,56 @@ function handleAccountMessage(data){
 }
 
 
-/* =========================================================
-   ACCOUNT DISPLAY
-========================================================= */
-
 function updateAccountUI(){
 
-    const el =
+    const el=
         document.getElementById(
             "accountMode"
         );
 
-    const type =
+    const type=
         String(
-            selectedAccount &&
-            selectedAccount.account_type ||
-            ""
+            selectedAccount?.account_type||""
         ).toLowerCase();
 
-    if(type === "demo"){
-
-        el.innerHTML =
-            '<span class="account-mode demo">DEMO</span>';
-    }
-    else if(type === "real"){
-
-        el.innerHTML =
-            '<span class="account-mode real">REAL</span>';
-    }
-    else{
-
-        el.textContent =
-            type || "—";
-    }
+    el.innerHTML=
+        type==="demo"
+            ?'<span class="account-mode demo">DEMO</span>'
+            :type==="real"
+                ?'<span class="account-mode real">REAL</span>'
+                :escapeHTML(type||"—");
 }
 
 
 function updateBalanceDisplay(){
 
-    const balance =
-        document.getElementById("balance");
+    const b=
+        document.getElementById(
+            "balance"
+        );
 
-    const kes =
-        document.getElementById("balanceKES");
+    const k=
+        document.getElementById(
+            "balanceKES"
+        );
 
     if(
-        accountBalance === null ||
+        accountBalance===null||
         Number.isNaN(accountBalance)
     ){
 
-        balance.textContent = "—";
-        kes.textContent = "—";
+        b.textContent="—";
+        k.textContent="—";
 
         return;
     }
 
-    balance.textContent =
-        accountBalance.toFixed(2) +
-        " " +
+    b.textContent=
+        accountBalance.toFixed(2)+
+        " "+
         accountCurrency;
 
-    const rate =
+    const rate=
         Number(
             document.getElementById(
                 "fxRate"
@@ -1886,45 +1765,43 @@ function updateBalanceDisplay(){
         );
 
     if(
-        accountCurrency === "USD" &&
-        rate > 0
+        accountCurrency==="USD"&&
+        rate>0
     ){
 
-        kes.textContent =
-            "KES " +
+        k.textContent=
+            "KES "+
             (
-                accountBalance * rate
+                accountBalance*
+                rate
             ).toFixed(2);
 
-    }
-    else if(
-        accountCurrency === "KES" &&
-        rate > 0
+    }else if(
+        accountCurrency==="KES"&&
+        rate>0
     ){
 
-        kes.textContent =
-            "USD " +
+        k.textContent=
+            "USD "+
             (
-                accountBalance / rate
+                accountBalance/
+                rate
             ).toFixed(2);
 
-    }
-    else{
+    }else{
 
-        kes.textContent = "—";
+        k.textContent="—";
     }
 }
 
 
-/* =========================================================
-   PUBLIC MARKET CONNECTION
-========================================================= */
+/* PUBLIC MARKET DATA */
 
 function connectPublic(){
 
     if(
-        publicWS &&
-        publicWS.readyState === WebSocket.OPEN
+        publicWS?.readyState===
+        WebSocket.OPEN
     ){
 
         loadMarkets();
@@ -1936,10 +1813,10 @@ function connectPublic(){
         "Opening public market connection..."
     );
 
-    publicWS =
+    publicWS=
         new WebSocket(PUBLIC_WS);
 
-    publicWS.onopen = () => {
+    publicWS.onopen=()=>{
 
         log(
             "Public market connection established."
@@ -1954,24 +1831,19 @@ function connectPublic(){
     };
 
 
-    publicWS.onmessage =
-        event => {
+    publicWS.onmessage=e=>{
 
-            let data;
+        try{
 
-            try{
-                data =
-                    JSON.parse(event.data);
-            }
-            catch{
-                return;
-            }
+            handlePublicMessage(
+                JSON.parse(e.data)
+            );
 
-            handlePublicMessage(data);
-        };
+        }catch{}
+    };
 
 
-    publicWS.onerror = () => {
+    publicWS.onerror=()=>{
 
         log(
             "Public WebSocket error."
@@ -1979,32 +1851,13 @@ function connectPublic(){
     };
 
 
-    publicWS.onclose = () => {
+    publicWS.onclose=()=>{
 
         log(
             "Public WebSocket closed."
         );
 
-        publicWS = null;
-
-        /*
-         * MAUVEY is not stopped here.
-         * Market connection can reconnect independently.
-         */
-
-        if(mauveyRunning){
-
-            setTimeout(
-                () => {
-
-                    if(mauveyRunning){
-                        connectPublic();
-                    }
-
-                },
-                3000
-            );
-        }
+        publicWS=null;
     };
 }
 
@@ -2014,7 +1867,7 @@ function handlePublicMessage(data){
     if(data.error){
 
         log(
-            "Deriv error: " +
+            "Deriv error: "+
             JSON.stringify(data.error)
         );
 
@@ -2022,28 +1875,29 @@ function handlePublicMessage(data){
     }
 
 
-    if(data.msg_type === "active_symbols"){
+    if(
+        data.msg_type===
+        "active_symbols"
+    ){
 
-        markets =
-            data.active_symbols || [];
+        markets=
+            data.active_symbols||[];
 
         renderMarkets();
 
         log(
-            "Loaded " +
-            markets.length +
+            "Loaded "+
+            markets.length+
             " markets."
         );
-
-        if(mauveyRunning){
-            startMauveyScanner();
-        }
 
         return;
     }
 
 
-    if(data.msg_type === "history"){
+    if(
+        data.msg_type==="history"
+    ){
 
         loadHistory(data);
 
@@ -2051,7 +1905,9 @@ function handlePublicMessage(data){
     }
 
 
-    if(data.msg_type === "tick"){
+    if(
+        data.msg_type==="tick"
+    ){
 
         receiveTick(data);
 
@@ -2063,8 +1919,8 @@ function handlePublicMessage(data){
 function loadMarkets(){
 
     if(
-        !publicWS ||
-        publicWS.readyState !== WebSocket.OPEN
+        publicWS?.readyState!==
+        WebSocket.OPEN
     ){
 
         log(
@@ -2083,74 +1939,71 @@ function loadMarkets(){
 }
 
 
-/* =========================================================
-   MARKET LIST
-========================================================= */
-
 function renderMarkets(){
 
-    const list =
+    const list=
         document.getElementById(
             "marketList"
         );
 
-    const search =
+    const search=
         document.getElementById(
             "search"
         ).value
         .toLowerCase()
         .trim();
 
-    const category =
+    const category=
         document.getElementById(
             "category"
         ).value;
 
-    const filtered =
-        markets.filter(market => {
 
-            const name =
+    const filtered=
+        markets.filter(m=>{
+
+            const name=
                 String(
-                    market.underlying_symbol_name ||
+                    m.underlying_symbol_name||""
+                ).toLowerCase();
+
+            const symbol=
+                String(
+                    m.underlying_symbol||""
+                ).toLowerCase();
+
+            const type=
+                String(
+                    m.market||
+                    m.underlying_symbol_type||
                     ""
                 ).toLowerCase();
 
-            const symbol =
-                String(
-                    market.underlying_symbol ||
-                    ""
-                ).toLowerCase();
-
-            const type =
-                String(
-                    market.market ||
-                    market.underlying_symbol_type ||
-                    ""
-                ).toLowerCase();
 
             if(
-                search &&
-                !name.includes(search) &&
+                search&&
+                !name.includes(search)&&
                 !symbol.includes(search)
             ){
                 return false;
             }
 
-            if(category === "all"){
-                return true;
-            }
 
-            if(category === "synthetic"){
+            if(category==="all")
+                return true;
+
+
+            if(category==="synthetic"){
 
                 return(
-                    type.includes("synthetic") ||
-                    name.includes("volatility") ||
-                    name.includes("crash") ||
-                    name.includes("boom") ||
-                    name.includes("jump") ||
-                    name.includes("step")
+                    type.includes("synthetic")||
+                    name.includes("volatility")||
+                    name.includes("crash")||
+                    name.includes("boom")||
+                    name.includes("jump")
                 );
             }
+
 
             return type.includes(category);
         });
@@ -2158,203 +2011,151 @@ function renderMarkets(){
 
     document.getElementById(
         "marketCount"
-    ).textContent =
-        filtered.length +
-        " of " +
-        markets.length +
+    ).textContent=
+        filtered.length+
+        " of "+
+        markets.length+
         " markets";
 
 
-    list.innerHTML = "";
+    list.innerHTML="";
 
 
-    filtered.slice(0,500).forEach(market => {
+    filtered
+        .slice(0,500)
+        .forEach(m=>{
 
-        const div =
-            document.createElement("div");
+            const d=
+                document.createElement(
+                    "div"
+                );
 
-        div.className = "market";
+            d.className="market";
 
-        if(
-            market.underlying_symbol ===
-            selectedSymbol
-        ){
-            div.classList.add("selected");
-        }
 
-        div.innerHTML = `
+            if(
+                m.underlying_symbol===
+                selectedSymbol
+            ){
 
-            <div class="market-name">
-                ${escapeHTML(
-                    market.underlying_symbol_name ||
-                    market.underlying_symbol
-                )}
-            </div>
+                d.classList.add(
+                    "selected"
+                );
+            }
 
-            <div class="market-info">
-                ${escapeHTML(
-                    market.underlying_symbol
-                )}
-                •
-                ${escapeHTML(
-                    market.market ||
-                    market.underlying_symbol_type ||
-                    ""
-                )}
-            </div>
-        `;
 
-        div.onclick = () =>
-            selectMarket(market);
+            d.innerHTML=`
+                <div class="market-name">
+                    ${escapeHTML(
+                        m.underlying_symbol_name||
+                        m.underlying_symbol
+                    )}
+                </div>
 
-        list.appendChild(div);
-    });
+                <div class="market-info">
+                    ${escapeHTML(
+                        m.underlying_symbol
+                    )}
+                    •
+                    ${escapeHTML(
+                        m.market||
+                        m.underlying_symbol_type||
+                        ""
+                    )}
+                </div>
+            `;
+
+
+            d.onclick=()=>selectMarket(m);
+
+            list.appendChild(d);
+        });
 }
 
 
-/* =========================================================
-   MARKET SELECTION
-========================================================= */
+function selectMarket(m){
 
-function selectMarket(market){
+    if(mauveyRunning)
+        stopMauvey();
 
-    selectedSymbol =
-        market.underlying_symbol;
+    selectedSymbol=
+        m.underlying_symbol;
 
-    selectedName =
-        market.underlying_symbol_name ||
+    selectedName=
+        m.underlying_symbol_name||
         selectedSymbol;
+
 
     document.getElementById(
         "selectedName"
-    ).textContent =
+    ).textContent=
         selectedName;
 
     document.getElementById(
         "selectedSymbol"
-    ).textContent =
+    ).textContent=
         selectedSymbol;
 
-    ticks =
-        marketTicks[selectedSymbol] || [];
+
+    ticks=[];
 
     renderMarkets();
 
+
     log(
-        "Selected market: " +
-        selectedName +
-        " (" +
-        selectedSymbol +
+        "Selected market: "+
+        selectedName+
+        " ("+
+        selectedSymbol+
         ")"
     );
 
 
     if(
-        !publicWS ||
-        publicWS.readyState !== WebSocket.OPEN
+        publicWS?.readyState!==
+        WebSocket.OPEN
     ){
         return;
     }
 
-
-    requestHistory(
-        selectedSymbol,
-        1000
-    );
-
-    subscribeTicks(
-        selectedSymbol
-    );
-}
-
-
-function requestHistory(symbol,count){
-
-    if(
-        !publicWS ||
-        publicWS.readyState !== WebSocket.OPEN
-    ){
-        return;
-    }
 
     publicWS.send(
         JSON.stringify({
-
-            ticks_history:symbol,
-
-            count:count,
-
+            ticks_history:
+                selectedSymbol,
+            count:1000,
             end:"latest",
-
             style:"ticks",
-
             req_id:reqId()
-
         })
     );
-}
 
-
-function subscribeTicks(symbol){
-
-    if(
-        !publicWS ||
-        publicWS.readyState !== WebSocket.OPEN
-    ){
-        return;
-    }
-
-    const old =
-        subscriptions[symbol];
-
-    if(old){
-        try{
-            publicWS.send(
-                JSON.stringify({
-                    forget:old
-                })
-            );
-        }
-        catch{}
-    }
 
     publicWS.send(
         JSON.stringify({
-
-            ticks:symbol,
-
+            ticks:
+                selectedSymbol,
             subscribe:1,
-
             req_id:reqId()
-
         })
     );
-
-    subscriptions[symbol] = true;
 }
 
-
-/* =========================================================
-   HISTORY
-========================================================= */
 
 function loadHistory(data){
 
-    if(!data.history){
+    if(!data.history)
         return;
-    }
 
-    const prices =
-        data.history.prices || [];
+    const prices=
+        data.history.prices||[];
 
-    const times =
-        data.history.times || [];
+    const times=
+        data.history.times||[];
 
-    const symbol =
-        data.echo_req &&
-        data.echo_req.ticks_history;
 
-    const newTicks = [];
+    ticks=[];
+
 
     for(
         let i=0;
@@ -2362,202 +2163,89 @@ function loadHistory(data){
         i++
     ){
 
-        const price =
+        const p=
             Number(prices[i]);
 
-        const digit =
-            getDigit(price);
-
-        if(
-            Number.isInteger(digit)
-        ){
-
-            newTicks.push({
-
-                price:price,
-
-                digit:digit,
-
-                time:times[i]
-
-            });
-        }
+        ticks.push({
+            price:p,
+            digit:getDigit(p),
+            time:times[i]
+        });
     }
 
-    if(symbol){
-
-        marketTicks[symbol] =
-            newTicks;
-
-        if(symbol === selectedSymbol){
-
-            ticks =
-                newTicks;
-
-            if(ticks.length){
-
-                const latest =
-                    ticks[ticks.length - 1];
-
-                document.getElementById(
-                    "price"
-                ).textContent =
-                    latest.price;
-
-                document.getElementById(
-                    "lastDigit"
-                ).textContent =
-                    latest.digit;
-            }
-
-            analyzeCurrentMarket();
-
-            showTicks();
-        }
-
-    }
-    else{
-
-        ticks = newTicks;
-
-        analyzeCurrentMarket();
-
-        showTicks();
-    }
 
     log(
-        "Loaded " +
-        newTicks.length +
-        " historical ticks" +
-        (
-            symbol
-                ? " for " + symbol
-                : ""
-        ) +
-        "."
+        "Loaded "+
+        ticks.length+
+        " historical ticks."
     );
+
+    analyze();
+
+    showTicks();
 }
 
-
-/* =========================================================
-   LIVE TICK
-========================================================= */
 
 function receiveTick(data){
 
-    if(!data.tick){
+    if(!data.tick)
         return;
-    }
 
-    const symbol =
-        data.tick.symbol ||
-        (
-            data.echo_req &&
-            data.echo_req.ticks
-        ) ||
-        selectedSymbol;
-
-    const price =
+    const p=
         Number(data.tick.quote);
 
-    const digit =
-        getDigit(price);
+    const d=
+        getDigit(p);
 
-    if(!Number.isInteger(digit)){
-        return;
-    }
 
-    if(!marketTicks[symbol]){
-        marketTicks[symbol] = [];
-    }
-
-    marketTicks[symbol].push({
-
-        price:price,
-
-        digit:digit,
-
+    ticks.push({
+        price:p,
+        digit:d,
         time:data.tick.epoch
-
     });
 
 
-    if(
-        marketTicks[symbol].length >
-        5000
-    ){
+    if(ticks.length>5000){
 
-        marketTicks[symbol] =
-            marketTicks[symbol].slice(-5000);
+        ticks=
+            ticks.slice(-5000);
     }
 
 
-    if(symbol === selectedSymbol){
-
-        ticks =
-            marketTicks[symbol];
-
-        document.getElementById(
-            "price"
-        ).textContent =
-            price;
-
-        document.getElementById(
-            "lastDigit"
-        ).textContent =
-            digit;
-
-        if(analyzerRunning){
-
-            analyzeCurrentMarket();
-        }
-    }
+    document.getElementById(
+        "price"
+    ).textContent=p;
 
 
-    /*
-     * MAUVEY receives every market's ticks
-     * independently.
-     */
+    document.getElementById(
+        "lastDigit"
+    ).textContent=d;
 
-    if(mauveyRunning){
 
-        processMauveyTick(
-            symbol,
-            digit,
-            price
-        );
-    }
+    if(analyzerRunning)
+        analyze();
+
+
+    if(mauveyRunning)
+        runMauveyCycle();
 }
 
-
-/* =========================================================
-   DIGIT
-========================================================= */
 
 function getDigit(price){
 
-    const text =
-        String(price);
+    const clean=
+        String(price)
+        .replace(/[^0-9]/g,"");
 
-    const clean =
-        text.replace(
-            /[^0-9]/g,
-            ""
-        );
-
-    if(!clean){
-        return null;
-    }
-
-    return Number(
-        clean[clean.length - 1]
-    );
+    return clean
+        ?Number(
+            clean[clean.length-1]
+        )
+        :null;
 }
 
 
-/* =========================================================
-   ANALYZER
-========================================================= */
+/* GENERAL V7 ANALYZER */
 
 function startAnalyzer(){
 
@@ -2570,52 +2258,69 @@ function startAnalyzer(){
         return;
     }
 
-    analyzerRunning = true;
+
+    if(
+        publicWS?.readyState!==
+        WebSocket.OPEN
+    ){
+
+        alert(
+            "Connect market data first."
+        );
+
+        return;
+    }
+
+
+    analyzerRunning=true;
+
 
     document.getElementById(
         "analyzerState"
-    ).className =
-        "success";
+    ).className="success";
+
 
     document.getElementById(
         "analyzerState"
-    ).textContent =
+    ).textContent=
         "Analyzer running.";
+
 
     document.getElementById(
         "engine"
-    ).textContent =
-        "LIVE";
+    ).textContent="LIVE";
 
-    analyzeCurrentMarket();
 
     log(
         "Analyzer started."
     );
+
+
+    analyze();
 }
 
 
 function stopAnalyzer(){
 
-    analyzerRunning = false;
+    analyzerRunning=false;
+
 
     document.getElementById(
         "analyzerState"
-    ).className =
-        "warning";
+    ).className="warning";
+
 
     document.getElementById(
         "analyzerState"
-    ).textContent =
+    ).textContent=
         "Analyzer stopped.";
 
-    if(!mauveyRunning){
 
-        document.getElementById(
-            "engine"
-        ).textContent =
-            "STOPPED";
-    }
+    document.getElementById(
+        "engine"
+    ).textContent=
+        "STOPPED";
+
 
     log(
         "Analyzer stopped."
@@ -2623,53 +2328,70 @@ function stopAnalyzer(){
 }
 
 
-function analyzeCurrentMarket(){
+function analyze(){
 
-    const sample =
+    const sample=
         Number(
             document.getElementById(
                 "sample"
             ).value
         );
 
-    const data =
+
+    const data=
         ticks.slice(-sample);
+
 
     document.getElementById(
         "count"
-    ).textContent =
+    ).textContent=
         ticks.length;
+
 
     document.getElementById(
         "window"
-    ).textContent =
+    ).textContent=
         data.length;
 
-    if(data.length < 20){
 
-        if(analyzerRunning){
+    if(data.length<20){
 
-            document.getElementById(
-                "engine"
-            ).textContent =
-                "COLLECTING";
-        }
+        document.getElementById(
+            "engine"
+        ).textContent=
+            "COLLECTING";
 
         return;
     }
 
-    const counts =
-        countDigits(data);
 
-    const total =
+    const counts=
+        Array(10).fill(0);
+
+
+    data.forEach(t=>{
+
+        if(
+            Number.isInteger(
+                t.digit
+            )
+        ){
+
+            counts[t.digit]++;
+        }
+    });
+
+
+    const total=
         counts.reduce(
             (a,b)=>a+b,
             0
         );
 
-    if(!total){
+
+    if(!total)
         return;
-    }
+
 
     renderDigits(
         counts,
@@ -2687,215 +2409,194 @@ function analyzeCurrentMarket(){
 
     analyzeWindows();
 
+    generateSignal(
+        counts,
+        total,
+        data
+    );
+
     showTicks();
 }
 
-
-function countDigits(data){
-
-    const counts =
-        Array(10).fill(0);
-
-    data.forEach(tick => {
-
-        if(
-            Number.isInteger(
-                tick.digit
-            )
-        ){
-
-            counts[tick.digit]++;
-        }
-    });
-
-    return counts;
-}
-
-
-/* =========================================================
-   DIGIT DISPLAY
-========================================================= */
 
 function renderDigits(
     counts,
     total
 ){
 
-    let html = "";
+    let html="";
 
-    const max =
+    const max=
         Math.max(...counts);
 
-    const min =
+    const min=
         Math.min(...counts);
 
-    counts.forEach(
-        (count,digit) => {
 
-            const pct =
-                count /
-                total *
+    counts.forEach(
+        (count,digit)=>{
+
+            const pct=
+                count/
+                total*
                 100;
 
-            const green =
-                count === max;
+            const green=
+                count===max;
 
-            const red =
-                count === min;
+            const red=
+                count===min;
 
-            html += `
 
-                <div class="digit
-                    ${green ? "green-digit" : ""}
-                    ${red ? "red-digit" : ""}
-                ">
+            html+=`
 
-                    <div class="digit-row">
+            <div class="digit
+                ${green?"green-digit":""}
+                ${red?"red-digit":""}">
 
-                        <strong>
-                            ${digit}
-                        </strong>
+                <div class="digit-row">
 
-                        <span>
-                            ${pct.toFixed(2)}%
-                        </span>
+                    <strong>
+                        ${digit}
+                    </strong>
 
-                    </div>
-
-                    <div class="bar">
-
-                        <div
-                            class="fill"
-                            style="width:${Math.min(
-                                100,
-                                pct * 5
-                            )}%">
-                        </div>
-
-                    </div>
-
-                    <small>
-                        ${count} occurrences
-                        ${green ? " • GREEN" : ""}
-                        ${red ? " • RED" : ""}
-                    </small>
+                    <span>
+                        ${pct.toFixed(2)}%
+                    </span>
 
                 </div>
+
+                <div class="bar">
+
+                    <div
+                        class="fill"
+                        style="width:${Math.min(
+                            100,
+                            pct*5
+                        )}%">
+                    </div>
+
+                </div>
+
+                <small>
+                    ${count}
+                    occurrences
+                    ${green?" • GREEN":""}
+                    ${red?" • RED":""}
+                </small>
+
+            </div>
+
             `;
         }
     );
 
+
     document.getElementById(
         "digits"
-    ).innerHTML =
-        html;
+    ).innerHTML=html;
 }
 
-
-/* =========================================================
-   STATISTICS
-========================================================= */
 
 function renderStatistics(
     counts,
     total
 ){
 
-    const max =
+    const max=
         Math.max(...counts);
 
-    const min =
+    const min=
         Math.min(...counts);
 
-    const hot =
+    const hot=
         counts.indexOf(max);
 
-    const cold =
+    const cold=
         counts.indexOf(min);
 
-    const even =
-        counts[0] +
-        counts[2] +
-        counts[4] +
-        counts[6] +
+
+    const even=
+        counts[0]+
+        counts[2]+
+        counts[4]+
+        counts[6]+
         counts[8];
 
-    const odd =
-        total - even;
+
+    const odd=
+        total-even;
+
 
     document.getElementById(
         "hotDigit"
-    ).textContent =
-        hot;
+    ).textContent=hot;
+
 
     document.getElementById(
         "coldDigit"
-    ).textContent =
-        cold;
+    ).textContent=cold;
+
 
     document.getElementById(
         "stats"
-    ).innerHTML =
+    ).innerHTML=
 
         line(
             "Green digit",
-            hot +
-            " • " +
+            hot+
+            " • "+
             (
-                max /
-                total *
+                max/
+                total*
                 100
-            ).toFixed(2) +
+            ).toFixed(2)+
             "%"
-        ) +
+        )+
 
         line(
             "Red digit",
-            cold +
-            " • " +
+            cold+
+            " • "+
             (
-                min /
-                total *
+                min/
+                total*
                 100
-            ).toFixed(2) +
+            ).toFixed(2)+
             "%"
-        ) +
+        )+
 
         line(
             "Even",
             (
-                even /
-                total *
+                even/
+                total*
                 100
-            ).toFixed(2) +
+            ).toFixed(2)+
             "%"
-        ) +
+        )+
 
         line(
             "Odd",
             (
-                odd /
-                total *
+                odd/
+                total*
                 100
-            ).toFixed(2) +
+            ).toFixed(2)+
             "%"
         );
 }
 
 
-/* =========================================================
-   PATTERNS
-========================================================= */
-
 function analyzePatterns(data){
 
-    if(data.length === 0){
+    if(!data.length)
         return;
-    }
 
-    let longest = 1;
 
-    let current = 1;
+    let longest=1;
+    let current=1;
+
 
     for(
         let i=1;
@@ -2903,27 +2604,23 @@ function analyzePatterns(data){
         i++
     ){
 
-        if(
-            data[i].digit ===
+        current=
+            data[i].digit===
             data[i-1].digit
-        ){
+                ?current+1
+                :1;
 
-            current++;
 
-        }
-        else{
-
-            current = 1;
-        }
-
-        longest =
+        longest=
             Math.max(
                 longest,
                 current
             );
     }
 
-    let latest = 1;
+
+    let latest=1;
+
 
     for(
         let i=data.length-1;
@@ -2932,52 +2629,51 @@ function analyzePatterns(data){
     ){
 
         if(
-            data[i].digit ===
+            data[i].digit===
             data[i-1].digit
         ){
 
             latest++;
 
-        }
-        else{
+        }else{
 
             break;
         }
     }
 
+
     document.getElementById(
         "longestStreak"
-    ).textContent =
+    ).textContent=
         longest;
+
 
     document.getElementById(
         "currentStreak"
-    ).textContent =
+    ).textContent=
         latest;
 }
 
 
-/* =========================================================
-   TRANSITIONS
-========================================================= */
-
 function analyzeTransitions(data){
 
-    if(data.length < 2){
+    if(data.length<20){
 
         document.getElementById(
             "transitions"
-        ).textContent =
-            "Waiting for data...";
+        ).textContent=
+            "Waiting for more data...";
 
         return;
     }
 
-    const matrix =
+
+    const matrix=
         Array.from(
             {length:10},
-            () => Array(10).fill(0)
+            ()=>Array(10).fill(0)
         );
+
 
     for(
         let i=1;
@@ -2985,263 +2681,805 @@ function analyzeTransitions(data){
         i++
     ){
 
-        const from =
+        const a=
             data[i-1].digit;
 
-        const to =
+        const b=
             data[i].digit;
 
+
         if(
-            Number.isInteger(from) &&
-            Number.isInteger(to)
+            Number.isInteger(a)&&
+            Number.isInteger(b)
         ){
 
-            matrix[from][to]++;
+            matrix[a][b]++;
         }
     }
 
-    let rows = "";
 
-    for(let d=0;d<10;d++){
+    const recent=
+        data[data.length-1].digit;
 
-        const total =
-            matrix[d].reduce(
-                (a,b)=>a+b,
-                0
-            );
+    const row=
+        matrix[recent]||[];
 
-        if(!total){
-            continue;
-        }
-
-        let best = 0;
-        let bestCount = 0;
-
-        for(
-            let j=0;
-            j<10;
-            j++
-        ){
-
-            if(
-                matrix[d][j] >
-                bestCount
-            ){
-
-                bestCount =
-                    matrix[d][j];
-
-                best = j;
-            }
-        }
-
-        rows +=
-            line(
-                d + " → most often",
-                best +
-                " (" +
-                (
-                    bestCount /
-                    total *
-                    100
-                ).toFixed(2) +
-                "%)"
-            );
-    }
-
-    document.getElementById(
-        "transitions"
-    ).innerHTML =
-        rows || "No transitions.";
-}
+    const total=
+        row.reduce(
+            (a,b)=>a+b,
+            0
+        );
 
 
-/* =========================================================
-   MULTI WINDOW
-========================================================= */
-
-function analyzeWindows(){
-
-    if(!ticks.length){
+    if(!total){
 
         document.getElementById(
-            "windows"
-        ).textContent =
-            "Waiting...";
+            "transitions"
+        ).textContent=
+            "Not enough transition data.";
 
         return;
     }
 
-    const sizes =
-        [50,100,250,500,1000];
 
-    let html = "";
+    const best=
+        row.indexOf(
+            Math.max(...row)
+        );
 
-    sizes.forEach(size => {
 
-        const data =
-            ticks.slice(-size);
+    document.getElementById(
+        "transitions"
+    ).innerHTML=
 
-        if(data.length < 20){
-            return;
-        }
+        line(
+            "After digit",
+            recent
+        )+
 
-        const counts =
-            countDigits(data);
+        line(
+            "Most common next digit",
+            best
+        )+
 
-        const total =
-            counts.reduce(
-                (a,b)=>a+b,
-                0
+        line(
+            "Transition frequency",
+            (
+                row[best]/
+                total*
+                100
+            ).toFixed(2)+
+            "%"
+        );
+}
+
+
+function analyzeWindows(){
+
+    const sizes=[
+        50,
+        100,
+        250,
+        500,
+        1000
+    ];
+
+    let html="";
+
+
+    sizes.forEach(n=>{
+
+        const d=
+            ticks
+            .slice(-n)
+            .filter(
+                x=>
+                    Number.isInteger(
+                        x.digit
+                    )
             );
 
-        const max =
-            Math.max(...counts);
 
-        const hot =
-            counts.indexOf(max);
+        if(!d.length)
+            return;
 
-        const even =
-            counts[0] +
-            counts[2] +
-            counts[4] +
-            counts[6] +
-            counts[8];
 
-        html +=
+        const c=
+            Array(10).fill(0);
+
+
+        d.forEach(
+            x=>c[x.digit]++
+        );
+
+
+        const hot=
+            c.indexOf(
+                Math.max(...c)
+            );
+
+
+        const even=
+            c[0]+
+            c[2]+
+            c[4]+
+            c[6]+
+            c[8];
+
+
+        html+=
             line(
-                size + " ticks",
-                "Green " +
-                hot +
-                " • " +
+                n+" ticks",
+                hot+
+                " hot • Even "+
                 (
-                    max /
-                    total *
+                    even/
+                    d.length*
                     100
-                ).toFixed(2) +
-                "% • Even " +
+                ).toFixed(1)+
+                "% • Odd "+
                 (
-                    even /
-                    total *
+                    (
+                        d.length-even
+                    )/
+                    d.length*
                     100
-                ).toFixed(2) +
+                ).toFixed(1)+
                 "%"
             );
     });
 
+
     document.getElementById(
         "windows"
-    ).innerHTML =
-        html;
+    ).innerHTML=
+        html||
+        "Waiting...";
 }
 
 
-/* =========================================================
-   RECENT TICKS
-========================================================= */
+function generateSignal(
+    counts,
+    total,
+    data
+){
+
+    const hot=
+        counts.indexOf(
+            Math.max(...counts)
+        );
+
+
+    const even=
+        counts[0]+
+        counts[2]+
+        counts[4]+
+        counts[6]+
+        counts[8];
+
+
+    const odd=
+        total-even;
+
+
+    const confidence=
+        Math.max(
+            even,
+            odd
+        )/
+        total*
+        100;
+
+
+    const digitSide=
+        hot%2===0
+            ?"EVEN"
+            :"ODD";
+
+
+    let signal=
+        "NO SIGNAL";
+
+    let detail=
+        "General V7 statistical display only.";
+
+
+    if(
+        confidence>=
+        Number(
+            document.getElementById(
+                "minConfidence"
+            ).value
+        )
+    ){
+
+        signal=digitSide;
+
+        detail=
+            "Higher parity percentage: "+
+            confidence.toFixed(2)+
+            "% • green digit: "+
+            hot;
+    }
+
+
+    lastSignal={
+        signal,
+        confidence
+    };
+
+
+    document.getElementById(
+        "signal"
+    ).innerHTML=`
+
+        <div class="signal-title">
+            ${signal}
+        </div>
+
+        <p class="muted">
+            ${escapeHTML(detail)}
+        </p>
+
+        <div class="progress">
+
+            <div
+                class="progress-fill"
+                style="width:${Math.min(
+                    100,
+                    confidence
+                )}%">
+            </div>
+
+        </div>
+    `;
+}
+
 
 function showTicks(){
 
-    const box =
+    const box=
         document.getElementById(
             "ticks"
         );
 
-    const recent =
-        ticks.slice(-80).reverse();
 
-    box.innerHTML = "";
-
-    recent.forEach(tick => {
-
-        const div =
-            document.createElement("div");
-
-        div.className = "tick";
-
-        div.textContent =
-            String(tick.digit);
-
-        box.appendChild(div);
-    });
+    box.innerHTML=
+        ticks
+        .slice(-50)
+        .reverse()
+        .map(
+            t=>
+                `<span class="tick">
+                    ${escapeHTML(t.digit)}
+                    @
+                    ${escapeHTML(t.price)}
+                </span>`
+        )
+        .join("");
 }
 
 
 /* =========================================================
-   MAUVEY CORE
+   MAUVEY — ITS OWN STRATEGY ENGINE
 ========================================================= */
 
-/*
- * MAUVEY RULES
- *
- * EVEN:
- *   green = even
- *   red   = odd
- *   even percentage > odd percentage
- *   trigger = 3 continuous odd digits
- *   entry = EVEN
- *
- * ODD:
- *   green = odd
- *   red   = even
- *   odd percentage > even percentage
- *   trigger = 3 continuous even digits
- *   entry = ODD
- *
- * OVER:
- *   green side must be OVER the barrier
- *   red side must be UNDER the barrier
- *   OVER percentage must be higher
- *   trigger = 3 consecutive UNDER digits
- *   entry = OVER
- *
- * UNDER:
- *   green side must be UNDER the barrier
- *   red side must be OVER the barrier
- *   UNDER percentage must be higher
- *   trigger = 3 consecutive OVER digits
- *   entry = UNDER
- *
- * MAUVEY DOES NOT RESCAN AFTER EACH TRADE.
- *
- * It chooses one strategy and one market,
- * completes the selected batch,
- * then scans again.
- */
+
+function parityCounts(data){
+
+    const valid=
+        data.filter(
+            t=>
+                Number.isInteger(
+                    t.digit
+                )
+        );
 
 
-/* =========================================================
-   MAUVEY START / STOP
-========================================================= */
+    const counts=
+        Array(10).fill(0);
+
+
+    valid.forEach(
+        t=>
+            counts[t.digit]++
+    );
+
+
+    const even=
+        counts[0]+
+        counts[2]+
+        counts[4]+
+        counts[6]+
+        counts[8];
+
+
+    const odd=
+        valid.length-even;
+
+
+    return {
+        valid,
+        counts,
+        even,
+        odd,
+        total:valid.length
+    };
+}
+
+
+function consecutiveSide(
+    data,
+    side
+){
+
+    let n=0;
+
+
+    for(
+        let i=data.length-1;
+        i>=0;
+        i--
+    ){
+
+        const d=
+            data[i].digit;
+
+
+        if(
+            !Number.isInteger(d)
+        ){
+            break;
+        }
+
+
+        const isEven=
+            d%2===0;
+
+
+        if(
+            (
+                side==="EVEN"&&
+                isEven
+            )||
+            (
+                side==="ODD"&&
+                !isEven
+            )
+        ){
+
+            n++;
+
+        }else{
+
+            break;
+        }
+    }
+
+
+    return n;
+}
+
+
+function consecutiveRelation(
+    data,
+    barrier,
+    relation
+){
+
+    let n=0;
+
+
+    for(
+        let i=data.length-1;
+        i>=0;
+        i--
+    ){
+
+        const d=
+            data[i].digit;
+
+
+        if(
+            !Number.isInteger(d)
+        ){
+            break;
+        }
+
+
+        const ok=
+            relation==="OVER"
+                ?d>barrier
+                :d<barrier;
+
+
+        if(ok){
+
+            n++;
+
+        }else{
+
+            break;
+        }
+    }
+
+
+    return n;
+}
+
+
+function greenRedParity(counts){
+
+    let max=-1;
+    let min=Infinity;
+    let green=-1;
+    let red=-1;
+
+
+    counts.forEach(
+        (c,d)=>{
+
+            if(c>max){
+
+                max=c;
+                green=d;
+            }
+
+
+            if(c<min){
+
+                min=c;
+                red=d;
+            }
+        }
+    );
+
+
+    return {
+        green,
+        red,
+        max,
+        min
+    };
+}
+
+
+function mauveyEvenOddStrategy(
+    target,
+    data
+){
+
+    const p=
+        parityCounts(data);
+
+
+    if(p.total<30){
+
+        return {
+            ready:false,
+            reason:
+                "Collecting at least 30 valid ticks."
+        };
+    }
+
+
+    const g=
+        greenRedParity(
+            p.counts
+        );
+
+
+    const greenParity=
+        g.green%2===0
+            ?"EVEN"
+            :"ODD";
+
+
+    const redParity=
+        g.red%2===0
+            ?"EVEN"
+            :"ODD";
+
+
+    const want=target;
+
+    const opp=
+        target==="EVEN"
+            ?"ODD"
+            :"EVEN";
+
+
+    const wantPct=
+        target==="EVEN"
+            ?p.even/p.total*100
+            :p.odd/p.total*100;
+
+
+    const oppPct=
+        target==="EVEN"
+            ?p.odd/p.total*100
+            :p.even/p.total*100;
+
+
+    const streak=
+        consecutiveSide(
+            p.valid,
+            opp
+        );
+
+
+    const valid=
+        greenParity===want&&
+        redParity===opp&&
+        wantPct>oppPct;
+
+
+    return {
+
+        ready:
+            valid&&
+            streak>=3,
+
+        valid,
+
+        green:g.green,
+        red:g.red,
+
+        greenParity,
+        redParity,
+
+        wantPct,
+        oppPct,
+
+        streak,
+
+        reason:
+            !valid
+                ?`Green ${g.green}=${greenParity}, red ${g.red}=${redParity}, ${want} ${wantPct.toFixed(2)}% vs ${opp} ${oppPct.toFixed(2)}%.`
+                :streak<3
+                    ?`${streak}/3 consecutive ${opp} results.`
+                    :`3 consecutive ${opp} results — ${want} entry.`
+    };
+}
+
+
+function mauveyOverUnderStrategy(
+    target,
+    data,
+    barrier
+){
+
+    const p=
+        parityCounts(data);
+
+
+    if(p.total<30){
+
+        return {
+            ready:false,
+            reason:
+                "Collecting at least 30 valid ticks."
+        };
+    }
+
+
+    const over=
+        p.counts.reduce(
+            (s,c,d)=>
+                s+
+                (
+                    d>barrier
+                        ?c
+                        :0
+                ),
+            0
+        );
+
+
+    const under=
+        p.total-over;
+
+
+    const overPct=
+        over/
+        p.total*
+        100;
+
+
+    const underPct=
+        under/
+        p.total*
+        100;
+
+
+    const g=
+        greenRedParity(
+            p.counts
+        );
+
+
+    const greenOn=
+        target==="OVER"
+            ?g.green>barrier
+            :g.green<barrier;
+
+
+    const redOn=
+        target==="OVER"
+            ?g.red<=barrier
+            :g.red>barrier;
+
+
+    const targetPct=
+        target==="OVER"
+            ?overPct
+            :underPct;
+
+
+    const oppPct=
+        target==="OVER"
+            ?underPct
+            :overPct;
+
+
+    const streak=
+        consecutiveRelation(
+            p.valid,
+            barrier,
+            target==="OVER"
+                ?"UNDER"
+                :"OVER"
+        );
+
+
+    const valid=
+        greenOn&&
+        redOn&&
+        targetPct>oppPct;
+
+
+    return {
+
+        ready:
+            valid&&
+            streak>=3,
+
+        valid,
+
+        green:g.green,
+        red:g.red,
+
+        overPct,
+        underPct,
+
+        targetPct,
+        oppPct,
+
+        streak,
+
+        barrier,
+
+        greenOn,
+        redOn,
+
+        reason:
+            !valid
+                ?`Green ${g.green}, red ${g.red}; ${target} ${targetPct.toFixed(2)}% vs opposite ${oppPct.toFixed(2)}%.`
+                :streak<3
+                    ?`${streak}/3 consecutive opposite-side digits.`
+                    :`3 consecutive opposite-side digits — ${target} entry.`
+    };
+}
+
+
+function getMauveyCandidates(data){
+
+    const c=[];
+
+
+    const eoE=
+        mauveyEvenOddStrategy(
+            "EVEN",
+            data
+        );
+
+
+    if(eoE.ready){
+
+        c.push({
+            type:"EVEN",
+            details:eoE
+        });
+    }
+
+
+    const eoO=
+        mauveyEvenOddStrategy(
+            "ODD",
+            data
+        );
+
+
+    if(eoO.ready){
+
+        c.push({
+            type:"ODD",
+            details:eoO
+        });
+    }
+
+
+    for(
+        let b=0;
+        b<=8;
+        b++
+    ){
+
+        const ov=
+            mauveyOverUnderStrategy(
+                "OVER",
+                data,
+                b
+            );
+
+
+        if(ov.ready){
+
+            c.push({
+                type:"OVER",
+                barrier:b,
+                details:ov
+            });
+        }
+
+
+        const un=
+            mauveyOverUnderStrategy(
+                "UNDER",
+                data,
+                b
+            );
+
+
+        if(un.ready){
+
+            c.push({
+                type:"UNDER",
+                barrier:b,
+                details:un
+            });
+        }
+    }
+
+
+    return c;
+}
+
 
 function toggleMauvey(){
 
-    if(mauveyRunning){
-
+    if(mauveyRunning)
         stopMauvey();
-
-    }
-    else{
-
+    else
         startMauvey();
-    }
 }
 
 
 function startMauvey(){
 
-    if(!markets.length){
+    if(!selectedSymbol){
 
         alert(
-            "Connect market data and load markets first."
+            "Select a market first."
         );
 
         return;
     }
 
+
     if(
-        !publicWS ||
-        publicWS.readyState !== WebSocket.OPEN
+        publicWS?.readyState!==
+        WebSocket.OPEN
     ){
 
         alert(
@@ -3251,1796 +3489,11 @@ function startMauvey(){
         return;
     }
 
-    const target =
-        Number(
-            document.getElementById(
-                "mauveyMaxTrades"
-            ).value
-        );
 
     if(
-        !Number.isInteger(target) ||
-        target < 1
-    ){
-
-        alert(
-            "Set a valid MAUVEY trade count."
-        );
-
-        return;
-    }
-
-    mauveyRunning = true;
-
-    mauveyTradeCount = 0;
-
-    mauveyBatchTarget = target;
-
-    mauveyCurrentStrategy = null;
-
-    mauveyCurrentMarket = null;
-
-    mauveyCurrentBarrier = null;
-
-    mauveySignalReady = false;
-
-    mauveyWaitingForTrigger = false;
-
-    mauveyScanning = false;
-
-    document.getElementById(
-        "mauveyBtn"
-    ).textContent =
-        "STOP MAUVEY";
-
-    document.getElementById(
-        "mauveyBox"
-    ).classList.add(
-        "mauvey-live"
-    );
-
-    document.getElementById(
-        "mauveyState"
-    ).textContent =
-        "ON";
-
-    document.getElementById(
-        "mauveyStatus"
-    ).className =
-        "success";
-
-    document.getElementById(
-        "mauveyStatus"
-    ).textContent =
-        "MAUVEY is running.";
-
-    log(
-        "MAUVEY started."
-    );
-
-    log(
-        "MAUVEY batch mode: " +
-        target +
-        " trades per strategy."
-    );
-
-    startMauveyScanner();
-}
-
-
-function stopMauvey(){
-
-    mauveyRunning = false;
-
-    mauveyScanning = false;
-
-    mauveySignalReady = false;
-
-    mauveyWaitingForTrigger = false;
-
-    mauveyCurrentStrategy = null;
-
-    mauveyCurrentMarket = null;
-
-    mauveyCurrentBarrier = null;
-
-    document.getElementById(
-        "mauveyBtn"
-    ).textContent =
-        "START MAUVEY";
-
-    document.getElementById(
-        "mauveyBox"
-    ).classList.remove(
-        "mauvey-live"
-    );
-
-    document.getElementById(
-        "mauveyState"
-    ).textContent =
-        "OFF";
-
-    document.getElementById(
-        "mauveyStrategy"
-    ).textContent =
-        "SCANNING";
-
-    document.getElementById(
-        "mauveyMarket"
-    ).textContent =
-        "—";
-
-    document.getElementById(
-        "mauveyConfidence"
-    ).textContent =
-        "—";
-
-    document.getElementById(
-        "mauveyStatus"
-    ).className =
-        "warning";
-
-    document.getElementById(
-        "mauveyStatus"
-    ).textContent =
-        "MAUVEY is OFF.";
-
-    document.getElementById(
-        "batchStatus"
-    ).className =
-        "warning";
-
-    document.getElementById(
-        "batchStatus"
-    ).textContent =
-        "No active batch.";
-
-    log(
-        "MAUVEY stopped."
-    );
-}
-
-
-/* =========================================================
-   MAUVEY SCANNER
-========================================================= */
-
-function startMauveyScanner(){
-
-    if(!mauveyRunning){
-        return;
-    }
-
-    if(mauveyScanning){
-        return;
-    }
-
-    if(
-        mauveyCurrentStrategy &&
-        mauveyTradeCount <
-        mauveyBatchTarget
-    ){
-
-        /*
-         * There is already an active batch.
-         * NEVER rescan here.
-         */
-
-        return;
-    }
-
-    mauveyScanning = true;
-
-    log(
-        "MAUVEY scanning all available markets..."
-    );
-
-    setMauveyStatus(
-        "Scanning markets for strongest strategy..."
-    );
-
-    scanAllMarkets()
-        .then(best => {
-
-            mauveyScanning = false;
-
-            if(!mauveyRunning){
-                return;
-            }
-
-            if(!best){
-
-                log(
-                    "MAUVEY found no qualifying strategy yet."
-                );
-
-                setMauveyStatus(
-                    "No qualifying strategy. Continuing scan..."
-                );
-
-                scheduleMauveyScan();
-
-                return;
-            }
-
-            activateMauveyStrategy(best);
-
-        })
-        .catch(error => {
-
-            mauveyScanning = false;
-
-            log(
-                "MAUVEY scanner error: " +
-                error.message
-            );
-
-            scheduleMauveyScan();
-        });
-}
-
-
-function scheduleMauveyScan(){
-
-    if(scanTimer){
-        clearTimeout(scanTimer);
-    }
-
-    scanTimer =
-        setTimeout(
-            () => {
-
-                scanTimer = null;
-
-                if(mauveyRunning){
-                    startMauveyScanner();
-                }
-
-            },
-            2500
-        );
-}
-
-
-/* =========================================================
-   SCAN MARKETS
-========================================================= */
-
-async function scanAllMarkets(){
-
-    let best = null;
-
-    const candidates =
-        markets
-            .filter(isTradableMarket)
-            .slice(0,120);
-
-    for(
-        let i=0;
-        i<candidates.length;
-        i++
-    ){
-
-        if(!mauveyRunning){
-            return null;
-        }
-
-        const market =
-            candidates[i];
-
-        const symbol =
-            market.underlying_symbol;
-
-        if(!symbol){
-            continue;
-        }
-
-        let data =
-            marketTicks[symbol];
-
-        if(
-            !data ||
-            data.length < 100
-        ){
-
-            requestHistory(
-                symbol,
-                1000
-            );
-
-            subscribeTicks(
-                symbol
-            );
-
-            continue;
-        }
-
-        const result =
-            evaluateMarket(
-                market,
-                data
-            );
-
-        if(!result){
-            continue;
-        }
-
-        if(
-            !best ||
-            result.score >
-            best.score
-        ){
-
-            best = result;
-        }
-    }
-
-    return best;
-}
-
-
-function isTradableMarket(market){
-
-    if(!market){
-        return false;
-    }
-
-    if(
-        !market.underlying_symbol
-    ){
-        return false;
-    }
-
-    /*
-     * Keep common Deriv market categories.
-     */
-
-    return true;
-}
-
-
-/* =========================================================
-   MAUVEY MARKET EVALUATION
-========================================================= */
-
-function evaluateMarket(
-    market,
-    data
-){
-
-    const sample =
-        data.slice(-1000);
-
-    if(sample.length < 100){
-        return null;
-    }
-
-    const counts =
-        countDigits(sample);
-
-    const total =
-        counts.reduce(
-            (a,b)=>a+b,
-            0
-        );
-
-    if(total < 100){
-        return null;
-    }
-
-    const minConfidence =
-        Number(
-            document.getElementById(
-                "minConfidence"
-            ).value
-        );
-
-    const evenCount =
-        counts[0] +
-        counts[2] +
-        counts[4] +
-        counts[6] +
-        counts[8];
-
-    const oddCount =
-        total - evenCount;
-
-    const evenPct =
-        evenCount /
-        total *
-        100;
-
-    const oddPct =
-        oddCount /
-        total *
-        100;
-
-    let candidates = [];
-
-
-    /* =====================================================
-       EVEN
-    ===================================================== */
-
-    if(
-        evenPct > oddPct &&
-        evenPct >= minConfidence
-    ){
-
-        const trigger =
-            countTrailingParity(
-                sample,
-                "odd"
-            );
-
-        const score =
-            calculateStrategyScore(
-                evenPct,
-                trigger,
-                3
-            );
-
-        candidates.push({
-
-            type:"EVEN",
-
-            barrier:null,
-
-            confidence:evenPct,
-
-            trigger:trigger,
-
-            score:score,
-
-            market:market,
-
-            symbol:market.underlying_symbol,
-
-            name:
-                market.underlying_symbol_name ||
-                market.underlying_symbol
-
-        });
-    }
-
-
-    /* =====================================================
-       ODD
-    ===================================================== */
-
-    if(
-        oddPct > evenPct &&
-        oddPct >= minConfidence
-    ){
-
-        const trigger =
-            countTrailingParity(
-                sample,
-                "even"
-            );
-
-        const score =
-            calculateStrategyScore(
-                oddPct,
-                trigger,
-                3
-            );
-
-        candidates.push({
-
-            type:"ODD",
-
-            barrier:null,
-
-            confidence:oddPct,
-
-            trigger:trigger,
-
-            score:score,
-
-            market:market,
-
-            symbol:market.underlying_symbol,
-
-            name:
-                market.underlying_symbol_name ||
-                market.underlying_symbol
-
-        });
-    }
-
-
-    /* =====================================================
-       OVER / UNDER
-    ===================================================== */
-
-    for(
-        let barrier=0;
-        barrier<=8;
-        barrier++
-    ){
-
-        const overCount =
-            sample.filter(
-                t =>
-                    t.digit > barrier
-            ).length;
-
-        const underCount =
-            sample.filter(
-                t =>
-                    t.digit < barrier
-            ).length;
-
-        const validTotal =
-            overCount +
-            underCount;
-
-        if(validTotal < 50){
-            continue;
-        }
-
-        const overPct =
-            overCount /
-            validTotal *
-            100;
-
-        const underPct =
-            underCount /
-            validTotal *
-            100;
-
-
-        /*
-         * OVER:
-         * green = digits above barrier
-         * red = digits below barrier
-         * higher percentage = OVER
-         * trigger = 3 consecutive UNDER digits
-         */
-
-        if(
-            overPct > underPct &&
-            overPct >= minConfidence
-        ){
-
-            const trigger =
-                countTrailingBarrierSide(
-                    sample,
-                    barrier,
-                    "under"
-                );
-
-            const score =
-                calculateStrategyScore(
-                    overPct,
-                    trigger,
-                    3
-                );
-
-            candidates.push({
-
-                type:"OVER",
-
-                barrier:barrier,
-
-                confidence:overPct,
-
-                trigger:trigger,
-
-                score:score,
-
-                market:market,
-
-                symbol:market.underlying_symbol,
-
-                name:
-                    market.underlying_symbol_name ||
-                    market.underlying_symbol
-
-            });
-        }
-
-
-        /*
-         * UNDER:
-         * green = digits below barrier
-         * red = digits above barrier
-         * higher percentage = UNDER
-         * trigger = 3 consecutive OVER digits
-         */
-
-        if(
-            underPct > overPct &&
-            underPct >= minConfidence
-        ){
-
-            const trigger =
-                countTrailingBarrierSide(
-                    sample,
-                    barrier,
-                    "over"
-                );
-
-            const score =
-                calculateStrategyScore(
-                    underPct,
-                    trigger,
-                    3
-                );
-
-            candidates.push({
-
-                type:"UNDER",
-
-                barrier:barrier,
-
-                confidence:underPct,
-
-                trigger:trigger,
-
-                score:score,
-
-                market:market,
-
-                symbol:market.underlying_symbol,
-
-                name:
-                    market.underlying_symbol_name ||
-                    market.underlying_symbol
-
-            });
-        }
-    }
-
-
-    if(!candidates.length){
-        return null;
-    }
-
-    candidates.sort(
-        (a,b) =>
-            b.score - a.score
-    );
-
-    return candidates[0];
-}
-
-
-/* =========================================================
-   STRATEGY SCORE
-========================================================= */
-
-function calculateStrategyScore(
-    percentage,
-    trigger,
-    required
-){
-
-    let score =
-        percentage;
-
-    if(trigger >= required){
-
-        score += 15;
-
-    }
-    else{
-
-        score +=
-            trigger * 2;
-    }
-
-    return score;
-}
-
-
-/* =========================================================
-   PARITY TRIGGER
-========================================================= */
-
-function countTrailingParity(
-    data,
-    parity
-){
-
-    let count = 0;
-
-    for(
-        let i=data.length-1;
-        i>=0;
-        i--
-    ){
-
-        const digit =
-            data[i].digit;
-
-        if(
-            parity === "even" &&
-            digit % 2 === 0
-        ){
-            count++;
-        }
-        else if(
-            parity === "odd" &&
-            digit % 2 !== 0
-        ){
-            count++;
-        }
-        else{
-            break;
-        }
-    }
-
-    return count;
-}
-
-
-/* =========================================================
-   BARRIER TRIGGER
-========================================================= */
-
-function countTrailingBarrierSide(
-    data,
-    barrier,
-    side
-){
-
-    let count = 0;
-
-    for(
-        let i=data.length-1;
-        i>=0;
-        i--
-    ){
-
-        const digit =
-            data[i].digit;
-
-        if(
-            side === "over" &&
-            digit > barrier
-        ){
-
-            count++;
-
-        }
-        else if(
-            side === "under" &&
-            digit < barrier
-        ){
-
-            count++;
-
-        }
-        else{
-
-            break;
-        }
-    }
-
-    return count;
-}
-
-
-/* =========================================================
-   ACTIVATE STRATEGY
-========================================================= */
-
-function activateMauveyStrategy(strategy){
-
-    if(!mauveyRunning){
-        return;
-    }
-
-    mauveyCurrentStrategy =
-        strategy.type;
-
-    mauveyCurrentMarket =
-        strategy.symbol;
-
-    mauveyCurrentBarrier =
-        strategy.barrier;
-
-    mauveyTradeCount = 0;
-
-    mauveyBatchTarget =
-        Number(
-            document.getElementById(
-                "mauveyMaxTrades"
-            ).value
-        );
-
-    mauveySignalReady = false;
-
-    mauveyWaitingForTrigger = true;
-
-    mauveyLastTriggerTick = null;
-
-    subscribeTicks(
-        strategy.symbol
-    );
-
-    requestHistory(
-        strategy.symbol,
-        1000
-    );
-
-    document.getElementById(
-        "mauveyStrategy"
-    ).textContent =
-        strategy.type +
-        (
-            strategy.barrier !== null
-                ? " " + strategy.barrier
-                : ""
-        );
-
-    document.getElementById(
-        "mauveyMarket"
-    ).textContent =
-        strategy.name;
-
-    document.getElementById(
-        "mauveyConfidence"
-    ).textContent =
-        strategy.confidence.toFixed(2) +
-        "%";
-
-    document.getElementById(
-        "batchStrategy"
-    ).textContent =
-        strategy.type +
-        (
-            strategy.barrier !== null
-                ? " " + strategy.barrier
-                : ""
-        );
-
-    document.getElementById(
-        "batchCompleted"
-    ).textContent =
-        "0";
-
-    document.getElementById(
-        "batchRemaining"
-    ).textContent =
-        mauveyBatchTarget;
-
-    document.getElementById(
-        "batchTarget"
-    ).textContent =
-        mauveyBatchTarget;
-
-    document.getElementById(
-        "batchProgress"
-    ).style.width =
-        "0%";
-
-    setMauveyStatus(
-        "Strategy selected. Waiting for trigger..."
-    );
-
-    document.getElementById(
-        "batchStatus"
-    ).className =
-        "warning";
-
-    document.getElementById(
-        "batchStatus"
-    ).textContent =
-        "Waiting for " +
-        triggerText(strategy);
-
-    log(
-        "MAUVEY selected " +
-        strategy.type +
-        (
-            strategy.barrier !== null
-                ? " " + strategy.barrier
-                : ""
-        ) +
-        " on " +
-        strategy.name +
-        " • confidence " +
-        strategy.confidence.toFixed(2) +
-        "%."
-    );
-}
-
-
-function triggerText(strategy){
-
-    if(strategy.type === "EVEN"){
-        return "3 consecutive ODD digits.";
-    }
-
-    if(strategy.type === "ODD"){
-        return "3 consecutive EVEN digits.";
-    }
-
-    if(strategy.type === "OVER"){
-        return (
-            "3 consecutive UNDER digits for barrier " +
-            strategy.barrier +
-            "."
-        );
-    }
-
-    if(strategy.type === "UNDER"){
-        return (
-            "3 consecutive OVER digits for barrier " +
-            strategy.barrier +
-            "."
-        );
-    }
-
-    return "trigger.";
-}
-
-
-/* =========================================================
-   MAUVEY LIVE TICK PROCESSING
-========================================================= */
-
-function processMauveyTick(
-    symbol,
-    digit,
-    price
-){
-
-    if(!mauveyRunning){
-        return;
-    }
-
-    /*
-     * Only process the selected batch market.
-     */
-
-    if(
-        !mauveyCurrentMarket ||
-        symbol !== mauveyCurrentMarket
-    ){
-
-        return;
-    }
-
-    /*
-     * If batch is already complete,
-     * rescan exactly once.
-     */
-
-    if(
-        mauveyCurrentStrategy &&
-        mauveyTradeCount >=
-        mauveyBatchTarget
-    ){
-
-        finishMauveyBatch();
-
-        return;
-    }
-
-
-    /*
-     * If a trade is currently being executed,
-     * don't launch another one from the same tick.
-     */
-
-    if(tradeInProgress){
-        return;
-    }
-
-
-    const strategy =
-        mauveyCurrentStrategy;
-
-    if(!strategy){
-        return;
-    }
-
-
-    const data =
-        marketTicks[symbol] || [];
-
-    if(data.length < 3){
-        return;
-    }
-
-
-    const lastThree =
-        data.slice(-3);
-
-
-    /*
-     * EVEN
-     */
-
-    if(strategy === "EVEN"){
-
-        const ready =
-            lastThree.every(
-                t =>
-                    t.digit % 2 !== 0
-            );
-
-        if(ready){
-
-            mauveySignalReady = true;
-
-            if(
-                mauveyLastTriggerTick !==
-                data[data.length-1].time
-            ){
-
-                mauveyLastTriggerTick =
-                    data[data.length-1].time;
-
-                executeMauveyTrade(
-                    "EVEN",
-                    null
-                );
-            }
-        }
-
-        return;
-    }
-
-
-    /*
-     * ODD
-     */
-
-    if(strategy === "ODD"){
-
-        const ready =
-            lastThree.every(
-                t =>
-                    t.digit % 2 === 0
-            );
-
-        if(ready){
-
-            mauveySignalReady = true;
-
-            if(
-                mauveyLastTriggerTick !==
-                data[data.length-1].time
-            ){
-
-                mauveyLastTriggerTick =
-                    data[data.length-1].time;
-
-                executeMauveyTrade(
-                    "ODD",
-                    null
-                );
-            }
-        }
-
-        return;
-    }
-
-
-    /*
-     * OVER
-     */
-
-    if(strategy === "OVER"){
-
-        const barrier =
-            mauveyCurrentBarrier;
-
-        const ready =
-            lastThree.every(
-                t =>
-                    t.digit < barrier
-            );
-
-        if(ready){
-
-            mauveySignalReady = true;
-
-            if(
-                mauveyLastTriggerTick !==
-                data[data.length-1].time
-            ){
-
-                mauveyLastTriggerTick =
-                    data[data.length-1].time;
-
-                executeMauveyTrade(
-                    "OVER",
-                    barrier
-                );
-            }
-        }
-
-        return;
-    }
-
-
-    /*
-     * UNDER
-     */
-
-    if(strategy === "UNDER"){
-
-        const barrier =
-            mauveyCurrentBarrier;
-
-        const ready =
-            lastThree.every(
-                t =>
-                    t.digit > barrier
-            );
-
-        if(ready){
-
-            mauveySignalReady = true;
-
-            if(
-                mauveyLastTriggerTick !==
-                data[data.length-1].time
-            ){
-
-                mauveyLastTriggerTick =
-                    data[data.length-1].time;
-
-                executeMauveyTrade(
-                    "UNDER",
-                    barrier
-                );
-            }
-        }
-
-        return;
-    }
-}
-
-
-/* =========================================================
-   MAUVEY TRADE
-========================================================= */
-
-function executeMauveyTrade(
-    strategy,
-    barrier
-){
-
-    if(!mauveyRunning){
-        return;
-    }
-
-    if(tradeInProgress){
-        return;
-    }
-
-    if(
-        mauveyTradeCount >=
-        mauveyBatchTarget
-    ){
-
-        finishMauveyBatch();
-
-        return;
-    }
-
-    if(
-        !accountWS ||
-        accountWS.readyState !== WebSocket.OPEN
-    ){
-
-        setMauveyStatus(
-            "Signal ready. Waiting for trading connection..."
-        );
-
-        log(
-            "MAUVEY signal ready but account connection is unavailable."
-        );
-
-        scheduleAccountReconnect();
-
-        return;
-    }
-
-    tradeInProgress = true;
-
-    pendingTradeContext = {
-
-        source:"MAUVEY",
-
-        strategy:strategy,
-
-        barrier:barrier,
-
-        market:mauveyCurrentMarket,
-
-        startedAt:Date.now()
-    };
-
-    setTradeState(
-        "MAUVEY EXECUTING"
-    );
-
-    setMauveyStatus(
-        "Trigger confirmed. Requesting contract..."
-    );
-
-    log(
-        "MAUVEY ENTER " +
-        strategy +
-        (
-            barrier !== null
-                ? " " + barrier
-                : ""
-        ) +
-        " • trade " +
-        (
-            mauveyTradeCount + 1
-        ) +
-        "/" +
-        mauveyBatchTarget
-    );
-
-    requestProposal(
-        strategy,
-        barrier,
-        true
-    );
-}
-
-
-/* =========================================================
-   PROPOSAL REQUEST
-========================================================= */
-
-function requestProposal(
-    strategy,
-    barrier,
-    isMauvey
-){
-
-    if(
-        !accountWS ||
-        accountWS.readyState !== WebSocket.OPEN
-    ){
-
-        tradeInProgress = false;
-
-        return;
-    }
-
-    const stake =
-        Number(
-            document.getElementById(
-                "stake"
-            ).value
-        );
-
-    if(
-        !Number.isFinite(stake) ||
-        stake <= 0
-    ){
-
-        tradeInProgress = false;
-
-        setTradeState(
-            "INVALID STAKE"
-        );
-
-        return;
-    }
-
-
-    let contractType =
-        strategy;
-
-    if(strategy === "EVEN"){
-        contractType =
-            "DIGITEVEN";
-    }
-
-    if(strategy === "ODD"){
-        contractType =
-            "DIGITODD";
-    }
-
-    if(strategy === "OVER"){
-        contractType =
-            "DIGITOVER";
-    }
-
-    if(strategy === "UNDER"){
-        contractType =
-            "DIGITUNDER";
-    }
-
-
-    const proposal = {
-
-        proposal:1,
-
-        amount:stake,
-
-        basis:"stake",
-
-        contract_type:contractType,
-
-        currency:
-            accountCurrency,
-
-        duration:1,
-
-        duration_unit:"t",
-
-        symbol:
-            isMauvey
-                ? mauveyCurrentMarket
-                : selectedSymbol,
-
-        req_id:reqId()
-
-    };
-
-
-    if(
-        strategy === "OVER" ||
-        strategy === "UNDER"
-    ){
-
-        proposal.barrier =
-            String(barrier);
-    }
-
-
-    accountWS.send(
-        JSON.stringify(proposal)
-    );
-}
-
-
-/* =========================================================
-   PROPOSAL
-========================================================= */
-
-function handleProposal(data){
-
-    const proposal =
-        data.proposal;
-
-    if(!proposal){
-        return;
-    }
-
-    pendingProposal = proposal;
-
-    const source =
-        pendingTradeContext &&
-        pendingTradeContext.source;
-
-
-    /*
-     * Immediately buy the proposal.
-     */
-
-    const price =
-        Number(
-            proposal.ask_price
-        );
-
-    if(
-        !Number.isFinite(price) ||
-        price <= 0
-    ){
-
-        log(
-            "Invalid proposal price."
-        );
-
-        tradeInProgress = false;
-
-        return;
-    }
-
-
-    if(
-        !accountWS ||
-        accountWS.readyState !== WebSocket.OPEN
-    ){
-
-        tradeInProgress = false;
-
-        return;
-    }
-
-
-    accountWS.send(
-        JSON.stringify({
-
-            buy:proposal.id,
-
-            price:price,
-
-            req_id:reqId()
-
-        })
-    );
-
-    log(
-        (
-            source === "MAUVEY"
-                ? "MAUVEY proposal accepted."
-                : "Manual proposal accepted."
-        )
-    );
-}
-
-
-/* =========================================================
-   BUY RESPONSE
-========================================================= */
-
-function handleBuy(data){
-
-    if(data.error){
-
-        log(
-            "Buy error: " +
-            JSON.stringify(data.error)
-        );
-
-        tradeInProgress = false;
-
-        setTradeState(
-            "BUY ERROR"
-        );
-
-        return;
-    }
-
-    const buy =
-        data.buy;
-
-    if(!buy){
-        return;
-    }
-
-    currentContractId =
-        buy.contract_id;
-
-    const source =
-        pendingTradeContext &&
-        pendingTradeContext.source;
-
-
-    log(
-        (
-            source === "MAUVEY"
-                ? "MAUVEY contract purchased."
-                : "Manual contract purchased."
-        ) +
-        " Contract ID: " +
-        currentContractId
-    );
-
-
-    if(
-        accountWS &&
-        accountWS.readyState ===
+        !accountWS||
+        accountWS.readyState!==
         WebSocket.OPEN
-    ){
-
-        accountWS.send(
-            JSON.stringify({
-
-                proposal_open_contract:1,
-
-                contract_id:
-                    currentContractId,
-
-                subscribe:1,
-
-                req_id:reqId()
-
-            })
-        );
-    }
-}
-
-
-/* =========================================================
-   CONTRACT UPDATE
-========================================================= */
-
-function handleContractUpdate(data){
-
-    const contract =
-        data.proposal_open_contract;
-
-    if(!contract){
-        return;
-    }
-
-
-    if(
-        contract.is_sold ||
-        contract.status === "sold"
-    ){
-
-        const profit =
-            Number(
-                contract.profit || 0
-            );
-
-        const payout =
-            Number(
-                contract.payout || 0
-            );
-
-        const buyPrice =
-            Number(
-                contract.buy_price || 0
-            );
-
-        const won =
-            profit > 0;
-
-        const source =
-            pendingTradeContext &&
-            pendingTradeContext.source;
-
-
-        if(source === "MAUVEY"){
-
-            mauveyTradeCount++;
-
-            addTradeHistory(
-
-                mauveyTradeCount,
-
-                pendingTradeContext.strategy,
-
-                pendingTradeContext.market,
-
-                buyPrice,
-
-                won
-                    ? "WIN"
-                    : "LOSS",
-
-                profit,
-
-                "MAUVEY"
-
-            );
-
-            updateMauveyBatchUI();
-
-            showTradeResult(
-                won,
-                profit,
-                pendingTradeContext.strategy,
-                pendingTradeContext.market
-            );
-
-
-            tradeInProgress = false;
-
-            currentContractId = null;
-
-            pendingTradeContext = null;
-
-
-            if(
-                mauveyTradeCount >=
-                mauveyBatchTarget
-            ){
-
-                finishMauveyBatch();
-
-            }
-            else{
-
-                /*
-                 * IMPORTANT:
-                 *
-                 * We DO NOT RESCAN.
-                 *
-                 * We continue the SAME strategy
-                 * on the SAME market.
-                 */
-
-                setMauveyStatus(
-                    "Trade finished. Continuing " +
-                    mauveyCurrentStrategy +
-                    " batch..."
-                );
-
-                setTradeState(
-                    "MAUVEY READY"
-                );
-            }
-
-        }
-        else{
-
-            addTradeHistory(
-
-                ++tradeCounter,
-
-                "MANUAL",
-
-                selectedSymbol,
-
-                buyPrice,
-
-                won
-                    ? "WIN"
-                    : "LOSS",
-
-                profit,
-
-                "MANUAL"
-
-            );
-
-            showTradeResult(
-                won,
-                profit,
-                "MANUAL",
-                selectedSymbol
-            );
-
-            tradeInProgress = false;
-
-            currentContractId = null;
-
-            pendingTradeContext = null;
-
-            setTradeState(
-                "READY"
-            );
-        }
-
-
-        requestBalance();
-    }
-}
-
-
-/* =========================================================
-   BATCH FINISH
-========================================================= */
-
-function finishMauveyBatch(){
-
-    if(!mauveyRunning){
-        return;
-    }
-
-    log(
-        "MAUVEY batch complete: " +
-        mauveyTradeCount +
-        "/" +
-        mauveyBatchTarget +
-        " trades."
-    );
-
-    document.getElementById(
-        "batchStatus"
-    ).className =
-        "success";
-
-    document.getElementById(
-        "batchStatus"
-    ).textContent =
-        "Batch completed. MAUVEY will rescan for a new strategy.";
-
-    setMauveyStatus(
-        "Batch complete. Scanning again..."
-    );
-
-    mauveyCurrentStrategy = null;
-
-    mauveyCurrentMarket = null;
-
-    mauveyCurrentBarrier = null;
-
-    mauveySignalReady = false;
-
-    mauveyWaitingForTrigger = false;
-
-    mauveyTradeCount = 0;
-
-    updateMauveyBatchUI();
-
-    /*
-     * NOW, and only now, scan again.
-     */
-
-    scheduleMauveyScan();
-}
-
-
-/* =========================================================
-   MAUVEY UI
-========================================================= */
-
-function setMauveyStatus(text){
-
-    document.getElementById(
-        "mauveyStatus"
-    ).textContent =
-        text;
-
-    document.getElementById(
-        "mauveyStatus"
-    ).className =
-        mauveyRunning
-            ? "success"
-            : "warning";
-}
-
-
-function updateMauveyBatchUI(){
-
-    const target =
-        mauveyBatchTarget || 0;
-
-    const completed =
-        mauveyTradeCount;
-
-    const remaining =
-        Math.max(
-            0,
-            target - completed
-        );
-
-    document.getElementById(
-        "batchCompleted"
-    ).textContent =
-        completed;
-
-    document.getElementById(
-        "batchRemaining"
-    ).textContent =
-        remaining;
-
-    document.getElementById(
-        "batchTarget"
-    ).textContent =
-        target;
-
-    const pct =
-        target > 0
-            ? (
-                completed /
-                target *
-                100
-            )
-            : 0;
-
-    document.getElementById(
-        "batchProgress"
-    ).style.width =
-        Math.min(
-            100,
-            pct
-        ) +
-        "%";
-}
-
-
-/* =========================================================
-   MANUAL TRADE
-========================================================= */
-
-function executeManualTrade(){
-
-    if(
-        !accountWS ||
-        accountWS.readyState !== WebSocket.OPEN
     ){
 
         alert(
@@ -5050,160 +3503,978 @@ function executeManualTrade(){
         return;
     }
 
-    if(tradeInProgress){
+
+    const max=
+        Number(
+            document.getElementById(
+                "mauveyMaxTrades"
+            ).value
+        );
+
+
+    if(max<1){
 
         alert(
-            "A trade is already in progress."
+            "Maximum trades must be at least 1."
         );
 
         return;
     }
 
-    const strategy =
+
+    mauveyRunning=true;
+    mauveyTradeCount=0;
+    mauveyStrategy=null;
+
+
+    document.getElementById(
+        "mauveyBtn"
+    ).textContent=
+        "STOP MAUVEY";
+
+
+    document.getElementById(
+        "mauveyStatus"
+    ).className=
+        "success";
+
+
+    document.getElementById(
+        "mauveyStatus"
+    ).textContent=
+        "MAUVEY is running. Scanning its own strategies...";
+
+
+    log(
+        "MAUVEY started independently from V7 analyzer."
+    );
+
+
+    runMauveyCycle();
+}
+
+
+function stopMauvey(){
+
+    mauveyRunning=false;
+    mauveyStrategy=null;
+
+
+    if(mauveyWaitTimer)
+        clearTimeout(
+            mauveyWaitTimer
+        );
+
+
+    mauveyWaitTimer=null;
+
+
+    document.getElementById(
+        "mauveyBtn"
+    ).textContent=
+        "START MAUVEY";
+
+
+    document.getElementById(
+        "mauveyStatus"
+    ).className=
+        "warning";
+
+
+    document.getElementById(
+        "mauveyStatus"
+    ).textContent=
+        "MAUVEY is OFF.";
+
+
+    log(
+        "MAUVEY stopped."
+    );
+}
+
+
+function scheduleMauveyRetry(
+    ms=1500
+){
+
+    if(!mauveyRunning)
+        return;
+
+
+    if(mauveyWaitTimer)
+        clearTimeout(
+            mauveyWaitTimer
+        );
+
+
+    mauveyWaitTimer=
+        setTimeout(
+            ()=>{
+                mauveyWaitTimer=null;
+                runMauveyCycle();
+            },
+            ms
+        );
+}
+
+
+function runMauveyCycle(){
+
+    if(
+        !mauveyRunning||
+        tradeInProgress||
+        !selectedSymbol
+    ){
+        return;
+    }
+
+
+    const max=
+        Number(
+            document.getElementById(
+                "mauveyMaxTrades"
+            ).value
+        );
+
+
+    if(
+        mauveyTradeCount>=max
+    ){
+
+        log(
+            "MAUVEY reached "+
+            max+
+            " trades. Rescanning strategies."
+        );
+
+        mauveyTradeCount=0;
+        mauveyStrategy=null;
+    }
+
+
+    const data=
+        ticks.slice(
+            -Math.max(
+                1000,
+                Number(
+                    document.getElementById(
+                        "sample"
+                    ).value
+                )
+            )
+        );
+
+
+    if(data.length<30){
+
+        document.getElementById(
+            "mauveyStatus"
+        ).textContent=
+            "MAUVEY is running • collecting ticks...";
+
+        return;
+    }
+
+
+    if(!mauveyStrategy){
+
+        const candidates=
+            getMauveyCandidates(
+                data
+            );
+
+
+        if(!candidates.length){
+
+            document.getElementById(
+                "mauveyStatus"
+            ).textContent=
+                "MAUVEY is running • no qualifying setup yet.";
+
+            return;
+        }
+
+
+        candidates.sort(
+            (a,b)=>
+                (
+                    b.details.targetPct||0
+                )-
+                (
+                    a.details.targetPct||0
+                )
+        );
+
+
+        mauveyStrategy=
+            candidates[0];
+
+
+        log(
+            "MAUVEY selected "+
+            mauveyStrategy.type+
+            (
+                mauveyStrategy.barrier!==undefined
+                    ?" "+
+                    mauveyStrategy.barrier
+                    :""
+            )+
+            ". It will keep this strategy until stop/limit."
+        );
+
+
+        updateMauveyStatus(
+            "QUALIFIED: "+
+            mauveyStrategy.type+
+            (
+                mauveyStrategy.barrier!==undefined
+                    ?" "+
+                    mauveyStrategy.barrier
+                    :""
+            ),
+            mauveyStrategy.details
+        );
+    }
+
+
+    const fresh=data;
+
+    let d;
+
+
+    if(
+        mauveyStrategy.type==="EVEN"||
+        mauveyStrategy.type==="ODD"
+    ){
+
+        d=
+            mauveyEvenOddStrategy(
+                mauveyStrategy.type,
+                fresh
+            );
+
+    }else{
+
+        d=
+            mauveyOverUnderStrategy(
+                mauveyStrategy.type,
+                fresh,
+                mauveyStrategy.barrier
+            );
+    }
+
+
+    if(!d.ready){
+
+        updateMauveyStatus(
+            "WAITING FOR NEXT ENTRY",
+            d
+        );
+
+        return;
+    }
+
+
+    updateMauveyStatus(
+        "ENTRY READY: "+
+        mauveyStrategy.type+
+        (
+            mauveyStrategy.barrier!==undefined
+                ?" "+
+                mauveyStrategy.barrier
+                :""
+        ),
+        d
+    );
+
+
+    executeMauveyTrade(
+        mauveyStrategy.type,
+        mauveyStrategy.barrier
+    );
+}
+
+
+function updateMauveyStatus(
+    title,
+    d
+){
+
+    document.getElementById(
+        "mauveyStatus"
+    ).innerHTML=`
+
+        <strong>
+            ${escapeHTML(title)}
+        </strong>
+
+        <br>
+
+        <span class="small">
+            ${escapeHTML(
+                d.reason||""
+            )}
+        </span>
+    `;
+}
+
+
+/* TRADING */
+
+function durationSettings(){
+
+    const type=
         document.getElementById(
             "contractType"
         ).value;
 
-    const barrier =
+    const unit=
+        document.getElementById(
+            "durationUnit"
+        );
+
+
+    if(type.startsWith("DIGIT")){
+
+        unit.disabled=false;
+
+    }else{
+
+        unit.value="t";
+        unit.disabled=false;
+    }
+}
+
+
+function updateDurationUI(){
+
+    const type=
+        document.getElementById(
+            "contractType"
+        ).value;
+
+    const group=
+        document.getElementById(
+            "barrierGroup"
+        );
+
+    const barrier=
+        document.getElementById(
+            "barrier"
+        );
+
+
+    barrier.innerHTML="";
+
+
+    if(
+        type==="DIGITOVER"||
+        type==="DIGITUNDER"||
+        type==="DIGITMATCH"||
+        type==="DIGITDIFF"
+    ){
+
+        group.classList.remove(
+            "hidden"
+        );
+
+
+        for(
+            let i=0;
+            i<=9;
+            i++
+        ){
+
+            barrier.insertAdjacentHTML(
+                "beforeend",
+                `<option value="${i}">
+                    ${i}
+                </option>`
+            );
+        }
+
+    }else{
+
+        group.classList.add(
+            "hidden"
+        );
+    }
+
+
+    if(
+        type==="DIGITEVEN"||
+        type==="DIGITODD"
+    ){
+
+        group.classList.add(
+            "hidden"
+        );
+    }
+
+
+    document.getElementById(
+        "durationUnit"
+    ).value=
+        type.startsWith("DIGIT")
+            ?"t"
+            :"s";
+}
+
+
+function executeManualTrade(){
+
+    const type=
+        document.getElementById(
+            "contractType"
+        ).value;
+
+
+    const barrier=
         Number(
             document.getElementById(
                 "barrier"
             ).value
         );
 
-    pendingTradeContext = {
 
-        source:"MANUAL",
+    requestProposal({
 
-        strategy:strategy,
+        type,
 
-        barrier:
-            (
-                strategy === "DIGITOVER" ||
-                strategy === "DIGITUNDER" ||
-                strategy === "DIGITMATCH" ||
-                strategy === "DIGITDIFF"
-            )
-                ? barrier
-                : null,
+        barrier,
 
-        market:selectedSymbol,
+        stake:
+            Number(
+                document.getElementById(
+                    "stake"
+                ).value
+            ),
 
-        startedAt:Date.now()
-    };
+        duration:
+            Number(
+                document.getElementById(
+                    "duration"
+                ).value
+            ),
 
-    tradeInProgress = true;
+        unit:
+            document.getElementById(
+                "durationUnit"
+            ).value,
 
-    setTradeState(
-        "REQUESTING"
-    );
-
-    let normalized =
-        strategy;
-
-    if(strategy === "DIGITEVEN"){
-        normalized = "EVEN";
-    }
-
-    if(strategy === "DIGITODD"){
-        normalized = "ODD";
-    }
-
-    if(strategy === "DIGITOVER"){
-        normalized = "OVER";
-    }
-
-    if(strategy === "DIGITUNDER"){
-        normalized = "UNDER";
-    }
-
-    if(strategy === "CALL"){
-        normalized = "CALL";
-    }
-
-    if(strategy === "PUT"){
-        normalized = "PUT";
-    }
-
-    requestProposal(
-        normalized,
-        pendingTradeContext.barrier,
-        false
-    );
+        strategy:"MANUAL"
+    });
 }
 
 
-/* =========================================================
-   TRADE STATE
-========================================================= */
-
-function setTradeState(text){
-
-    const el =
-        document.getElementById(
-            "tradeState"
-        );
-
-    el.textContent =
-        text;
+function executeMauveyTrade(
+    type,
+    barrier
+){
 
     if(
-        text === "READY"
+        tradeInProgress||
+        !mauveyRunning
+    ){
+        return;
+    }
+
+
+    requestProposal({
+
+        type:
+            type==="EVEN"
+                ?"DIGITEVEN"
+                :type==="ODD"
+                    ?"DIGITODD"
+                    :type==="OVER"
+                        ?"DIGITOVER"
+                        :"DIGITUNDER",
+
+        barrier,
+
+        stake:
+            Number(
+                document.getElementById(
+                    "stake"
+                ).value
+            ),
+
+        duration:
+            Number(
+                document.getElementById(
+                    "duration"
+                ).value
+            ),
+
+        unit:"t",
+
+        strategy:
+            "MAUVEY "+
+            type+
+            (
+                barrier!==undefined
+                    ?" "+
+                    barrier
+                    :""
+            )
+    });
+}
+
+
+function requestProposal(cfg){
+
+    if(
+        !accountWS||
+        accountWS.readyState!==
+        WebSocket.OPEN
     ){
 
-        el.className =
-            "warning";
+        alert(
+            "Connect Deriv account first."
+        );
 
+        return;
     }
-    else if(
-        text.includes("ERROR")
+
+
+    if(!selectedSymbol){
+
+        alert(
+            "Select a market first."
+        );
+
+        return;
+    }
+
+
+    if(tradeInProgress)
+        return;
+
+
+    const amount=
+        Number(cfg.stake);
+
+
+    if(!(amount>0)){
+
+        alert(
+            "Invalid stake."
+        );
+
+        return;
+    }
+
+
+    tradeInProgress=true;
+    pendingProposal=cfg;
+
+
+    setTradeState(
+        "REQUESTING PROPOSAL...",
+        "warning"
+    );
+
+
+    const p={
+
+        proposal:1,
+
+        amount,
+
+        basis:"stake",
+
+        contract_type:
+            cfg.type,
+
+        currency:
+            accountCurrency,
+
+        duration:
+            Number(cfg.duration),
+
+        duration_unit:
+            cfg.unit,
+
+        symbol:
+            selectedSymbol,
+
+        req_id:
+            reqId()
+    };
+
+
+    if(
+        [
+            "DIGITOVER",
+            "DIGITUNDER",
+            "DIGITMATCH",
+            "DIGITDIFF"
+        ].includes(cfg.type)
     ){
 
-        el.className =
-            "danger";
-
+        p.barrier=
+            String(cfg.barrier);
     }
-    else{
 
-        el.className =
-            "success";
+
+    accountWS.send(
+        JSON.stringify(p)
+    );
+
+
+    log(
+        "Proposal requested: "+
+        cfg.strategy+
+        " on "+
+        selectedSymbol
+    );
+}
+
+
+function handleProposal(data){
+
+    if(!pendingProposal)
+        return;
+
+
+    if(data.error){
+
+        log(
+            "Proposal error: "+
+            JSON.stringify(
+                data.error
+            )
+        );
+
+
+        tradeInProgress=false;
+
+
+        setTradeState(
+            "PROPOSAL ERROR",
+            "danger"
+        );
+
+
+        if(
+            pendingProposal.strategy.startsWith(
+                "MAUVEY"
+            )
+        ){
+
+            scheduleMauveyRetry(
+                3000
+            );
+        }
+
+
+        pendingProposal=null;
+
+        return;
+    }
+
+
+    const proposalId=
+        data.proposal?.id;
+
+
+    if(!proposalId){
+
+        tradeInProgress=false;
+
+        setTradeState(
+            "NO PROPOSAL ID",
+            "danger"
+        );
+
+        return;
+    }
+
+
+    accountWS.send(
+        JSON.stringify({
+
+            buy:
+                proposalId,
+
+            price:
+                Number(
+                    data.proposal.ask_price
+                ),
+
+            req_id:
+                reqId()
+        })
+    );
+
+
+    setTradeState(
+        "BUYING...",
+        "warning"
+    );
+}
+
+
+function handleBuy(data){
+
+    if(data.error){
+
+        log(
+            "Buy error: "+
+            JSON.stringify(
+                data.error
+            )
+        );
+
+
+        tradeInProgress=false;
+
+
+        setTradeState(
+            "BUY ERROR",
+            "danger"
+        );
+
+
+        if(
+            pendingProposal?.strategy.startsWith(
+                "MAUVEY"
+            )
+        ){
+
+            scheduleMauveyRetry(
+                3000
+            );
+        }
+
+
+        pendingProposal=null;
+
+        return;
+    }
+
+
+    currentContractId=
+        data.buy?.contract_id;
+
+
+    if(!currentContractId){
+
+        tradeInProgress=false;
+
+        setTradeState(
+            "NO CONTRACT ID",
+            "danger"
+        );
+
+        return;
+    }
+
+
+    tradeCounter++;
+
+
+    if(
+        pendingProposal?.strategy.startsWith(
+            "MAUVEY"
+        )
+    ){
+
+        mauveyTradeCount++;
+    }
+
+
+    const strategy=
+        pendingProposal?.strategy||
+        "MANUAL";
+
+
+    const stake=
+        pendingProposal?.stake||
+        0;
+
+
+    addTradeRow(
+        tradeCounter,
+        strategy,
+        selectedName||
+            selectedSymbol,
+        stake,
+        "OPEN",
+        "—",
+        "OPEN"
+    );
+
+
+    setTradeState(
+        "CONTRACT OPEN",
+        "success"
+    );
+
+
+    log(
+        "Contract purchased: "+
+        currentContractId
+    );
+
+
+    accountWS.send(
+        JSON.stringify({
+
+            proposal_open_contract:1,
+
+            contract_id:
+                currentContractId,
+
+            subscribe:1,
+
+            req_id:
+                reqId()
+        })
+    );
+}
+
+
+function handleContractUpdate(data){
+
+    const c=
+        data.proposal_open_contract;
+
+
+    if(!c)
+        return;
+
+
+    const finished=
+        Boolean(c.is_sold)||
+        c.status==="won"||
+        c.status==="lost"||
+        c.status==="sold";
+
+
+    if(!finished)
+        return;
+
+
+    const won=
+        c.status==="won"||
+        Number(c.profit)>0;
+
+
+    const profit=
+        Number(
+            c.profit||0
+        );
+
+
+    const result=
+        won
+            ?"WIN"
+            :"LOSS";
+
+
+    tradeInProgress=false;
+
+
+    setTradeState(
+        result,
+        won
+            ?"success"
+            :"danger"
+    );
+
+
+    updateLastTradeRow(
+        result,
+        profit
+    );
+
+
+    showResultPopup(
+        result,
+        profit,
+        c
+    );
+
+
+    log(
+        "Contract finished: "+
+        result+
+        " P/L "+
+        profit.toFixed(2)
+    );
+
+
+    pendingProposal=null;
+    currentContractId=null;
+
+
+    requestBalance();
+
+
+    if(mauveyRunning){
+
+        if(
+            mauveyTradeCount>=
+            Number(
+                document.getElementById(
+                    "mauveyMaxTrades"
+                ).value
+            )
+        ){
+
+            log(
+                "MAUVEY trade batch complete. Rescanning now."
+            );
+
+            mauveyTradeCount=0;
+            mauveyStrategy=null;
+
+            scheduleMauveyRetry(
+                1000
+            );
+
+        }else{
+
+            scheduleMauveyRetry(
+                700
+            );
+        }
     }
 }
 
 
-/* =========================================================
-   TRADE HISTORY
-========================================================= */
-
-function addTradeHistory(
-    number,
+function addTradeRow(
+    num,
     strategy,
     market,
     stake,
     result,
-    profit,
+    pl,
     status
 ){
 
-    const body =
+    const body=
         document.getElementById(
             "tradeHistoryBody"
         );
 
-    const row =
-        document.createElement("tr");
 
-    const resultClass =
-        result === "WIN"
-            ? "win"
-            : result === "LOSS"
-                ? "loss"
-                : "neutral";
+    const tr=
+        document.createElement(
+            "tr"
+        );
 
-    row.innerHTML = `
+
+    tr.dataset.trade=
+        String(num);
+
+
+    tr.innerHTML=`
 
         <td>
-            ${escapeHTML(number)}
+            ${num}
         </td>
 
         <td>
@@ -5218,12 +4489,12 @@ function addTradeHistory(
             ${Number(stake).toFixed(2)}
         </td>
 
-        <td class="${resultClass}">
+        <td>
             ${escapeHTML(result)}
         </td>
 
-        <td class="${resultClass}">
-            ${Number(profit).toFixed(2)}
+        <td>
+            ${escapeHTML(String(pl))}
         </td>
 
         <td>
@@ -5231,50 +4502,96 @@ function addTradeHistory(
         </td>
     `;
 
-    body.prepend(row);
+
+    body.prepend(tr);
 }
 
 
-/* =========================================================
-   RESULT POPUP
-========================================================= */
+function updateLastTradeRow(
+    result,
+    profit
+){
 
-function showTradeResult(
-    won,
+    const row=
+        document.querySelector(
+            "#tradeHistoryBody tr"
+        );
+
+
+    if(!row)
+        return;
+
+
+    row.cells[4].textContent=
+        result;
+
+
+    row.cells[4].className=
+        result==="WIN"
+            ?"win"
+            :"loss";
+
+
+    row.cells[5].textContent=
+        profit.toFixed(2);
+
+
+    row.cells[5].className=
+        profit>0
+            ?"win"
+            :profit<0
+                ?"loss"
+                :"neutral";
+
+
+    row.cells[6].textContent=
+        "CLOSED";
+}
+
+
+function showResultPopup(
+    result,
     profit,
-    strategy,
-    market
+    c
 ){
 
     document.getElementById(
         "popupResult"
-    ).textContent =
-        won
-            ? "WIN"
-            : "LOSS";
+    ).textContent=
+        result;
+
 
     document.getElementById(
         "popupProfit"
-    ).textContent =
+    ).textContent=
         (
-            profit >= 0
-                ? "+"
-                : ""
-        ) +
-        Number(profit).toFixed(2) +
-        " " +
+            profit>=0
+                ?"+"
+                :""
+        )+
+        profit.toFixed(2)+
+        " "+
         accountCurrency;
+
 
     document.getElementById(
         "popupDetails"
-    ).textContent =
-        strategy +
-        " • " +
-        market;
+    ).textContent=
+        (
+            c.contract_type||
+            ""
+        )+
+        " • "+
+        (
+            c.exit_tick_display||
+            c.exit_tick||
+            ""
+        );
+
 
     document.getElementById(
         "resultPopup"
-    ).style.display =
+    ).style.display=
         "flex";
 }
 
@@ -5283,123 +4600,37 @@ function closeResultPopup(){
 
     document.getElementById(
         "resultPopup"
-    ).style.display =
+    ).style.display=
         "none";
 }
 
 
-/* =========================================================
-   DURATION UI
-========================================================= */
+/* STARTUP */
 
-function updateDurationUI(){
-
-    const type =
-        document.getElementById(
-            "contractType"
-        ).value;
-
-    const digit =
-        type.startsWith(
-            "DIGIT"
-        );
-
-    const durationUnit =
-        document.getElementById(
-            "durationUnit"
-        );
-
-    if(digit){
-
-        durationUnit.value =
-            "t";
-
-        durationUnit.disabled =
-            true;
-
-    }
-    else{
-
-        durationUnit.disabled =
-            false;
-    }
+updateDurationUI();
 
 
-    const barrierGroup =
-        document.getElementById(
-            "barrierGroup"
-        );
+(function(){
 
-    if(
-        type === "DIGITOVER" ||
-        type === "DIGITUNDER" ||
-        type === "DIGITMATCH" ||
-        type === "DIGITDIFF"
-    ){
+    try{
 
-        barrierGroup.classList.remove(
-            "hidden"
-        );
-
-    }
-    else{
-
-        barrierGroup.classList.add(
-            "hidden"
-        );
-    }
-}
+        const saved=
+            localStorage.getItem(
+                "deriv_v7_pat"
+            );
 
 
-/* =========================================================
-   STARTUP
-========================================================= */
+        if(saved)
+            PAT=saved;
 
-function initialize(){
+    }catch{}
+
 
     log(
-        "MAUVEY V7 engine initialized."
+        "V7 loaded. MAUVEY strategy engine is isolated from the general analyzer."
     );
 
-    log(
-        "MAUVEY strategy engine is independent."
-    );
-
-    log(
-        "MAUVEY batch mode: trade same strategy repeatedly, then rescan."
-    );
-
-    updateDurationUI();
-
-    updateMauveyBatchUI();
-
-    const savedPAT =
-        localStorage.getItem(
-            "deriv_v7_pat"
-        );
-
-    if(savedPAT){
-
-        PAT = savedPAT;
-
-        log(
-            "Saved Deriv PAT found."
-        );
-
-        loadAccounts();
-    }
-}
-
-
-/* =========================================================
-   AUTO CONNECT PUBLIC MARKET DATA
-========================================================= */
-
-window.addEventListener(
-    "load",
-    initialize
-);
-
+})();
 </script>
 
 </body>

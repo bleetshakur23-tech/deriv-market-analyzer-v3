@@ -1900,7 +1900,68 @@ document
         analyze
     );
 
+let derivPAT = null;
+let derivAccountSocket = null;
 
+async function connectWithPAT() {
+
+    const pat = prompt(
+        "Paste your Deriv PAT token here:"
+    );
+
+    if (!pat) {
+        return;
+    }
+
+    derivPAT = pat.trim();
+
+    try {
+
+        const response = await fetch(
+            "https://api.derivws.com/trading/v1/options/accounts",
+            {
+                method: "GET",
+                headers: {
+                    "Authorization": "Bearer " + derivPAT
+                }
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+
+            alert(
+                "Deriv account connection failed.\n\n" +
+                JSON.stringify(data)
+            );
+
+            derivPAT = null;
+            return;
+        }
+
+        alert(
+            "Deriv account connected successfully!"
+        );
+
+        console.log(
+            "Deriv accounts:",
+            data
+        );
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "Could not connect to Deriv account."
+        );
+
+        derivPAT = null;
+    }
+}
+
+    
 </script>
 
 </body>

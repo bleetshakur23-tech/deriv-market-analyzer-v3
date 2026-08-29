@@ -2092,36 +2092,312 @@ async function connectWithPAT() {
                         error
                     );
 
+async function connectWithPAT() {
+
+    const pat = prompt(
+        "Paste your Deriv PAT token here:"
+    );
+
+    if (!pat) {
+        return;
+    }
+
+    derivPAT = pat.trim();
+
+    setStatus(
+        "AUTHENTICATING DERIV ACCOUNT...",
+        false
+    );
+
+    try {
+
+        /* STEP 1 — GET ACCOUNTS */
+
+        const response = await fetch(
+            "https://api.derivws.com/trading/v1/options/accounts",
+            {
+                method: "GET",
+
+                headers: {
+                    "Authorization": "Bearer " + derivPAT,
+                    "Deriv-App-ID": DERIV_APP_ID
+                }
+            }
+        );
+
+        const data = await response.json();
+
+        console.log(
+            "ACCOUNT RESPONSE:",
+            data
+        );
+
+
+        /* CHECK RESPONSE */
+
+        if (!response.ok) {
+
+            const errorMessage =
+                data?.errors?.[0]?.message ||
+                data?.message ||
+                JSON.stringify(data);
+
+            setStatus(
+                "DERIV AUTHENTICATION FAILED",
+                false
+            );
+
+            alert(
+                "Deriv rejected the PAT.\n\n" +
+                "HTTP Status: " +
+                response.status +
+                "\n\n" +
+                errorMessage +
+                "\n\n" +
+                "Check that your PAT has Trade permission."
+            );
+
+            derivPAT = null;
+
+            return;
+        }
+
+
+        /* STEP 2 — EXTRACT ACCOUNTS */
+
+        let accounts = [];
+
+        if (Array.isArray(data.data)) {
+
+            accounts = data.data;
+
+        } else if (data.data) {
+
+            accounts = [data.data];
+
+        }
+
+
+        console.log(
+            "ACCOUNTS FOUND:",
+            accounts
+        );
+
+
+        if (!accounts.length) {
+
+            alert(
+                "PAT authentication worked, but Deriv returned no Options accounts."
+            );
+
+            return;
+        }
+
+
+        /* STEP 3 — FIND ACCOUNT */
+
+        const account =
+            accounts[0];
+
+        const accountId =
+            account.account_id;
+
+
+        console.log(
+            "ACCOUNT ID:",
+            accountId
+        );
+
+
+        if (!accountId) {
+
+            alert(
+                "Deriv returned an account, but no account ID was found.\n\n" +
+                JSON.stringify(account)
+            );
+
+            return;
+        }
+
+
+        /* STEP 4 — REQUEST OTP */
+
+        setStatus(
+            "AUTHENTICATING ACCOUNT...",
+            false
+        );
+
+
+        const otpResponse =
+            await fetch(
+
+                "https://api.derivws.com/trading/v1/options/accounts/" +
+                encodeURIComponent(accountId) +
+                "/otp",
+
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Authorization":
+                            "Bearer " + derivPAT,
+
+                        "Deriv-App-ID":
+                            DERIV_APP_ID
+                    }
+                }
+            );
+
+
+        const otpData =
+            await otpResponse.json();
+
+
+        console.log(
+            "OTP RESPONSE:",
+            otpData
+        );
+
+
+        if (!otpResponse.ok) {
+
+            const errorMessage =
+                otpData?.errors?.[0]?.message ||
+                otpData?.message ||
+                JSON.stringify(otpData);
+
+
+            alert(
+                "Deriv found your account, but OTP authentication failed.\n\n" +
+                "HTTP Status: " +
+                otpResponse.status +
+                "\n\n" +
+                errorMessage
+            );
+
+            return;
+        }
+
+
+        /* STEP 5 — GET WEBSOCKET URL */
+
+        const wsUrl =
+            otpData?.data?.url;
+
+
+        if (!wsUrl) {
+
+            alert(
+                "Deriv did not return a WebSocket URL.\n\n" +
+                JSON.stringify(otpData)
+            );
+
+            return;
+        }
+
+
+        console.log(
+            "AUTHENTICATED WEBSOCKET URL RECEIVED"
+        );
+
+
+        /* STEP 6 — CONNECT */
+
+        derivAccountSocket =
+            new WebSocket(wsUrl);
+
+
+        derivAccountSocket.onopen =
+            function() {
+
+                console.log(
+                    "DERIV ACCOUNT WEBSOCKET CONNECTED"
+                );
+
+
+                setStatus(
+                    "DERIV ACCOUNT CONNECTED",
+                    true
+                );
+
+
+                alert(
+                    "SUCCESS!\n\n" +
+                    "Your Deriv account is connected."
+                );
+
+
+                /* REQUEST BALANCE */
+
+                derivAccountSocket.send(
+                    JSON.stringify({
+
+                        balance: 1,
+
+                        subscribe: 1,
+
+                        req_id: 100
+
+                    })
+                );
+
+            };
+
+
+        derivAccountSocket.onmessage =
+            function(event) {
+
+                let message;
+
+                try {
+
+                    message =
+                        JSON.parse(event.data);
+
+                } catch (error) {
+
+                    console.error(
+                        "Invalid WebSocket message:",
+                        event.data
+                    );
+
                     return;
                 }
 
+
                 console.log(
-                    "Authenticated Deriv data:",
-                    accountData
+                    "DERIV ACCOUNT MESSAGE:",
+                    message
                 );
 
+
+                if (message.error) {
+
+                    console.error(
+                        "DERIV ACCOUNT ERROR:",
+                        message.error
+                    );
+
+                    return;
+                }
+
+
                 if (
-                    accountData.msg_type ===
+                    message.msg_type ===
                     "balance"
                 ) {
 
                     const balance =
-                        accountData.balance;
+                        message.balance;
+
 
                     console.log(
-                        "Balance:",
-                        balance.balance,
-                        balance.currency
+                        "BALANCE:",
+                        balance
                     );
+
                 }
 
-                if (accountData.error) {
-
-                    console.error(
-                        "Deriv account error:",
-                        accountData.error
-                    );
-                }
             };
 
 
@@ -2129,23 +2405,27 @@ async function connectWithPAT() {
             function(error) {
 
                 console.error(
-                    "Authenticated WebSocket error:",
+                    "ACCOUNT WEBSOCKET ERROR:",
                     error
                 );
 
+
                 setStatus(
-                    "DERIV ACCOUNT CONNECTION ERROR",
+                    "ACCOUNT CONNECTION ERROR",
                     false
                 );
+
             };
 
 
         derivAccountSocket.onclose =
-            function() {
+            function(event) {
 
                 console.log(
-                    "Deriv authenticated WebSocket closed."
+                    "ACCOUNT WEBSOCKET CLOSED:",
+                    event
                 );
+
             };
 
     }
@@ -2153,16 +2433,27 @@ async function connectWithPAT() {
     catch (error) {
 
         console.error(
-            "Deriv connection error:",
+            "PAT CONNECTION ERROR:",
             error
         );
 
+
+        setStatus(
+            "CONNECTION ERROR",
+            false
+        );
+
+
         alert(
-            "Could not connect to Deriv account.\n\n" +
+            "Could not connect to Deriv.\n\n" +
             error.message
         );
 
+
         derivPAT = null;
+
+    }
+
     }
     
 }

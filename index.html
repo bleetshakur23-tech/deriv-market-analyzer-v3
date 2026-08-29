@@ -48,7 +48,7 @@ main {
 }
 
 .status {
-    padding: 12px;
+    padding: 13px;
     border-radius: 9px;
     margin-bottom: 15px;
     font-weight: bold;
@@ -72,7 +72,7 @@ main {
 }
 
 .danger {
-    background: #3b1822;
+    background: #421820;
     color: #ff9cab;
     padding: 12px;
     border-radius: 9px;
@@ -118,15 +118,15 @@ button.secondary {
 }
 
 button.green {
-    background: #168653;
+    background: #159957;
 }
 
 button.red {
-    background: #b83b4b;
+    background: #b8324b;
 }
 
 button.orange {
-    background: #b47716;
+    background: #d88416;
 }
 
 button:disabled {
@@ -162,7 +162,7 @@ button:disabled {
 }
 
 .market-list {
-    max-height: 320px;
+    max-height: 350px;
     overflow-y: auto;
     margin-top: 12px;
 }
@@ -176,8 +176,13 @@ button:disabled {
     border: 1px solid transparent;
 }
 
+.market:hover {
+    border-color: #6870ff;
+}
+
 .market.selected {
     border-color: #6870ff;
+    background: #151e38;
 }
 
 .market-name {
@@ -227,9 +232,9 @@ button:disabled {
 .analysis-line {
     display: flex;
     justify-content: space-between;
+    gap: 10px;
     padding: 9px 0;
     border-bottom: 1px solid #202b45;
-    gap: 10px;
 }
 
 .signal {
@@ -269,75 +274,51 @@ button:disabled {
     font-size: 12px;
 }
 
-.badge {
-    display: inline-block;
-    padding: 6px 10px;
-    border-radius: 20px;
-    background: #273451;
-    font-size: 12px;
-    font-weight: bold;
+.big-button {
+    height: 55px;
+    font-size: 18px;
 }
 
-.badge.demo {
-    background: #153b2b;
-    color: #72e5a5;
-}
-
-.badge.real {
-    background: #3b1822;
-    color: #ff9cab;
-}
-
-.trade-box {
+.trade-panel {
+    border: 1px solid #354467;
     background: #0d1425;
-    padding: 15px;
     border-radius: 12px;
-    border: 1px solid #273451;
+    padding: 15px;
 }
 
-.big-price {
-    font-size: 30px;
-    font-weight: bold;
-}
-
-.switch-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: #0d1425;
-    padding: 12px;
-    border-radius: 10px;
-}
-
-.switch-row input {
-    width: 22px;
-    height: 22px;
-}
-
-.history-item {
-    background: #0d1425;
+.log {
+    background: #050913;
     border-radius: 9px;
     padding: 12px;
-    margin-bottom: 8px;
+    max-height: 250px;
+    overflow-y: auto;
+    font-family: monospace;
+    font-size: 12px;
 }
 
-.win {
-    border-left: 4px solid #48d597;
+.log div {
+    padding: 4px 0;
+    border-bottom: 1px solid #172039;
 }
 
-.loss {
-    border-left: 4px solid #ff6978;
+.account-real {
+    color: #ff9cab;
+    font-weight: bold;
 }
 
-.neutral {
-    border-left: 4px solid #6870ff;
+.account-demo {
+    color: #72e5a5;
+    font-weight: bold;
 }
 
-.hidden {
-    display: none;
+.fx-box {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
 }
 
 @media (min-width: 700px) {
+
     .controls {
         grid-template-columns: repeat(3, 1fr);
     }
@@ -345,13 +326,9 @@ button:disabled {
     .digits {
         grid-template-columns: repeat(5, 1fr);
     }
-}
 
-@media (min-width: 950px) {
-    .two-column {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 15px;
+    .trade-controls {
+        grid-template-columns: repeat(3, 1fr);
     }
 }
 </style>
@@ -361,75 +338,44 @@ button:disabled {
 
 <header>
     <h1>Deriv Market Analyzer V4</h1>
-    <p>Statistical Intelligence • Live Market Analysis • Deriv Trading</p>
+    <p>Market Intelligence • Statistical Analysis • Deriv Trading</p>
 </header>
 
 <main>
-
-<!-- CONNECTION STATUS -->
 
 <div id="status" class="status offline">
     DISCONNECTED
 </div>
 
-
-<!-- ACCOUNT -->
+<!-- CONNECTION -->
 
 <div class="card">
 
-    <h2>Deriv Account</h2>
+    <h2>Deriv Connection</h2>
 
-    <div class="grid">
-
-        <div class="stat">
-            <small>Connection</small>
-            <strong id="accountConnection">
-                NOT CONNECTED
-            </strong>
-        </div>
-
-        <div class="stat">
-            <small>Account</small>
-            <strong id="accountType">
-                DEMO
-            </strong>
-        </div>
-
-        <div class="stat">
-            <small>Balance</small>
-            <strong id="balanceUSD">
-                —
-            </strong>
-        </div>
-
-        <div class="stat">
-            <small>Balance KES</small>
-            <strong id="balanceKES">
-                —
-            </strong>
-        </div>
-
+    <div class="warning">
+        Keep your PAT private. This browser application stores the token
+        only in memory while the page is open.
     </div>
 
     <br>
 
     <div class="controls">
 
-        <button onclick="connectWithPAT()">
+        <button onclick="connectPublic()">
+            CONNECT MARKET DATA
+        </button>
+
+        <button onclick="connectWithPAT()" class="secondary">
             CONNECT MY DERIV ACCOUNT
         </button>
 
-        <button
-            onclick="disconnectAccount()"
-            class="secondary">
-            DISCONNECT ACCOUNT
-        </button>
-
-        <button
-            onclick="refreshBalance()"
-            class="secondary">
-            REFRESH BALANCE
-        </button>
+        <select id="accountSelect"
+                onchange="selectAccount()">
+            <option value="">
+                Connect account first
+            </option>
+        </select>
 
     </div>
 
@@ -437,30 +383,34 @@ button:disabled {
 
     <div class="grid">
 
-        <div>
-            <label>Account Mode</label>
-            <select id="accountMode">
-                <option value="demo">DEMO</option>
-                <option value="real">REAL</option>
-            </select>
+        <div class="stat">
+            <small>Account</small>
+            <strong id="accountType">
+                NOT CONNECTED
+            </strong>
         </div>
 
-        <div>
-            <label>USD → KES Rate</label>
-            <input
-                id="fxRate"
-                type="number"
-                value="129"
-                step="0.01">
+        <div class="stat">
+            <small>Account ID</small>
+            <strong id="accountId">
+                —
+            </strong>
         </div>
 
-    </div>
+        <div class="stat">
+            <small>Balance</small>
+            <strong id="balance">
+                —
+            </strong>
+        </div>
 
-    <br>
+        <div class="stat">
+            <small>Currency</small>
+            <strong id="currency">
+                —
+            </strong>
+        </div>
 
-    <div class="warning">
-        DEMO is recommended for testing. REAL mode uses real funds.
-        The application will not switch to REAL automatically.
     </div>
 
 </div>
@@ -506,25 +456,22 @@ button:disabled {
 
         </select>
 
-
         <input
             id="search"
-            placeholder="Search market...">
+            placeholder="Search market..."
+        >
 
-
-        <button onclick="connectPublic()">
-            CONNECT MARKET DATA
+        <button onclick="loadMarkets()">
+            REFRESH MARKETS
         </button>
 
     </div>
-
 
     <br>
 
     <div id="marketCount" class="muted">
         No markets loaded
     </div>
-
 
     <div id="marketList" class="market-list">
         Connect to load markets.
@@ -571,16 +518,10 @@ button:disabled {
 
     </div>
 
-    <br>
-
-    <div id="availableContracts" class="muted">
-        Select a market.
-    </div>
-
 </div>
 
 
-<!-- ANALYZER CONTROL -->
+<!-- ANALYZER -->
 
 <div class="card">
 
@@ -588,364 +529,461 @@ button:disabled {
 
     <div class="controls">
 
+        <select id="sample">
+
+            <option value="50">
+                50 ticks
+            </option>
+
+            <option value="100">
+                100 ticks
+            </option>
+
+            <option value="250">
+                250 ticks
+            </option>
+
+            <option value="500">
+                500 ticks
+            </option>
+
+            <option value="1000" selected>
+                1,000 ticks
+            </option>
+
+            <option value="5000">
+                5,000 ticks
+            </option>
+
+        </select>
+
         <button
             id="startAnalyzerBtn"
             onclick="startAnalyzer()"
-            class="green">
+            class="green big-button">
 
             START ANALYZER
 
         </button>
 
-
         <button
-            id="stopAnalyzerBtn"
             onclick="stopAnalyzer()"
-            class="red"
-            disabled>
+            class="secondary">
 
             STOP ANALYZER
 
         </button>
 
-
-        <button
-            onclick="runFullAnalysis()"
-            class="secondary">
-
-            ANALYZE NOW
-
-        </button>
-
     </div>
 
     <br>
-
-    <div class="switch-row">
-
-        <span>
-            AUTO TRADE
-        </span>
-
-        <input
-            id="autoTrade"
-            type="checkbox">
-
-    </div>
-
-    <br>
-
-    <div class="warning">
-        Auto Trade is OFF by default. Turning it on allows the analyzer
-        to execute a trade after its configured signal threshold is met.
-        Test with DEMO first.
-    </div>
-
-</div>
-
-
-<!-- TRADING SETTINGS -->
-
-<div class="card">
-
-    <h2>Trading Settings</h2>
-
-    <div class="controls">
-
-        <div>
-            <label>Contract Type</label>
-
-            <select id="contractType">
-
-                <option value="CALL">
-                    Rise
-                </option>
-
-                <option value="PUT">
-                    Fall
-                </option>
-
-                <option value="DIGITOVER">
-                    Over
-                </option>
-
-                <option value="DIGITUNDER">
-                    Under
-                </option>
-
-                <option value="DIGITODD">
-                    Odd
-                </option>
-
-                <option value="DIGITEVEN">
-                    Even
-                </option>
-
-                <option value="DIGITMATCH">
-                    Matches
-                </option>
-
-                <option value="DIGITDIFF">
-                    Differs
-                </option>
-
-            </select>
-        </div>
-
-
-        <div>
-            <label>Stake USD</label>
-
-            <input
-                id="stake"
-                type="number"
-                min="0.35"
-                step="0.01"
-                value="1">
-        </div>
-
-
-        <div>
-            <label>Duration</label>
-
-            <input
-                id="duration"
-                type="number"
-                min="1"
-                value="1">
-        </div>
-
-
-        <div>
-            <label>Duration Unit</label>
-
-            <select id="durationUnit">
-
-                <option value="t">
-                    Ticks
-                </option>
-
-                <option value="s" selected>
-                    Seconds
-                </option>
-
-                <option value="m">
-                    Minutes
-                </option>
-
-            </select>
-
-        </div>
-
-
-        <div id="barrierBox">
-
-            <label>
-                Barrier / Digit
-            </label>
-
-            <input
-                id="barrier"
-                type="number"
-                min="0"
-                max="9"
-                value="5">
-
-        </div>
-
-
-        <div>
-
-            <label>
-                Minimum Analyzer Score
-            </label>
-
-            <input
-                id="minScore"
-                type="number"
-                min="1"
-                max="100"
-                value="70">
-
-        </div>
-
-    </div>
-
-    <br>
-
-    <div class="trade-box">
-
-        <div class="muted">
-            Proposal
-        </div>
-
-        <div
-            id="proposalStatus"
-            class="big-price">
-
-            NO PROPOSAL
-
-        </div>
-
-        <div id="proposalDetails">
-            Request a proposal after selecting a market.
-        </div>
-
-    </div>
-
-    <br>
-
-    <div class="controls">
-
-        <button
-            onclick="requestProposal()">
-
-            GET PROPOSAL
-
-        </button>
-
-
-        <button
-            id="executeTradeBtn"
-            onclick="executeTrade()"
-            class="green">
-
-            EXECUTE TRADE
-
-        </button>
-
-
-        <button
-            onclick="stopAllTrading()"
-            class="red">
-
-            STOP ALL TRADING
-
-        </button>
-
-    </div>
-
-</div>
-
-
-<!-- LIVE ANALYZER -->
-
-<div class="card">
-
-    <h2>Live Analyzer</h2>
 
     <div class="grid">
 
         <div class="stat">
             <small>Analyzer</small>
+            <strong id="analyzerState">
+                STOPPED
+            </strong>
+        </div>
+
+        <div class="stat">
+            <small>Total Ticks</small>
+            <strong id="count">
+                0
+            </strong>
+        </div>
+
+        <div class="stat">
+            <small>Sample</small>
+            <strong id="window">
+                0
+            </strong>
+        </div>
+
+        <div class="stat">
+            <small>Engine</small>
             <strong id="engine">
                 WAITING
             </strong>
         </div>
 
+    </div>
+
+</div>
+
+
+<!-- TRADING -->
+
+<div class="card">
+
+    <h2>Trading Control</h2>
+
+    <div class="danger">
+        Trading is real-money capable. DEMO is recommended for testing.
+        The analyzer does not guarantee profitable outcomes.
+    </div>
+
+    <br>
+
+    <div class="trade-panel">
+
+        <div class="grid">
+
+            <div>
+                <small class="muted">
+                    Contract
+                </small>
+
+                <select id="contractType">
+
+                    <option value="CALL">
+                        Rise / CALL
+                    </option>
+
+                    <option value="PUT">
+                        Fall / PUT
+                    </option>
+
+                    <option value="DIGITOVER">
+                        Digit Over
+                    </option>
+
+                    <option value="DIGITUNDER">
+                        Digit Under
+                    </option>
+
+                    <option value="DIGITODD">
+                        Digit Odd
+                    </option>
+
+                    <option value="DIGITEVEN">
+                        Digit Even
+                    </option>
+
+                    <option value="DIGITMATCH">
+                        Digit Matches
+                    </option>
+
+                    <option value="DIGITDIFF">
+                        Digit Differs
+                    </option>
+
+                    <option value="HIGHER">
+                        Higher
+                    </option>
+
+                    <option value="LOWER">
+                        Lower
+                    </option>
+
+                    <option value="ONETOUCH">
+                        One Touch
+                    </option>
+
+                    <option value="NOTOUCH">
+                        No Touch
+                    </option>
+
+                    <option value="UPORDOWN">
+                        Up / Down
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div>
+                <small class="muted">
+                    Stake
+                </small>
+
+                <input
+                    id="stake"
+                    type="number"
+                    min="0.35"
+                    step="0.01"
+                    value="1"
+                >
+
+            </div>
+
+
+            <div>
+                <small class="muted">
+                    Duration
+                </small>
+
+                <select id="duration">
+
+                    <option value="1">
+                        1 second
+                    </option>
+
+                    <option value="2">
+                        2 seconds
+                    </option>
+
+                    <option value="5">
+                        5 seconds
+                    </option>
+
+                    <option value="10">
+                        10 seconds
+                    </option>
+
+                    <option value="15">
+                        15 seconds
+                    </option>
+
+                    <option value="30">
+                        30 seconds
+                    </option>
+
+                    <option value="60" selected>
+                        1 minute
+                    </option>
+
+                    <option value="120">
+                        2 minutes
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+        <br>
+
+        <div class="grid">
+
+            <div>
+                <small class="muted">
+                    Digit / Barrier
+                </small>
+
+                <select id="barrier">
+
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+
+                </select>
+
+            </div>
+
+            <div>
+                <small class="muted">
+                    Trade Mode
+                </small>
+
+                <select id="tradeMode">
+
+                    <option value="manual">
+                        Manual Trade
+                    </option>
+
+                    <option value="auto">
+                        Auto Trade
+                    </option>
+
+                </select>
+
+            </div>
+
+            <div>
+                <small class="muted">
+                    Maximum Trades
+                </small>
+
+                <input
+                    id="maxTrades"
+                    type="number"
+                    min="1"
+                    max="100"
+                    value="5"
+                >
+
+            </div>
+
+        </div>
+
+        <br>
+
+        <div class="grid">
+
+            <button
+                onclick="requestTradeProposal()">
+
+                GET TRADE PROPOSAL
+
+            </button>
+
+            <button
+                onclick="executeTrade()"
+                class="green">
+
+                EXECUTE TRADE
+
+            </button>
+
+            <button
+                onclick="stopAutoTrading()"
+                class="red">
+
+                STOP AUTO TRADING
+
+            </button>
+
+        </div>
+
+        <br>
+
+        <div id="tradeInfo"
+             class="muted">
+
+            No trade proposal yet.
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- AUTO TRADING -->
+
+<div class="card">
+
+    <h2>Analyzer → Trade Engine</h2>
+
+    <div class="warning">
+
+        AUTO TRADE only becomes active when the analyzer is running,
+        an authenticated account is connected, and the Auto Trade
+        mode is selected.
+
+    </div>
+
+    <br>
+
+    <div class="grid">
+
         <div class="stat">
-            <small>Score</small>
-            <strong id="score">
-                0/100
+            <small>Trading Engine</small>
+            <strong id="tradingEngine">
+                OFF
             </strong>
         </div>
 
         <div class="stat">
-            <small>Hot Digit</small>
-            <strong id="hotDigit">
-                —
+            <small>Trades</small>
+            <strong id="tradeCount">
+                0
             </strong>
         </div>
 
         <div class="stat">
-            <small>Cold Digit</small>
-            <strong id="coldDigit">
-                —
+            <small>Wins</small>
+            <strong id="wins">
+                0
             </strong>
+        </div>
+
+        <div class="stat">
+            <small>Losses</small>
+            <strong id="losses">
+                0
+            </strong>
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- FX -->
+
+<div class="card">
+
+    <h2>USD ↔ Kenyan Shilling</h2>
+
+    <p class="muted">
+        Deriv Options accounts currently use USD. KES is shown here
+        as a display conversion only.
+    </p>
+
+    <div class="fx-box">
+
+        <div>
+
+            <small class="muted">
+                USD → KES Rate
+            </small>
+
+            <input
+                id="fxRate"
+                type="number"
+                step="0.01"
+                value="129"
+            >
+
+        </div>
+
+        <div>
+
+            <small class="muted">
+                USD Amount
+            </small>
+
+            <input
+                id="usdAmount"
+                type="number"
+                step="0.01"
+                value="1"
+            >
+
         </div>
 
     </div>
 
     <br>
 
-    <div id="signal" class="signal">
+    <div class="grid">
 
-        <div class="signal-title">
-            NO SIGNAL
+        <div class="stat">
+
+            <small>
+                USD
+            </small>
+
+            <strong id="fxUsd">
+                $1.00
+            </strong>
+
         </div>
 
-        <p>
-            Start the analyzer to collect and analyze ticks.
-        </p>
+        <div class="stat">
 
-    </div>
+            <small>
+                KES
+            </small>
 
-</div>
+            <strong id="fxKes">
+                KSh 129.00
+            </strong>
 
+        </div>
 
-<!-- ANALYSIS WINDOW -->
-
-<div class="card">
-
-    <h2>Analysis Window</h2>
-
-    <select id="sample">
-
-        <option value="50">
-            50 ticks
-        </option>
-
-        <option value="100">
-            100 ticks
-        </option>
-
-        <option value="250">
-            250 ticks
-        </option>
-
-        <option value="500">
-            500 ticks
-        </option>
-
-        <option value="1000" selected>
-            1,000 ticks
-        </option>
-
-        <option value="2500">
-            2,500 ticks
-        </option>
-
-        <option value="5000">
-            5,000 ticks
-        </option>
-
-    </select>
-
-</div>
-
-
-<!-- STATISTICS -->
-
-<div class="grid">
-
-    <div class="stat">
-        <small>Total Ticks</small>
-        <strong id="count">0</strong>
-    </div>
-
-    <div class="stat">
-        <small>Analyzed</small>
-        <strong id="window">0</strong>
-    </div>
-
-    <div class="stat">
-        <small>Expected Digit</small>
-        <strong>10%</strong>
-    </div>
-
-    <div class="stat">
-        <small>Momentum</small>
-        <strong id="momentum">0%</strong>
     </div>
 
 </div>
@@ -957,14 +995,14 @@ button:disabled {
 
     <h2>Digit Distribution</h2>
 
-    <div id="digits" class="digits">
-        Waiting for data...
+    <div id="digits"
+         class="digits">
     </div>
 
 </div>
 
 
-<!-- STATISTICAL SUMMARY -->
+<!-- STATISTICS -->
 
 <div class="card">
 
@@ -1001,14 +1039,14 @@ button:disabled {
 
         <div class="stat">
             <small>Hot Digit</small>
-            <strong id="hotDigit2">
+            <strong id="hotDigit">
                 —
             </strong>
         </div>
 
         <div class="stat">
             <small>Cold Digit</small>
-            <strong id="coldDigit2">
+            <strong id="coldDigit">
                 —
             </strong>
         </div>
@@ -1025,8 +1063,8 @@ button:disabled {
     <h2>Digit Transition Analysis</h2>
 
     <p class="muted">
-        Measures which digits followed the most recent digit
-        in the historical sample.
+        Measures which digits followed another digit in the observed
+        historical sample.
     </p>
 
     <div id="transitions">
@@ -1036,7 +1074,29 @@ button:disabled {
 </div>
 
 
-<!-- MULTI WINDOWS -->
+<!-- SIGNAL -->
+
+<div class="card">
+
+    <h2>V4 Statistical Intelligence</h2>
+
+    <div id="signal"
+         class="signal">
+
+        <div class="signal-title">
+            NO SIGNAL
+        </div>
+
+        <p>
+            Start the analyzer.
+        </p>
+
+    </div>
+
+</div>
+
+
+<!-- MULTI WINDOW -->
 
 <div class="card">
 
@@ -1056,8 +1116,8 @@ button:disabled {
     <h2>Backtesting</h2>
 
     <div class="warning">
-        Backtesting is historical analysis only.
-        It does not guarantee future results.
+        Historical performance is not a guarantee of future
+        performance.
     </div>
 
     <br>
@@ -1069,31 +1129,14 @@ button:disabled {
 </div>
 
 
-<!-- OPEN CONTRACT -->
+<!-- CONTRACT -->
 
 <div class="card">
 
     <h2>Open Contract</h2>
 
-    <div id="openContract">
-
-        No active contract.
-
-    </div>
-
-</div>
-
-
-<!-- TRADE HISTORY -->
-
-<div class="card">
-
-    <h2>Trade History</h2>
-
-    <div id="tradeHistory">
-
-        No trades yet.
-
+    <div id="contractStatus">
+        No open contract.
     </div>
 
 </div>
@@ -1105,11 +1148,24 @@ button:disabled {
 
     <h2>Recent Ticks</h2>
 
-    <div id="ticks" class="tick-list">
+    <div id="ticks"
+         class="tick-list">
     </div>
 
 </div>
 
+
+<!-- LOG -->
+
+<div class="card">
+
+    <h2>System Log</h2>
+
+    <div id="log"
+         class="log">
+    </div>
+
+</div>
 
 </main>
 
@@ -1123,14 +1179,11 @@ button:disabled {
 const DERIV_APP_ID =
     "34fv9KSI5Got7lmvR0eqY";
 
-const PUBLIC_WS_URL =
+const PUBLIC_WS =
     "wss://api.derivws.com/trading/v1/options/ws/public";
 
-const REST_BASE =
+const API_BASE =
     "https://api.derivws.com";
-
-const MAX_TICKS =
-    5000;
 
 
 /* =========================================================
@@ -1143,88 +1196,68 @@ let accountSocket = null;
 
 let derivPAT = null;
 
-let accountId = null;
+let accounts = [];
 
-let accountCurrency = "USD";
-
-let accountMode = "demo";
+let selectedAccount = null;
 
 let markets = [];
 
-let selectedMarket = null;
+let ticks = [];
 
 let selectedSymbol = null;
 
 let selectedName = null;
 
-let ticks = [];
-
 let analyzerRunning = false;
 
 let autoTrading = false;
 
-let currentScore = 0;
-
-let currentSignal = "NO SIGNAL";
-
-let currentProposal = null;
+let proposalData = null;
 
 let currentContractId = null;
 
-let tradeHistory = [];
+let tradeCount = 0;
 
-let requestCounter = 1000;
+let wins = 0;
+
+let losses = 0;
+
+let signalHistory = [];
+
+let lastSignalTime = 0;
 
 let lastAutoTradeTime = 0;
 
-let contractsAvailable = [];
+let fxRate = 129;
 
 
 /* =========================================================
-   HELPERS
+   LOG
 ========================================================= */
 
-function nextReqId() {
+function log(message) {
 
-    requestCounter++;
+    const box =
+        document.getElementById("log");
 
-    return requestCounter;
+    const line =
+        document.createElement("div");
+
+    line.textContent =
+        "[" +
+        new Date().toLocaleTimeString() +
+        "] " +
+        message;
+
+    box.prepend(line);
+
+    console.log(message);
 }
 
 
-function escapeHTML(text) {
-
-    return String(text)
-
-        .replace(/&/g, "&amp;")
-
-        .replace(/</g, "&lt;")
-
-        .replace(/>/g, "&gt;")
-
-        .replace(/"/g, "&quot;")
-
-        .replace(/'/g, "&#039;");
-}
-
-
-function line(name, value) {
-
-    return (
-        "<div class='analysis-line'>" +
-
-        "<span>" +
-        escapeHTML(name) +
-        "</span>" +
-
-        "<strong>" +
-        escapeHTML(value) +
-        "</strong>" +
-
-        "</div>"
-    );
-}
-
+/* =========================================================
+   STATUS
+========================================================= */
 
 function setStatus(message, online) {
 
@@ -1236,41 +1269,20 @@ function setStatus(message, online) {
 
     status.className =
         "status " +
-        (
-            online
-                ? "online"
-                : "offline"
-        );
-}
-
-
-function sendAccount(message) {
-
-    if (
-        accountSocket &&
-        accountSocket.readyState === WebSocket.OPEN
-    ) {
-
-        accountSocket.send(
-            JSON.stringify(message)
-        );
-
-        return true;
-    }
-
-    return false;
+        (online ? "online" : "offline");
 }
 
 
 /* =========================================================
-   PUBLIC MARKET CONNECTION
+   PUBLIC CONNECTION
 ========================================================= */
 
 function connectPublic() {
 
     if (
         publicSocket &&
-        publicSocket.readyState === WebSocket.OPEN
+        publicSocket.readyState ===
+        WebSocket.OPEN
     ) {
 
         loadMarkets();
@@ -1278,17 +1290,17 @@ function connectPublic() {
         return;
     }
 
-
     setStatus(
         "CONNECTING TO MARKET DATA...",
         false
     );
 
+    log(
+        "Opening public Deriv market connection..."
+    );
 
     publicSocket =
-        new WebSocket(
-            PUBLIC_WS_URL
-        );
+        new WebSocket(PUBLIC_WS);
 
 
     publicSocket.onopen =
@@ -1299,7 +1311,12 @@ function connectPublic() {
                 true
             );
 
+            log(
+                "Public market connection established."
+            );
+
             loadMarkets();
+
         };
 
 
@@ -1311,13 +1328,15 @@ function connectPublic() {
             try {
 
                 data =
-                    JSON.parse(
-                        event.data
-                    );
+                    JSON.parse(event.data);
 
             }
 
-            catch(error) {
+            catch (error) {
+
+                log(
+                    "Invalid public WebSocket message."
+                );
 
                 return;
             }
@@ -1325,9 +1344,9 @@ function connectPublic() {
 
             if (data.error) {
 
-                console.error(
-                    "Public API error:",
-                    data.error
+                log(
+                    "Public API error: " +
+                    JSON.stringify(data.error)
                 );
 
                 return;
@@ -1340,10 +1359,15 @@ function connectPublic() {
             ) {
 
                 markets =
-                    data.active_symbols ||
-                    [];
+                    data.active_symbols || [];
 
                 renderMarkets();
+
+                log(
+                    "Loaded " +
+                    markets.length +
+                    " markets."
+                );
             }
 
 
@@ -1364,17 +1388,6 @@ function connectPublic() {
                 receiveTick(data);
             }
 
-
-            if (
-                data.msg_type ===
-                "contracts_for"
-            ) {
-
-                receiveContractsFor(
-                    data
-                );
-            }
-
         };
 
 
@@ -1385,6 +1398,10 @@ function connectPublic() {
                 "MARKET DATA ERROR",
                 false
             );
+
+            log(
+                "Public WebSocket error."
+            );
         };
 
 
@@ -1394,6 +1411,10 @@ function connectPublic() {
             setStatus(
                 "MARKET DATA DISCONNECTED",
                 false
+            );
+
+            log(
+                "Public WebSocket closed."
             );
         };
 }
@@ -1407,8 +1428,11 @@ function loadMarkets() {
 
     if (
         !publicSocket ||
-        publicSocket.readyState !== WebSocket.OPEN
+        publicSocket.readyState !==
+        WebSocket.OPEN
     ) {
+
+        connectPublic();
 
         return;
     }
@@ -1421,7 +1445,7 @@ function loadMarkets() {
                 "full",
 
             req_id:
-                nextReqId()
+                1
 
         })
     );
@@ -1439,7 +1463,6 @@ function renderMarkets() {
             "marketList"
         );
 
-
     const search =
         document.getElementById(
             "search"
@@ -1447,7 +1470,6 @@ function renderMarkets() {
         .value
         .toLowerCase()
         .trim();
-
 
     const category =
         document.getElementById(
@@ -1463,18 +1485,18 @@ function renderMarkets() {
                 const name =
                     String(
                         market.underlying_symbol_name ||
+                        market.display_name ||
                         ""
                     )
                     .toLowerCase();
-
 
                 const symbol =
                     String(
                         market.underlying_symbol ||
+                        market.symbol ||
                         ""
                     )
                     .toLowerCase();
-
 
                 const type =
                     String(
@@ -1496,68 +1518,77 @@ function renderMarkets() {
 
 
                 if (
-                    category !== "all"
+                    category ===
+                    "forex"
                 ) {
 
-                    if (
-                        category ===
-                        "forex"
-                    ) {
+                    categoryOK =
+                        type.includes(
+                            "forex"
+                        );
+                }
 
-                        categoryOK =
-                            type ===
-                            "forex";
-                    }
 
-                    else if (
-                        category ===
-                        "crypto"
-                    ) {
+                else if (
+                    category ===
+                    "crypto"
+                ) {
 
-                        categoryOK =
-                            type.includes(
-                                "crypto"
-                            );
-                    }
+                    categoryOK =
+                        type.includes(
+                            "crypto"
+                        );
+                }
 
-                    else if (
-                        category ===
-                        "synthetic"
-                    ) {
 
-                        categoryOK =
-                            type.includes(
-                                "synthetic"
-                            ) ||
+                else if (
+                    category ===
+                    "synthetic"
+                ) {
 
-                            name.includes(
-                                "volatility"
-                            ) ||
+                    categoryOK =
+                        type.includes(
+                            "synthetic"
+                        ) ||
+                        name.includes(
+                            "volatility"
+                        ) ||
+                        name.includes(
+                            "crash"
+                        ) ||
+                        name.includes(
+                            "boom"
+                        ) ||
+                        name.includes(
+                            "jump"
+                        ) ||
+                        name.includes(
+                            "drift"
+                        );
+                }
 
-                            name.includes(
-                                "crash"
-                            ) ||
 
-                            name.includes(
-                                "boom"
-                            ) ||
+                else if (
+                    category ===
+                    "commodities"
+                ) {
 
-                            name.includes(
-                                "jump"
-                            ) ||
+                    categoryOK =
+                        type.includes(
+                            "commodities"
+                        );
+                }
 
-                            name.includes(
-                                "range break"
-                            );
-                    }
 
-                    else {
+                else if (
+                    category ===
+                    "indices"
+                ) {
 
-                        categoryOK =
-                            type.includes(
-                                category
-                            );
-                    }
+                    categoryOK =
+                        type.includes(
+                            "indices"
+                        );
                 }
 
 
@@ -1589,11 +1620,12 @@ function renderMarkets() {
             function(market) {
 
                 const symbol =
-                    market.underlying_symbol;
-
+                    market.underlying_symbol ||
+                    market.symbol;
 
                 const name =
                     market.underlying_symbol_name ||
+                    market.display_name ||
                     symbol;
 
 
@@ -1621,27 +1653,17 @@ function renderMarkets() {
                 div.innerHTML =
 
                     "<div class='market-name'>" +
-
-                    escapeHTML(
-                        name
-                    ) +
-
+                    escapeHTML(name) +
                     "</div>" +
 
                     "<div class='market-info'>" +
-
-                    escapeHTML(
-                        symbol
-                    ) +
-
+                    escapeHTML(symbol) +
                     " • " +
-
                     escapeHTML(
                         market.market ||
                         market.underlying_symbol_type ||
                         ""
                     ) +
-
                     "</div>";
 
 
@@ -1651,12 +1673,11 @@ function renderMarkets() {
                         selectMarket(
                             market
                         );
+
                     };
 
 
-                list.appendChild(
-                    div
-                );
+                list.appendChild(div);
 
             }
         );
@@ -1669,16 +1690,13 @@ function renderMarkets() {
 
 function selectMarket(market) {
 
-    selectedMarket =
-        market;
-
-
     selectedSymbol =
-        market.underlying_symbol;
-
+        market.underlying_symbol ||
+        market.symbol;
 
     selectedName =
         market.underlying_symbol_name ||
+        market.display_name ||
         selectedSymbol;
 
 
@@ -1698,30 +1716,22 @@ function selectMarket(market) {
 
     ticks = [];
 
-
-    document.getElementById(
-        "price"
-    )
-    .textContent =
-        "—";
-
-
-    document.getElementById(
-        "lastDigit"
-    )
-    .textContent =
-        "—";
-
-
     renderMarkets();
 
 
-    requestContractsFor();
+    log(
+        "Selected market: " +
+        selectedName +
+        " (" +
+        selectedSymbol +
+        ")"
+    );
 
 
     if (
         publicSocket &&
-        publicSocket.readyState === WebSocket.OPEN
+        publicSocket.readyState ===
+        WebSocket.OPEN
     ) {
 
         publicSocket.send(
@@ -1731,7 +1741,7 @@ function selectMarket(market) {
                     selectedSymbol,
 
                 count:
-                    MAX_TICKS,
+                    5000,
 
                 end:
                     "latest",
@@ -1739,11 +1749,8 @@ function selectMarket(market) {
                 style:
                     "ticks",
 
-                subscribe:
-                    0,
-
                 req_id:
-                    nextReqId()
+                    20
 
             })
         );
@@ -1759,119 +1766,13 @@ function selectMarket(market) {
                     1,
 
                 req_id:
-                    nextReqId()
+                    21
 
             })
         );
-    }
-}
 
-
-/* =========================================================
-   CONTRACT AVAILABILITY
-========================================================= */
-
-function requestContractsFor() {
-
-    if (
-        !selectedSymbol ||
-        !publicSocket ||
-        publicSocket.readyState !== WebSocket.OPEN
-    ) {
-
-        return;
     }
 
-
-    publicSocket.send(
-        JSON.stringify({
-
-            contracts_for:
-                selectedSymbol,
-
-            req_id:
-                nextReqId()
-
-        })
-    );
-
-
-    document.getElementById(
-        "availableContracts"
-    )
-    .textContent =
-        "Checking available contract types...";
-}
-
-
-function receiveContractsFor(data) {
-
-    const available =
-        data.contracts_for &&
-        data.contracts_for.available
-            ? data.contracts_for.available
-            : [];
-
-
-    contractsAvailable =
-        available.map(
-            function(item) {
-
-                return item.contract_type;
-            }
-        );
-
-
-    const names =
-        {
-            CALL:
-                "Rise",
-
-            PUT:
-                "Fall",
-
-            DIGITOVER:
-                "Over",
-
-            DIGITUNDER:
-                "Under",
-
-            DIGITODD:
-                "Odd",
-
-            DIGITEVEN:
-                "Even",
-
-            DIGITMATCH:
-                "Matches",
-
-            DIGITDIFF:
-                "Differs"
-        };
-
-
-    const readable =
-        contractsAvailable
-            .map(
-                function(type) {
-
-                    return (
-                        names[type] ||
-                        type
-                    );
-
-                }
-            );
-
-
-    document.getElementById(
-        "availableContracts"
-    )
-    .textContent =
-        readable.length
-            ? "Available: " +
-              readable.join(", ")
-            : "No contract types returned.";
 }
 
 
@@ -1882,19 +1783,15 @@ function receiveContractsFor(data) {
 function loadHistory(data) {
 
     if (!data.history) {
-
         return;
     }
 
 
     const prices =
-        data.history.prices ||
-        [];
-
+        data.history.prices || [];
 
     const times =
-        data.history.times ||
-        [];
+        data.history.times || [];
 
 
     ticks = [];
@@ -1907,9 +1804,7 @@ function loadHistory(data) {
     ) {
 
         const price =
-            Number(
-                prices[i]
-            );
+            Number(prices[i]);
 
 
         ticks.push({
@@ -1918,46 +1813,41 @@ function loadHistory(data) {
                 price,
 
             digit:
-                getDigit(
-                    price
-                ),
+                getDigit(price),
 
             time:
                 times[i]
 
         });
+
     }
 
 
-    if (
-        ticks.length
-    ) {
-
-        const last =
-            ticks[
-                ticks.length - 1
-            ];
-
+    if (ticks.length) {
 
         document.getElementById(
             "price"
-        )
-        .textContent =
-            last.price;
-
+        ).textContent =
+            ticks[ticks.length - 1]
+                .price;
 
         document.getElementById(
             "lastDigit"
-        )
-        .textContent =
-            last.digit;
+        ).textContent =
+            ticks[ticks.length - 1]
+                .digit;
     }
 
 
     analyze();
 
-
     showTicks();
+
+    log(
+        "Loaded " +
+        ticks.length +
+        " historical ticks."
+    );
 }
 
 
@@ -1968,7 +1858,6 @@ function loadHistory(data) {
 function receiveTick(data) {
 
     if (!data.tick) {
-
         return;
     }
 
@@ -1980,9 +1869,7 @@ function receiveTick(data) {
 
 
     const digit =
-        getDigit(
-            price
-        );
+        getDigit(price);
 
 
     ticks.push({
@@ -2001,33 +1888,27 @@ function receiveTick(data) {
 
     if (
         ticks.length >
-        MAX_TICKS
+        5000
     ) {
 
         ticks =
-            ticks.slice(
-                -MAX_TICKS
-            );
+            ticks.slice(-5000);
     }
 
 
     document.getElementById(
         "price"
-    )
-    .textContent =
+    ).textContent =
         price;
 
 
     document.getElementById(
         "lastDigit"
-    )
-    .textContent =
+    ).textContent =
         digit;
 
 
-    if (
-        analyzerRunning
-    ) {
+    if (analyzerRunning) {
 
         analyze();
     }
@@ -2038,7 +1919,7 @@ function receiveTick(data) {
 
 
 /* =========================================================
-   DIGIT
+   GET LAST DIGIT
 ========================================================= */
 
 function getDigit(price) {
@@ -2055,7 +1936,6 @@ function getDigit(price) {
 
 
     if (!numbers) {
-
         return null;
     }
 
@@ -2069,7 +1949,107 @@ function getDigit(price) {
 
 
 /* =========================================================
-   ANALYSIS
+   START ANALYZER
+========================================================= */
+
+function startAnalyzer() {
+
+    if (!selectedSymbol) {
+
+        alert(
+            "Select a market first."
+        );
+
+        return;
+    }
+
+
+    if (
+        !publicSocket ||
+        publicSocket.readyState !==
+        WebSocket.OPEN
+    ) {
+
+        alert(
+            "Connect market data first."
+        );
+
+        connectPublic();
+
+        return;
+    }
+
+
+    analyzerRunning =
+        true;
+
+
+    document.getElementById(
+        "analyzerState"
+    )
+    .textContent =
+        "RUNNING";
+
+
+    document.getElementById(
+        "startAnalyzerBtn"
+    )
+    .textContent =
+        "ANALYZER RUNNING";
+
+
+    log(
+        "Analyzer started."
+    );
+
+
+    analyze();
+}
+
+
+/* =========================================================
+   STOP ANALYZER
+========================================================= */
+
+function stopAnalyzer() {
+
+    analyzerRunning =
+        false;
+
+
+    autoTrading =
+        false;
+
+
+    document.getElementById(
+        "analyzerState"
+    )
+    .textContent =
+        "STOPPED";
+
+
+    document.getElementById(
+        "startAnalyzerBtn"
+    )
+    .textContent =
+        "START ANALYZER";
+
+
+    document.getElementById(
+        "tradingEngine"
+    )
+    .textContent =
+        "OFF";
+
+
+    log(
+        "Analyzer stopped."
+    );
+}
+
+
+/* =========================================================
+   ANALYZE
 ========================================================= */
 
 function analyze() {
@@ -2103,14 +2083,9 @@ function analyze() {
 
 
     if (
-        data.length < 20
+        data.length <
+        10
     ) {
-
-        document.getElementById(
-            "engine"
-        )
-        .textContent =
-            "COLLECTING";
 
         return;
     }
@@ -2132,6 +2107,7 @@ function analyze() {
                 counts[
                     tick.digit
                 ]++;
+
             }
 
         }
@@ -2150,7 +2126,6 @@ function analyze() {
 
 
     if (!total) {
-
         return;
     }
 
@@ -2177,49 +2152,15 @@ function analyze() {
     );
 
 
-    multiWindows();
+    windows();
 
 
     const result =
-        calculateSignal(
+        signal(
             counts,
             total,
             data
         );
-
-
-    currentScore =
-        result.score;
-
-
-    currentSignal =
-        result.level;
-
-
-    document.getElementById(
-        "score"
-    )
-    .textContent =
-        result.score +
-        "/100";
-
-
-    document.getElementById(
-        "momentum"
-    )
-    .textContent =
-        (
-            result.momentum >= 0
-                ? "+"
-                : ""
-        ) +
-        result.momentum.toFixed(2) +
-        "%";
-
-
-    renderSignal(
-        result
-    );
 
 
     backtest(
@@ -2227,9 +2168,18 @@ function analyze() {
     );
 
 
-    maybeAutoTrade(
-        result
-    );
+    if (
+        analyzerRunning &&
+        document.getElementById(
+            "tradeMode"
+        ).value ===
+        "auto"
+    ) {
+
+        checkAutoTrade(
+            result
+        );
+    }
 }
 
 
@@ -2246,12 +2196,17 @@ function renderDigits(
 
 
     counts.forEach(
-        function(count, digit) {
+        function(
+            count,
+            digit
+        ) {
 
             const pct =
-                count /
-                total *
-                100;
+                total
+                    ? count /
+                      total *
+                      100
+                    : 0;
 
 
             html +=
@@ -2266,7 +2221,8 @@ function renderDigits(
 
                 "<span>" +
                 pct.toFixed(2) +
-                "%</span>" +
+                "%" +
+                "</span>" +
 
                 "</div>" +
 
@@ -2294,8 +2250,7 @@ function renderDigits(
 
     document.getElementById(
         "digits"
-    )
-    .innerHTML =
+    ).innerHTML =
         html;
 }
 
@@ -2314,7 +2269,6 @@ function statistics(
             ...counts
         );
 
-
     const min =
         Math.min(
             ...counts
@@ -2325,7 +2279,6 @@ function statistics(
         counts.indexOf(
             max
         );
-
 
     const cold =
         counts.indexOf(
@@ -2348,36 +2301,19 @@ function statistics(
 
     document.getElementById(
         "hotDigit"
-    )
-    .textContent =
+    ).textContent =
         hot;
 
 
     document.getElementById(
         "coldDigit"
-    )
-    .textContent =
-        cold;
-
-
-    document.getElementById(
-        "hotDigit2"
-    )
-    .textContent =
-        hot;
-
-
-    document.getElementById(
-        "coldDigit2"
-    )
-    .textContent =
+    ).textContent =
         cold;
 
 
     document.getElementById(
         "stats"
-    )
-    .innerHTML =
+    ).innerHTML =
 
         line(
             "Hot Digit",
@@ -2421,7 +2357,13 @@ function statistics(
                 100
             ).toFixed(2) +
             "%"
+        ) +
+
+        line(
+            "Expected Per Digit",
+            "10%"
         );
+
 }
 
 
@@ -2440,9 +2382,11 @@ function patterns(data) {
     }
 
 
-    let longest = 1;
+    let longest =
+        1;
 
-    let current = 1;
+    let current =
+        1;
 
 
     for (
@@ -2463,6 +2407,7 @@ function patterns(data) {
         else {
 
             current = 1;
+
         }
 
 
@@ -2471,10 +2416,12 @@ function patterns(data) {
                 longest,
                 current
             );
+
     }
 
 
-    current = 1;
+    current =
+        1;
 
 
     for (
@@ -2496,21 +2443,21 @@ function patterns(data) {
         else {
 
             break;
+
         }
+
     }
 
 
     document.getElementById(
         "longestStreak"
-    )
-    .textContent =
+    ).textContent =
         longest;
 
 
     document.getElementById(
         "currentStreak"
-    )
-    .textContent =
+    ).textContent =
         current;
 }
 
@@ -2519,22 +2466,14 @@ function patterns(data) {
    TRANSITIONS
 ========================================================= */
 
-function transitions(data) {
-
-    if (
-        data.length <
-        2
-    ) {
-
-        return;
-    }
-
+function transitions(
+    data
+) {
 
     const matrix =
         Array.from(
             {
-                length:
-                    10
+                length: 10
             },
             function() {
 
@@ -2553,15 +2492,12 @@ function transitions(data) {
     ) {
 
         const previous =
-            data[
-                i - 1
-            ].digit;
-
+            data[i - 1]
+                .digit;
 
         const next =
-            data[
-                i
-            ].digit;
+            data[i]
+                .digit;
 
 
         if (
@@ -2578,7 +2514,9 @@ function transitions(data) {
             ][
                 next
             ]++;
+
         }
+
     }
 
 
@@ -2617,6 +2555,11 @@ function transitions(data) {
 
     if (!total) {
 
+        document.getElementById(
+            "transitions"
+        ).textContent =
+            "Not enough transition data.";
+
         return;
     }
 
@@ -2632,7 +2575,6 @@ function transitions(data) {
                     return {
                         digit:
                             digit,
-
                         count:
                             count
                     };
@@ -2657,8 +2599,7 @@ function transitions(data) {
 
     document.getElementById(
         "transitions"
-    )
-    .innerHTML =
+    ).innerHTML =
 
         "<p>After digit " +
         recent +
@@ -2687,10 +2628,10 @@ function transitions(data) {
 
 
 /* =========================================================
-   MULTI-WINDOW
+   MULTI WINDOWS
 ========================================================= */
 
-function multiWindows() {
+function windows() {
 
     const sizes =
         [
@@ -2741,6 +2682,7 @@ function multiWindows() {
                         counts[
                             tick.digit
                         ]++;
+
                     }
 
                 }
@@ -2752,7 +2694,6 @@ function multiWindows() {
                     ...counts
                 );
 
-
             const min =
                 Math.min(
                     ...counts
@@ -2763,7 +2704,6 @@ function multiWindows() {
                 counts.indexOf(
                     max
                 );
-
 
             const cold =
                 counts.indexOf(
@@ -2811,8 +2751,7 @@ function multiWindows() {
 
     document.getElementById(
         "windows"
-    )
-    .innerHTML =
+    ).innerHTML =
         html ||
         "Not enough data.";
 }
@@ -2822,11 +2761,25 @@ function multiWindows() {
    SIGNAL ENGINE
 ========================================================= */
 
-function calculateSignal(
+function signal(
     counts,
     total,
     data
 ) {
+
+    if (
+        total <
+        100
+    ) {
+
+        document.getElementById(
+            "engine"
+        ).textContent =
+            "COLLECTING";
+
+        return null;
+    }
+
 
     const max =
         Math.max(
@@ -2865,7 +2818,6 @@ function calculateSignal(
             0,
             half
         );
-
 
     const second =
         data.slice(
@@ -2920,77 +2872,56 @@ function calculateSignal(
         firstPct;
 
 
-    let score = 0;
+    let score =
+        0;
 
 
     if (
-        deviation >= 1.5
+        deviation >=
+        2
     ) {
 
-        score += 15;
+        score += 20;
     }
 
 
     if (
-        deviation >= 3
+        deviation >=
+        4
     ) {
 
-        score += 15;
-    }
-
-
-    if (
-        Math.abs(
-            momentum
-        ) >= 1.5
-    ) {
-
-        score += 15;
+        score += 20;
     }
 
 
     if (
         Math.abs(
             momentum
-        ) >= 3
+        ) >=
+        2
     ) {
 
-        score += 15;
+        score += 20;
     }
 
 
     if (
-        total >= 250
-    ) {
-
-        score += 10;
-    }
-
-
-    if (
-        total >= 500
-    ) {
-
-        score += 10;
-    }
-
-
-    if (
-        total >= 1000
-    ) {
-
-        score += 10;
-    }
-
-
-    if (
-        deviation >= 2 &&
         Math.abs(
             momentum
-        ) >= 2
+        ) >=
+        4
     ) {
 
-        score += 10;
+        score += 20;
+    }
+
+
+    if (
+        total >=
+        500
+    ) {
+
+        score += 20;
     }
 
 
@@ -2999,25 +2930,26 @@ function calculateSignal(
 
 
     if (
-        score >= 75
+        score >=
+        70
     ) {
 
         level =
             "STRONG WATCH";
-
     }
 
     else if (
-        score >= 55
+        score >=
+        45
     ) {
 
         level =
             "MODERATE WATCH";
-
     }
 
     else if (
-        score >= 35
+        score >=
+        25
     ) {
 
         level =
@@ -3025,22 +2957,72 @@ function calculateSignal(
     }
 
 
-    return {
+    document.getElementById(
+        "engine"
+    ).textContent =
+        level;
 
-        score:
-            score,
+
+    document.getElementById(
+        "signal"
+    ).innerHTML =
+
+        "<div class='signal-title'>" +
+        level +
+        "</div>" +
+
+        "<p>Hot digit: " +
+        hot +
+        "</p>" +
+
+        "<p>Frequency: " +
+        hotPct.toFixed(2) +
+        "%</p>" +
+
+        "<p>Deviation from 10%: " +
+        deviation.toFixed(2) +
+        " percentage points</p>" +
+
+        "<p>Frequency momentum: " +
+        (
+            momentum >= 0
+                ? "+"
+                : ""
+        ) +
+        momentum.toFixed(2) +
+        " percentage points</p>" +
+
+        "<p>Statistical score: " +
+        score +
+        "/100</p>" +
+
+        "<div class='progress'>" +
+
+        "<div class='progress-fill' style='width:" +
+        score +
+        "%'></div>" +
+
+        "</div>" +
+
+        "<p class='muted'>" +
+        "Statistical observation only. " +
+        "No outcome is guaranteed." +
+        "</p>";
+
+
+    return {
 
         level:
             level,
+
+        score:
+            score,
 
         hot:
             hot,
 
         hotPct:
             hotPct,
-
-        deviation:
-            deviation,
 
         momentum:
             momentum
@@ -3050,79 +3032,12 @@ function calculateSignal(
 
 
 /* =========================================================
-   RENDER SIGNAL
-========================================================= */
-
-function renderSignal(
-    result
-) {
-
-    document.getElementById(
-        "engine"
-    )
-    .textContent =
-        result.level;
-
-
-    document.getElementById(
-        "signal"
-    )
-    .innerHTML =
-
-        "<div class='signal-title'>" +
-
-        result.level +
-
-        "</div>" +
-
-        "<p>Hot digit: " +
-        result.hot +
-        "</p>" +
-
-        "<p>Frequency: " +
-        result.hotPct.toFixed(2) +
-        "%</p>" +
-
-        "<p>Deviation from expected 10%: " +
-        result.deviation.toFixed(2) +
-        " percentage points</p>" +
-
-        "<p>Frequency momentum: " +
-
-        (
-            result.momentum >= 0
-                ? "+"
-                : ""
-        ) +
-
-        result.momentum.toFixed(2) +
-
-        " percentage points</p>" +
-
-        "<p>Statistical score: " +
-        result.score +
-        "/100</p>" +
-
-        "<div class='progress'>" +
-
-        "<div class='progress-fill' style='width:" +
-        result.score +
-        "%'></div>" +
-
-        "</div>" +
-
-        "<p class='muted'>" +
-        "The score measures observed statistical conditions. " +
-        "It is not a guarantee of the next outcome." +
-        "</p>";
-}
-
-
-/* =========================================================
    BACKTEST
 ========================================================= */
 
-function backtest(data) {
+function backtest(
+    data
+) {
 
     if (
         data.length <
@@ -3131,8 +3046,7 @@ function backtest(data) {
 
         document.getElementById(
             "backtest"
-        )
-        .textContent =
+        ).textContent =
             "Need at least 200 ticks.";
 
         return;
@@ -3142,10 +3056,8 @@ function backtest(data) {
     const lookback =
         100;
 
-
     let signals =
         0;
-
 
     let hits =
         0;
@@ -3154,10 +3066,8 @@ function backtest(data) {
     for (
         let i =
             lookback;
-
         i <
             data.length - 1;
-
         i++
     ) {
 
@@ -3187,6 +3097,7 @@ function backtest(data) {
                     counts[
                         tick.digit
                     ]++;
+
                 }
 
             }
@@ -3240,8 +3151,7 @@ function backtest(data) {
 
     document.getElementById(
         "backtest"
-    )
-    .innerHTML =
+    ).innerHTML =
 
         "<div class='grid'>" +
 
@@ -3281,1229 +3191,61 @@ function backtest(data) {
 
 
 /* =========================================================
-   START / STOP ANALYZER
+   RECENT TICKS
 ========================================================= */
 
-function startAnalyzer() {
-
-    if (!selectedSymbol) {
-
-        alert(
-            "Select a market first."
-        );
-
-        return;
-    }
-
-
-    if (
-        !publicSocket ||
-        publicSocket.readyState !==
-        WebSocket.OPEN
-    ) {
-
-        connectPublic();
-
-        setTimeout(
-            function() {
-
-                if (
-                    selectedSymbol
-                ) {
-
-                    startAnalyzer();
-                }
-
-            },
-            1200
-        );
-
-        return;
-    }
-
-
-    analyzerRunning =
-        true;
-
-
-    document.getElementById(
-        "startAnalyzerBtn"
-    )
-    .disabled =
-        true;
-
-
-    document.getElementById(
-        "stopAnalyzerBtn"
-    )
-    .disabled =
-        false;
-
-
-    document.getElementById(
-        "engine"
-    )
-    .textContent =
-        "STARTING";
-
-
-    requestHistoryForAnalyzer();
-
-
-    addLog(
-        "Analyzer started for " +
-        selectedSymbol
-    );
-}
-
-
-function stopAnalyzer() {
-
-    analyzerRunning =
-        false;
-
-
-    autoTrading =
-        false;
-
-
-    document.getElementById(
-        "autoTrade"
-    )
-    .checked =
-        false;
-
-
-    document.getElementById(
-        "startAnalyzerBtn"
-    )
-    .disabled =
-        false;
-
-
-    document.getElementById(
-        "stopAnalyzerBtn"
-    )
-    .disabled =
-        true;
-
-
-    document.getElementById(
-        "engine"
-    )
-    .textContent =
-        "STOPPED";
-
-
-    addLog(
-        "Analyzer stopped."
-    );
-}
-
-
-function requestHistoryForAnalyzer() {
-
-    if (
-        !selectedSymbol ||
-        !publicSocket ||
-        publicSocket.readyState !==
-        WebSocket.OPEN
-    ) {
-
-        return;
-    }
-
-
-    publicSocket.send(
-        JSON.stringify({
-
-            ticks_history:
-                selectedSymbol,
-
-            count:
-                MAX_TICKS,
-
-            end:
-                "latest",
-
-            style:
-                "ticks",
-
-            subscribe:
-                0,
-
-            req_id:
-                nextReqId()
-
-        })
-    );
-}
-
-
-function runFullAnalysis() {
-
-    if (
-        !ticks.length
-    ) {
-
-        requestHistoryForAnalyzer();
-
-        return;
-    }
-
-
-    analyze();
-}
-
-
-/* =========================================================
-   AUTO TRADE
-========================================================= */
-
-document
-    .getElementById(
-        "autoTrade"
-    )
-    .addEventListener(
-        "change",
-        function() {
-
-            autoTrading =
-                this.checked;
-
-
-            if (
-                autoTrading
-            ) {
-
-                if (
-                    !analyzerRunning
-                ) {
-
-                    this.checked =
-                        false;
-
-                    autoTrading =
-                        false;
-
-                    alert(
-                        "Start the analyzer first."
-                    );
-
-                    return;
-                }
-
-
-                if (
-                    document.getElementById(
-                        "accountMode"
-                    ).value ===
-                    "real"
-                ) {
-
-                    const confirmed =
-                        confirm(
-                            "REAL AUTO TRADING is enabled. " +
-                            "Trades can use real money. Continue?"
-                        );
-
-
-                    if (!confirmed) {
-
-                        this.checked =
-                            false;
-
-                        autoTrading =
-                            false;
-
-                        return;
-                    }
-                }
-
-
-                addLog(
-                    "AUTO TRADE ENABLED"
-                );
-
-            }
-
-            else {
-
-                addLog(
-                    "AUTO TRADE DISABLED"
-                );
-            }
-
-        }
-    );
-
-
-function maybeAutoTrade(result) {
-
-    if (
-        !autoTrading ||
-        !analyzerRunning
-    ) {
-
-        return;
-    }
-
-
-    const minimum =
-        Number(
-            document.getElementById(
-                "minScore"
-            ).value
-        );
-
-
-    if (
-        result.score <
-        minimum
-    ) {
-
-        return;
-    }
-
-
-    const now =
-        Date.now();
-
-
-    /* Prevent repeated trades from every tick. */
-
-    if (
-        now -
-        lastAutoTradeTime <
-        30000
-    ) {
-
-        return;
-    }
-
-
-    /* Never stack trades while one is open. */
-
-    if (
-        currentContractId
-    ) {
-
-        return;
-    }
-
-
-    lastAutoTradeTime =
-        now;
-
-
-    requestProposal(
-        true
-    );
-}
-
-
-/* =========================================================
-   PROPOSAL
-========================================================= */
-
-function requestProposal(
-    automatic = false
-) {
-
-    if (
-        !selectedSymbol
-    ) {
-
-        alert(
-            "Select a market first."
-        );
-
-        return;
-    }
-
-
-    if (
-        !accountSocket ||
-        accountSocket.readyState !==
-        WebSocket.OPEN
-    ) {
-
-        alert(
-            "Connect your Deriv account first."
-        );
-
-        return;
-    }
-
-
-    const contractType =
-        document.getElementById(
-            "contractType"
-        ).value;
-
-
-    const stake =
-        Number(
-            document.getElementById(
-                "stake"
-            ).value
-        );
-
-
-    const duration =
-        Number(
-            document.getElementById(
-                "duration"
-            ).value
-        );
-
-
-    const durationUnit =
-        document.getElementById(
-            "durationUnit"
-        ).value;
-
-
-    if (
-        !stake ||
-        stake <= 0
-    ) {
-
-        alert(
-            "Enter a valid stake."
-        );
-
-        return;
-    }
-
-
-    if (
-        !duration ||
-        duration <= 0
-    ) {
-
-        alert(
-            "Enter a valid duration."
-        );
-
-        return;
-    }
-
-
-    if (
-        contractsAvailable.length &&
-        !contractsAvailable.includes(
-            contractType
-        )
-    ) {
-
-        alert(
-            "This contract type is not listed as available for the selected market."
-        );
-
-        return;
-    }
-
-
-    const request = {
-
-        proposal:
-            1,
-
-        amount:
-            stake,
-
-        basis:
-            "stake",
-
-        contract_type:
-            contractType,
-
-        currency:
-            accountCurrency,
-
-        duration:
-            duration,
-
-        duration_unit:
-            durationUnit,
-
-        underlying_symbol:
-            selectedSymbol,
-
-        subscribe:
-            1,
-
-        req_id:
-            nextReqId()
-
-    };
-
-
-    /* Digit contracts require a digit barrier. */
-
-    if (
-        [
-            "DIGITOVER",
-            "DIGITUNDER",
-            "DIGITMATCH",
-            "DIGITDIFF"
-        ].includes(
-            contractType
-        )
-    ) {
-
-        const barrier =
-            Number(
-                document.getElementById(
-                    "barrier"
-                ).value
-            );
-
-
-        if (
-            !Number.isInteger(
-                barrier
-            ) ||
-            barrier < 0 ||
-            barrier > 9
-        ) {
-
-            alert(
-                "Digit barrier must be between 0 and 9."
-            );
-
-            return;
-        }
-
-
-        request.barrier =
-            String(
-                barrier
-            );
-    }
-
-
-    currentProposal =
-        null;
-
-
-    document.getElementById(
-        "proposalStatus"
-    )
-    .textContent =
-        "REQUESTING...";
-
-
-    document.getElementById(
-        "proposalDetails"
-    )
-    .textContent =
-        "Waiting for Deriv proposal.";
-
-
-    sendAccount(
-        request
-    );
-
-
-    addLog(
-        "Proposal requested for " +
-        contractType +
-        " on " +
-        selectedSymbol
-    );
-
-
-    if (
-        automatic
-    ) {
-
-        addLog(
-            "Automatic trade candidate reached score threshold."
-        );
-    }
-}
-
-
-/* =========================================================
-   PROPOSAL RESPONSE
-========================================================= */
-
-function handleProposal(data) {
-
-    if (
-        !data.proposal
-    ) {
-
-        return;
-    }
-
-
-    const proposal =
-        data.proposal;
-
-
-    currentProposal =
-        proposal;
-
-
-    const ask =
-        Number(
-            proposal.ask_price
-        );
-
-
-    const payout =
-        Number(
-            proposal.payout
-        );
-
-
-    const profit =
-        payout -
-        ask;
-
-
-    document.getElementById(
-        "proposalStatus"
-    )
-    .textContent =
-        "READY";
-
-
-    document.getElementById(
-        "proposalDetails"
-    )
-    .innerHTML =
-
-        line(
-            "Proposal ID",
-            proposal.id || "—"
-        ) +
-
-        line(
-            "Stake",
-            isFinite(ask)
-                ? ask.toFixed(2) +
-                  " " +
-                  accountCurrency
-                : "—"
-        ) +
-
-        line(
-            "Payout",
-            isFinite(payout)
-                ? payout.toFixed(2) +
-                  " " +
-                  accountCurrency
-                : "—"
-        ) +
-
-        line(
-            "Potential Profit",
-            isFinite(profit)
-                ? profit.toFixed(2) +
-                  " " +
-                  accountCurrency
-                : "—"
-        );
-
-
-    /*
-       AUTO TRADE:
-       only execute if the analyzer is still running,
-       auto trade is enabled, and score remains above threshold.
-    */
-
-    if (
-        autoTrading &&
-        analyzerRunning &&
-        currentScore >=
-        Number(
-            document.getElementById(
-                "minScore"
-            ).value
-        )
-    ) {
-
-        executeTrade(
-            true
-        );
-    }
-}
-
-
-/* =========================================================
-   EXECUTE TRADE
-========================================================= */
-
-function executeTrade(
-    automatic = false
-) {
-
-    if (
-        !currentProposal ||
-        !currentProposal.id
-    ) {
-
-        requestProposal(
-            automatic
-        );
-
-        return;
-    }
-
-
-    if (
-        !accountSocket ||
-        accountSocket.readyState !==
-        WebSocket.OPEN
-    ) {
-
-        alert(
-            "Deriv account is not connected."
-        );
-
-        return;
-    }
-
-
-    const mode =
-        document.getElementById(
-            "accountMode"
-        ).value;
-
-
-    if (
-        mode ===
-        "real" &&
-        !automatic
-    ) {
-
-        const confirmed =
-            confirm(
-                "You are about to place a REAL trade using real money. Continue?"
-            );
-
-
-        if (!confirmed) {
-
-            return;
-        }
-    }
-
-
-    const price =
-        Number(
-            currentProposal.ask_price
-        );
-
-
-    if (
-        !price ||
-        price <= 0
-    ) {
-
-        alert(
-            "Invalid proposal price."
-        );
-
-        return;
-    }
-
-
-    sendAccount({
-
-        buy:
-            currentProposal.id,
-
-        price:
-            price,
-
-        req_id:
-            nextReqId()
-
-    });
-
-
-    document.getElementById(
-        "proposalStatus"
-    )
-    .textContent =
-        "BUYING...";
-
-
-    addLog(
-        (
-            automatic
-                ? "AUTO "
-                : ""
-        ) +
-        "trade execution requested."
-    );
-}
-
-
-/* =========================================================
-   BUY RESPONSE
-========================================================= */
-
-function handleBuy(data) {
-
-    if (
-        !data.buy
-    ) {
-
-        return;
-    }
-
-
-    const buy =
-        data.buy;
-
-
-    currentContractId =
-        buy.contract_id;
-
-
-    const buyPrice =
-        Number(
-            buy.buy_price
-        );
-
-
-    document.getElementById(
-        "proposalStatus"
-    )
-    .textContent =
-        "TRADE OPEN";
-
-
-    document.getElementById(
-        "openContract"
-    )
-    .innerHTML =
-
-        "<div class='success'>" +
-
-        "<strong>Contract opened.</strong>" +
-
-        "<br><br>" +
-
-        "Contract ID: " +
-        escapeHTML(
-            String(
-                currentContractId
-            )
-        ) +
-
-        "<br>" +
-
-        "Buy price: " +
-        (
-            isFinite(
-                buyPrice
-            )
-                ? buyPrice.toFixed(2)
-                : "—"
-        ) +
-
-        "</div>";
-
-
-    addLog(
-        "Contract opened: " +
-        currentContractId
-    );
-
-
-    sendAccount({
-
-        proposal_open_contract:
-            1,
-
-        contract_id:
-            currentContractId,
-
-        subscribe:
-            1,
-
-        req_id:
-            nextReqId()
-
-    });
-
-
-    refreshBalance();
-}
-
-
-/* =========================================================
-   OPEN CONTRACT
-========================================================= */
-
-function handleOpenContract(
-    data
-) {
-
-    const contract =
-        data.proposal_open_contract;
-
-
-    if (!contract) {
-
-        return;
-    }
-
-
-    const profit =
-        Number(
-            contract.profit
-        );
-
-
-    const payout =
-        Number(
-            contract.payout
-        );
-
-
-    const buyPrice =
-        Number(
-            contract.buy_price
-        );
-
-
-    const status =
-        contract.status ||
-        "";
-
-
-    const isSold =
-        contract.is_sold ===
-        1;
-
-
-    const isExpired =
-        status ===
-        "sold" ||
-        status ===
-        "won" ||
-        status ===
-        "lost" ||
-        isSold;
-
-
-    document.getElementById(
-        "openContract"
-    )
-    .innerHTML =
-
-        "<div class='trade-box'>" +
-
-        line(
-            "Contract",
-            contract.contract_id ||
-            currentContractId ||
-            "—"
-        ) +
-
-        line(
-            "Type",
-            contract.contract_type ||
-            "—"
-        ) +
-
-        line(
-            "Status",
-            status ||
-            "OPEN"
-        ) +
-
-        line(
-            "Buy Price",
-            isFinite(buyPrice)
-                ? buyPrice.toFixed(2) +
-                  " " +
-                  accountCurrency
-                : "—"
-        ) +
-
-        line(
-            "Payout",
-            isFinite(payout)
-                ? payout.toFixed(2) +
-                  " " +
-                  accountCurrency
-                : "—"
-        ) +
-
-        line(
-            "Profit",
-            isFinite(profit)
-                ? profit.toFixed(2) +
-                  " " +
-                  accountCurrency
-                : "—"
-        ) +
-
-        "</div>";
-
-
-    if (
-        isExpired
-    ) {
-
-        finishTrade(
-            contract
-        );
-    }
-}
-
-
-/* =========================================================
-   FINISH TRADE
-========================================================= */
-
-function finishTrade(
-    contract
-) {
-
-    const profit =
-        Number(
-            contract.profit
-        );
-
-
-    const result =
-        profit >= 0
-            ? "WIN"
-            : "LOSS";
-
-
-    tradeHistory.unshift({
-
-        time:
-            new Date().toLocaleString(),
-
-        contract:
-            contract.contract_type ||
-            "—",
-
-        symbol:
-            selectedSymbol ||
-            "—",
-
-        result:
-            result,
-
-        profit:
-            profit
-
-    });
-
-
-    if (
-        tradeHistory.length >
-        50
-    ) {
-
-        tradeHistory =
-            tradeHistory.slice(
-                0,
-                50
-            );
-    }
-
-
-    currentContractId =
-        null;
-
-
-    currentProposal =
-        null;
-
-
-    document.getElementById(
-        "proposalStatus"
-    )
-    .textContent =
-        "NO PROPOSAL";
-
-
-    renderTradeHistory();
-
-
-    refreshBalance();
-
-
-    addLog(
-        "Trade finished: " +
-        result +
-        " " +
-        profit.toFixed(2) +
-        " " +
-        accountCurrency
-    );
-}
-
-
-/* =========================================================
-   TRADE HISTORY
-========================================================= */
-
-function renderTradeHistory() {
+function showTicks() {
 
     const box =
         document.getElementById(
-            "tradeHistory"
+            "ticks"
         );
 
 
-    if (
-        !tradeHistory.length
-    ) {
-
-        box.textContent =
-            "No trades yet.";
-
-        return;
-    }
-
-
     box.innerHTML =
-        tradeHistory
-            .map(
-                function(item) {
+        "";
 
-                    return (
 
-                        "<div class='history-item " +
+    ticks
+        .slice(-40)
+        .reverse()
+        .forEach(
+            function(tick) {
 
-                        (
-                            item.result ===
-                            "WIN"
-                                ? "win"
-                                : "loss"
-                        ) +
-
-                        "'>" +
-
-                        "<strong>" +
-                        item.result +
-                        "</strong>" +
-
-                        " • " +
-
-                        escapeHTML(
-                            item.contract
-                        ) +
-
-                        " • " +
-
-                        escapeHTML(
-                            item.symbol
-                        ) +
-
-                        "<br>" +
-
-                        "<small>" +
-                        escapeHTML(
-                            item.time
-                        ) +
-                        "</small>" +
-
-                        "<br>" +
-
-                        "Profit: " +
-
-                        Number(
-                            item.profit
-                        ).toFixed(2) +
-
-                        " " +
-
-                        accountCurrency +
-
-                        "</div>"
-
+                const span =
+                    document.createElement(
+                        "span"
                     );
 
-                }
-            )
-            .join("");
+
+                span.className =
+                    "tick";
+
+
+                span.textContent =
+                    tick.price +
+                    " → " +
+                    tick.digit;
+
+
+                box.appendChild(
+                    span
+                );
+
+            }
+        );
 }
 
 
 /* =========================================================
-   STOP ALL TRADING
-========================================================= */
-
-function stopAllTrading() {
-
-    autoTrading =
-        false;
-
-
-    analyzerRunning =
-        false;
-
-
-    document.getElementById(
-        "autoTrade"
-    )
-    .checked =
-        false;
-
-
-    document.getElementById(
-        "startAnalyzerBtn"
-    )
-    .disabled =
-        false;
-
-
-    document.getElementById(
-        "stopAnalyzerBtn"
-    )
-    .disabled =
-        true;
-
-
-    document.getElementById(
-        "engine"
-    )
-    .textContent =
-        "STOPPED";
-
-
-    addLog(
-        "ALL NEW TRADING STOPPED."
-    );
-
-
-    /*
-       We deliberately do not automatically sell an open
-       contract here. The existing contract can continue
-       according to its contract terms.
-    */
-
-    alert(
-        "New analyzer trading has been stopped. Any existing open contract continues according to its contract."
-    );
-}
-
-
-/* =========================================================
-   ACCOUNT CONNECTION
+   DERIV PAT CONNECTION
 ========================================================= */
 
 async function connectWithPAT() {
 
     const pat =
         prompt(
-            "Paste your Deriv PAT token here:"
+            "Paste your Deriv PAT token:"
         );
 
 
@@ -4519,12 +3261,15 @@ async function connectWithPAT() {
 
     try {
 
+        log(
+            "Checking Deriv account..."
+        );
+
+
         const response =
             await fetch(
-
-                REST_BASE +
+                API_BASE +
                 "/trading/v1/options/accounts",
-
                 {
 
                     method:
@@ -4550,7 +3295,7 @@ async function connectWithPAT() {
 
 
         console.log(
-            "Deriv accounts:",
+            "Account response:",
             data
         );
 
@@ -4573,10 +3318,6 @@ async function connectWithPAT() {
         }
 
 
-        let accounts =
-            [];
-
-
         if (
             Array.isArray(
                 data.data
@@ -4596,6 +3337,13 @@ async function connectWithPAT() {
                 [
                     data.data
                 ];
+
+        }
+
+        else {
+
+            accounts =
+                [];
         }
 
 
@@ -4604,16 +3352,24 @@ async function connectWithPAT() {
         ) {
 
             alert(
-                "No Options trading account was returned."
+                "PAT connected, but no Options account was returned."
             );
 
             return;
         }
 
 
-        selectAccountForMode(
-            accounts
-        );
+        populateAccounts();
+
+
+        document.getElementById(
+            "accountSelect"
+        ).selectedIndex =
+            1;
+
+
+        selectAccount();
+
 
     }
 
@@ -4623,12 +3379,10 @@ async function connectWithPAT() {
             error
         );
 
-
         alert(
             "Could not connect to Deriv account.\n\n" +
             error.message
         );
-
 
         derivPAT =
             null;
@@ -4637,83 +3391,130 @@ async function connectWithPAT() {
 
 
 /* =========================================================
-   SELECT ACCOUNT / MODE
+   ACCOUNT DROPDOWN
 ========================================================= */
 
-async function selectAccountForMode(
-    accounts
-) {
+function populateAccounts() {
 
-    accountMode =
+    const select =
         document.getElementById(
-            "accountMode"
-        ).value;
-
-
-    let matching =
-        accounts.find(
-            function(account) {
-
-                return (
-                    String(
-                        account.account_type
-                    ).toLowerCase() ===
-                    accountMode
-                );
-
-            }
+            "accountSelect"
         );
 
 
-    /*
-       If the selected mode is unavailable,
-       use the first returned account and tell the user.
-    */
-
-    if (!matching) {
-
-        matching =
-            accounts[0];
+    select.innerHTML =
+        "<option value=''>" +
+        "Select account" +
+        "</option>";
 
 
-        accountMode =
-            matching.account_type ||
-            "demo";
+    accounts.forEach(
+        function(account, index) {
+
+            const option =
+                document.createElement(
+                    "option"
+                );
 
 
+            option.value =
+                index;
+
+
+            option.textContent =
+                (
+                    account.account_type ||
+                    "ACCOUNT"
+                )
+                .toUpperCase() +
+                " • " +
+                (
+                    account.account_id ||
+                    "UNKNOWN"
+                );
+
+
+            select.appendChild(
+                option
+            );
+
+        }
+    );
+}
+
+
+/* =========================================================
+   SELECT ACCOUNT
+========================================================= */
+
+async function selectAccount() {
+
+    const select =
         document.getElementById(
-            "accountMode"
-        ).value =
-            accountMode;
+            "accountSelect"
+        );
+
+
+    const index =
+        Number(
+            select.value
+        );
+
+
+    if (
+        !Number.isInteger(index) ||
+        !accounts[index]
+    ) {
+
+        return;
     }
 
 
-    accountId =
-        matching.account_id;
-
-
-    accountCurrency =
-        matching.currency ||
-        "USD";
+    selectedAccount =
+        accounts[index];
 
 
     document.getElementById(
         "accountType"
-    )
-    .textContent =
-        String(
-            accountMode
+    ).textContent =
+        (
+            selectedAccount.account_type ||
+            "UNKNOWN"
         ).toUpperCase();
 
 
     document.getElementById(
-        "accountConnection"
-    )
-    .textContent =
-        "AUTHENTICATING";
+        "accountType"
+    ).className =
+        selectedAccount.account_type ===
+        "real"
+            ? "account-real"
+            : "account-demo";
 
 
-    await openAuthenticatedWebSocket();
+    document.getElementById(
+        "accountId"
+    ).textContent =
+        selectedAccount.account_id ||
+        "—";
+
+
+    document.getElementById(
+        "balance"
+    ).textContent =
+        formatMoney(
+            selectedAccount.balance
+        );
+
+
+    document.getElementById(
+        "currency"
+    ).textContent =
+        selectedAccount.currency ||
+        "USD";
+
+
+    await connectAuthenticatedSocket();
 }
 
 
@@ -4721,9 +3522,23 @@ async function selectAccountForMode(
    AUTHENTICATED WEBSOCKET
 ========================================================= */
 
-async function openAuthenticatedWebSocket() {
+async function connectAuthenticatedSocket() {
 
     if (!derivPAT) {
+
+        alert(
+            "Connect your PAT first."
+        );
+
+        return;
+    }
+
+
+    if (!selectedAccount) {
+
+        alert(
+            "Select an account first."
+        );
 
         return;
     }
@@ -4741,13 +3556,18 @@ async function openAuthenticatedWebSocket() {
 
     try {
 
+        log(
+            "Requesting authenticated WebSocket..."
+        );
+
+
         const response =
             await fetch(
 
-                REST_BASE +
+                API_BASE +
                 "/trading/v1/options/accounts/" +
                 encodeURIComponent(
-                    accountId
+                    selectedAccount.account_id
                 ) +
                 "/otp",
 
@@ -4779,14 +3599,11 @@ async function openAuthenticatedWebSocket() {
             !response.ok
         ) {
 
-            alert(
-                "Could not create authenticated Deriv WebSocket.\n\n" +
+            throw new Error(
                 JSON.stringify(
                     data
                 )
             );
-
-            return;
         }
 
 
@@ -4798,11 +3615,9 @@ async function openAuthenticatedWebSocket() {
 
         if (!wsUrl) {
 
-            alert(
+            throw new Error(
                 "Deriv did not return a WebSocket URL."
             );
-
-            return;
         }
 
 
@@ -4815,45 +3630,41 @@ async function openAuthenticatedWebSocket() {
         accountSocket.onopen =
             function() {
 
+                const type =
+                    (
+                        selectedAccount.account_type ||
+                        ""
+                    ).toUpperCase();
+
+
                 setStatus(
-                    "DERIV ACCOUNT CONNECTED",
+                    "DERIV " +
+                    type +
+                    " ACCOUNT CONNECTED",
                     true
                 );
 
 
-                document.getElementById(
-                    "accountConnection"
-                )
-                .textContent =
-                    "CONNECTED";
-
-
-                document.getElementById(
-                    "accountType"
-                )
-                .textContent =
-                    String(
-                        accountMode
-                    ).toUpperCase();
-
-
-                refreshBalance();
-
-
-                addLog(
-                    "Authenticated " +
-                    accountMode +
-                    " account connected."
+                log(
+                    "Authenticated account connection established."
                 );
 
 
-                if (
-                    publicSocket ===
-                    null
-                ) {
+                accountSocket.send(
+                    JSON.stringify({
 
-                    connectPublic();
-                }
+                        balance:
+                            1,
+
+                        subscribe:
+                            1,
+
+                        req_id:
+                            100
+
+                    })
+                );
+
             };
 
 
@@ -4877,87 +3688,22 @@ async function openAuthenticatedWebSocket() {
                 }
 
 
-                if (
-                    data.error
-                ) {
-
-                    console.error(
-                        "Account API error:",
-                        data.error
-                    );
-
-
-                    addLog(
-                        "Deriv error: " +
-                        (
-                            data.error.message ||
-                            "Unknown error"
-                        )
-                    );
-
-
-                    return;
-                }
-
-
-                if (
-                    data.msg_type ===
-                    "balance"
-                ) {
-
-                    updateBalance(
-                        data
-                    );
-                }
-
-
-                if (
-                    data.msg_type ===
-                    "proposal"
-                ) {
-
-                    handleProposal(
-                        data
-                    );
-                }
-
-
-                if (
-                    data.msg_type ===
-                    "buy"
-                ) {
-
-                    handleBuy(
-                        data
-                    );
-                }
-
-
-                if (
-                    data.msg_type ===
-                    "proposal_open_contract"
-                ) {
-
-                    handleOpenContract(
-                        data
-                    );
-                }
-
+                handleAccountMessage(
+                    data
+                );
             };
 
 
         accountSocket.onerror =
-            function(error) {
-
-                console.error(
-                    "Account socket error:",
-                    error
-                );
-
+            function() {
 
                 setStatus(
                     "ACCOUNT CONNECTION ERROR",
                     false
+                );
+
+                log(
+                    "Authenticated WebSocket error."
                 );
             };
 
@@ -4965,24 +3711,10 @@ async function openAuthenticatedWebSocket() {
         accountSocket.onclose =
             function() {
 
-                document.getElementById(
-                    "accountConnection"
-                )
-                .textContent =
-                    "DISCONNECTED";
-
-
-                if (
-                    analyzerRunning
-                ) {
-
-                    stopAnalyzer();
-                }
-
-
-                addLog(
-                    "Authenticated account socket closed."
+                log(
+                    "Authenticated WebSocket closed."
                 );
+
             };
 
     }
@@ -4993,9 +3725,13 @@ async function openAuthenticatedWebSocket() {
             error
         );
 
-
         alert(
-            "Could not connect to Deriv account.\n\n" +
+            "Could not create authenticated Deriv connection.\n\n" +
+            error.message
+        );
+
+        log(
+            "Authentication error: " +
             error.message
         );
     }
@@ -5003,173 +3739,868 @@ async function openAuthenticatedWebSocket() {
 
 
 /* =========================================================
-   ACCOUNT MODE CHANGE
+   ACCOUNT MESSAGE HANDLER
 ========================================================= */
 
-document
-    .getElementById(
-        "accountMode"
-    )
-    .addEventListener(
-        "change",
-        async function() {
+function handleAccountMessage(
+    data
+) {
 
-            if (!derivPAT) {
+    if (
+        data.error
+    ) {
 
-                return;
-            }
+        log(
+            "Deriv error: " +
+            JSON.stringify(
+                data.error
+            )
+        );
+
+        return;
+    }
+
+
+    if (
+        data.msg_type ===
+        "balance"
+    ) {
+
+        if (
+            data.balance
+        ) {
+
+            const value =
+                Number(
+                    data.balance.balance
+                );
+
+
+            document.getElementById(
+                "balance"
+            ).textContent =
+                formatMoney(
+                    value
+                );
 
 
             if (
-                analyzerRunning
+                selectedAccount
             ) {
 
-                stopAnalyzer();
+                selectedAccount.balance =
+                    value;
             }
-
-
-            const confirmed =
-                this.value ===
-                "real"
-                    ? confirm(
-                        "Switch to REAL account mode?"
-                    )
-                    : true;
-
-
-            if (!confirmed) {
-
-                this.value =
-                    accountMode;
-
-                return;
-            }
-
-
-            accountMode =
-                this.value;
-
-
-            try {
-
-                const response =
-                    await fetch(
-
-                        REST_BASE +
-                        "/trading/v1/options/accounts",
-
-                        {
-
-                            method:
-                                "GET",
-
-                            headers: {
-
-                                "Authorization":
-                                    "Bearer " +
-                                    derivPAT,
-
-                                "Deriv-App-ID":
-                                    DERIV_APP_ID
-
-                            }
-
-                        }
-                    );
-
-
-                const data =
-                    await response.json();
-
-
-                let accounts =
-                    Array.isArray(
-                        data.data
-                    )
-                        ? data.data
-                        : (
-                            data.data
-                                ? [data.data]
-                                : []
-                        );
-
-
-                await selectAccountForMode(
-                    accounts
-                );
-
-            }
-
-            catch(error) {
-
-                console.error(
-                    error
-                );
-            }
-
         }
-    );
+    }
+
+
+    if (
+        data.msg_type ===
+        "proposal"
+    ) {
+
+        handleProposal(
+            data
+        );
+    }
+
+
+    if (
+        data.msg_type ===
+        "buy"
+    ) {
+
+        handleBuy(
+            data
+        );
+    }
+
+
+    if (
+        data.msg_type ===
+        "proposal_open_contract"
+    ) {
+
+        handleContractUpdate(
+            data
+        );
+    }
+
+}
 
 
 /* =========================================================
-   BALANCE
+   PROPOSAL
 ========================================================= */
 
-function refreshBalance() {
+function requestTradeProposal() {
 
     if (
-        !sendAccount({
+        !accountSocket ||
+        accountSocket.readyState !==
+        WebSocket.OPEN
+    ) {
 
-            balance:
+        alert(
+            "Connect a Deriv account first."
+        );
+
+        return;
+    }
+
+
+    if (!selectedSymbol) {
+
+        alert(
+            "Select a market first."
+        );
+
+        return;
+    }
+
+
+    const contractType =
+        document.getElementById(
+            "contractType"
+        ).value;
+
+
+    const stake =
+        Number(
+            document.getElementById(
+                "stake"
+            ).value
+        );
+
+
+    const duration =
+        Number(
+            document.getElementById(
+                "duration"
+            ).value
+        );
+
+
+    const barrier =
+        document.getElementById(
+            "barrier"
+        ).value;
+
+
+    if (
+        !stake ||
+        stake <= 0
+    ) {
+
+        alert(
+            "Enter a valid stake."
+        );
+
+        return;
+    }
+
+
+    const request = {
+
+        proposal:
+            1,
+
+        amount:
+            stake,
+
+        basis:
+            "stake",
+
+        contract_type:
+            contractType,
+
+        currency:
+            selectedAccount.currency ||
+            "USD",
+
+        duration:
+            duration,
+
+        duration_unit:
+            "s",
+
+        underlying_symbol:
+            selectedSymbol,
+
+        subscribe:
+            1,
+
+        req_id:
+            500
+
+    };
+
+
+    if (
+        [
+            "DIGITOVER",
+            "DIGITUNDER",
+            "DIGITMATCH",
+            "DIGITDIFF"
+        ].includes(
+            contractType
+        )
+    ) {
+
+        request.barrier =
+            barrier;
+    }
+
+
+    if (
+        [
+            "HIGHER",
+            "LOWER"
+        ].includes(
+            contractType
+        )
+    ) {
+
+        request.barrier =
+            barrier;
+    }
+
+
+    if (
+        [
+            "ONETOUCH",
+            "NOTOUCH"
+        ].includes(
+            contractType
+        )
+    ) {
+
+        request.barrier =
+            barrier;
+    }
+
+
+    log(
+        "Requesting proposal: " +
+        contractType
+    );
+
+
+    accountSocket.send(
+        JSON.stringify(
+            request
+        )
+    );
+}
+
+
+/* =========================================================
+   HANDLE PROPOSAL
+========================================================= */
+
+function handleProposal(
+    data
+) {
+
+    if (
+        !data.proposal
+    ) {
+
+        return;
+    }
+
+
+    proposalData =
+        data.proposal;
+
+
+    const ask =
+        Number(
+            proposalData.ask_price
+        );
+
+
+    const payout =
+        Number(
+            proposalData.payout
+        );
+
+
+    document.getElementById(
+        "tradeInfo"
+    ).innerHTML =
+
+        "<div class='success'>" +
+
+        "<strong>PROPOSAL READY</strong><br><br>" +
+
+        "Contract: " +
+        escapeHTML(
+            document.getElementById(
+                "contractType"
+            ).value
+        ) +
+
+        "<br>" +
+
+        "Stake: " +
+        formatMoney(
+            ask
+        ) +
+
+        "<br>" +
+
+        "Potential payout: " +
+        formatMoney(
+            payout
+        ) +
+
+        "<br>" +
+
+        "Proposal ID: " +
+        escapeHTML(
+            String(
+                proposalData.id
+            )
+        ) +
+
+        "</div>";
+
+
+    log(
+        "Proposal received. Ask price: " +
+        ask
+    );
+}
+
+
+/* =========================================================
+   EXECUTE TRADE
+========================================================= */
+
+function executeTrade() {
+
+    if (
+        !accountSocket ||
+        accountSocket.readyState !==
+        WebSocket.OPEN
+    ) {
+
+        alert(
+            "Connect your Deriv account first."
+        );
+
+        return;
+    }
+
+
+    if (
+        !proposalData ||
+        !proposalData.id
+    ) {
+
+        alert(
+            "Get a trade proposal first."
+        );
+
+        return;
+    }
+
+
+    const ask =
+        Number(
+            proposalData.ask_price
+        );
+
+
+    if (
+        !ask ||
+        ask <= 0
+    ) {
+
+        alert(
+            "Invalid proposal price."
+        );
+
+        return;
+    }
+
+
+    const type =
+        (
+            selectedAccount.account_type ||
+            ""
+        ).toLowerCase();
+
+
+    if (
+        type ===
+        "real"
+    ) {
+
+        const confirmed =
+            confirm(
+                "REAL ACCOUNT TRADE\n\n" +
+                "Stake: " +
+                ask +
+                " " +
+                (
+                    selectedAccount.currency ||
+                    "USD"
+                ) +
+                "\n\n" +
+                "Do you want to execute this trade?"
+            );
+
+
+        if (!confirmed) {
+
+            log(
+                "Real-account trade cancelled."
+            );
+
+            return;
+        }
+    }
+
+
+    accountSocket.send(
+        JSON.stringify({
+
+            buy:
+                proposalData.id,
+
+            price:
+                ask,
+
+            req_id:
+                600
+
+        })
+    );
+
+
+    log(
+        "Trade execution requested."
+    );
+}
+
+
+/* =========================================================
+   HANDLE BUY
+========================================================= */
+
+function handleBuy(
+    data
+) {
+
+    if (
+        !data.buy
+    ) {
+
+        log(
+            "Buy response received without contract."
+        );
+
+        return;
+    }
+
+
+    currentContractId =
+        data.buy.contract_id;
+
+
+    tradeCount++;
+
+
+    document.getElementById(
+        "tradeCount"
+    ).textContent =
+        tradeCount;
+
+
+    document.getElementById(
+        "contractStatus"
+    ).innerHTML =
+
+        "<div class='success'>" +
+
+        "<strong>TRADE OPEN</strong><br><br>" +
+
+        "Contract ID: " +
+        escapeHTML(
+            String(
+                currentContractId
+            )
+        ) +
+
+        "<br>" +
+
+        "Buy price: " +
+        formatMoney(
+            data.buy.buy_price
+        ) +
+
+        "<br>" +
+
+        "Payout: " +
+        formatMoney(
+            data.buy.payout
+        ) +
+
+        "</div>";
+
+
+    log(
+        "Trade opened. Contract ID: " +
+        currentContractId
+    );
+
+
+    accountSocket.send(
+        JSON.stringify({
+
+            proposal_open_contract:
                 1,
+
+            contract_id:
+                currentContractId,
 
             subscribe:
                 1,
 
             req_id:
-                nextReqId()
+                601
 
         })
+    );
+
+
+    proposalData =
+        null;
+
+
+    document.getElementById(
+        "tradeInfo"
+    ).textContent =
+        "Trade executed. Monitoring contract...";
+}
+
+
+/* =========================================================
+   CONTRACT UPDATE
+========================================================= */
+
+function handleContractUpdate(
+    data
+) {
+
+    const contract =
+        data.proposal_open_contract;
+
+
+    if (!contract) {
+        return;
+    }
+
+
+    const profit =
+        Number(
+            contract.profit || 0
+        );
+
+
+    const status =
+        contract.status ||
+        "open";
+
+
+    document.getElementById(
+        "contractStatus"
+    ).innerHTML =
+
+        "<div class='stat'>" +
+
+        "<small>Status</small>" +
+
+        "<strong>" +
+        escapeHTML(
+            String(
+                status
+            ).toUpperCase()
+        ) +
+        "</strong>" +
+
+        "<br><br>" +
+
+        "<small>Profit / Loss</small>" +
+
+        "<strong>" +
+        formatMoney(
+            profit
+        ) +
+        "</strong>" +
+
+        "<br><br>" +
+
+        "<small>Current Spot</small>" +
+
+        "<strong>" +
+        (
+            contract.current_spot ||
+            "—"
+        ) +
+        "</strong>" +
+
+        "</div>";
+
+
+    if (
+        contract.is_sold ||
+        status ===
+        "won" ||
+        status ===
+        "lost" ||
+        status ===
+        "sold"
     ) {
 
-        return;
+        if (
+            status ===
+            "won"
+        ) {
+
+            wins++;
+
+        }
+
+        else if (
+            status ===
+            "lost"
+        ) {
+
+            losses++;
+        }
+
+
+        document.getElementById(
+            "wins"
+        ).textContent =
+            wins;
+
+
+        document.getElementById(
+            "losses"
+        ).textContent =
+            losses;
+
+
+        log(
+            "Contract finished: " +
+            status +
+            " | P/L: " +
+            profit
+        );
+
+
+        currentContractId =
+            null;
     }
 }
 
 
-function updateBalance(
-    data
+/* =========================================================
+   AUTO TRADING
+========================================================= */
+
+function checkAutoTrade(
+    result
 ) {
 
+    if (!result) {
+        return;
+    }
+
+
     if (
-        !data.balance
+        document.getElementById(
+            "tradeMode"
+        ).value !==
+        "auto"
+    ) {
+
+        autoTrading =
+            false;
+
+        document.getElementById(
+            "tradingEngine"
+        ).textContent =
+            "OFF";
+
+        return;
+    }
+
+
+    if (
+        !accountSocket ||
+        accountSocket.readyState !==
+        WebSocket.OPEN
     ) {
 
         return;
     }
 
 
-    const balance =
+    if (
+        !selectedAccount
+    ) {
+
+        return;
+    }
+
+
+    if (
+        currentContractId
+    ) {
+
+        return;
+    }
+
+
+    if (
+        result.score <
+        70
+    ) {
+
+        document.getElementById(
+            "tradingEngine"
+        ).textContent =
+            "WAITING FOR STRONG SIGNAL";
+
+        return;
+    }
+
+
+    const now =
+        Date.now();
+
+
+    if (
+        now -
+        lastAutoTradeTime <
+        60000
+    ) {
+
+        return;
+    }
+
+
+    const maximum =
         Number(
-            data.balance.balance
+            document.getElementById(
+                "maxTrades"
+            ).value
         );
 
 
-    accountCurrency =
-        data.balance.currency ||
-        accountCurrency;
+    if (
+        tradeCount >=
+        maximum
+    ) {
+
+        document.getElementById(
+            "tradingEngine"
+        ).textContent =
+            "MAX TRADES REACHED";
+
+        return;
+    }
+
+
+    autoTrading =
+        true;
 
 
     document.getElementById(
-        "balanceUSD"
-    )
-    .textContent =
-        balance.toFixed(2) +
-        " " +
-        accountCurrency;
+        "tradingEngine"
+    ).textContent =
+        "AUTO TRADING";
 
 
-    const rate =
+    lastAutoTradeTime =
+        now;
+
+
+    log(
+        "Strong statistical setup detected. Requesting proposal."
+    );
+
+
+    requestTradeProposalAfterSignal();
+}
+
+
+/* =========================================================
+   AUTO PROPOSAL
+========================================================= */
+
+function requestTradeProposalAfterSignal() {
+
+    requestTradeProposal();
+
+
+    setTimeout(
+        function() {
+
+            if (
+                proposalData
+            ) {
+
+                executeTrade();
+            }
+
+        },
+        1500
+    );
+}
+
+
+/* =========================================================
+   STOP AUTO TRADING
+========================================================= */
+
+function stopAutoTrading() {
+
+    autoTrading =
+        false;
+
+
+    document.getElementById(
+        "tradeMode"
+    ).value =
+        "manual";
+
+
+    document.getElementById(
+        "tradingEngine"
+    ).textContent =
+        "OFF";
+
+
+    log(
+        "Auto trading stopped."
+    );
+}
+
+
+/* =========================================================
+   FX
+========================================================= */
+
+function updateFX() {
+
+    fxRate =
         Number(
             document.getElementById(
                 "fxRate"
@@ -5177,268 +4608,131 @@ function updateBalance(
         );
 
 
-    if (
-        accountCurrency ===
-        "USD" &&
-        isFinite(rate)
-    ) {
-
-        document.getElementById(
-            "balanceKES"
-        )
-        .textContent =
-            "KES " +
-            (
-                balance *
-                rate
-            ).toFixed(2);
-
-    }
-
-    else {
-
-        document.getElementById(
-            "balanceKES"
-        )
-        .textContent =
-            "KES conversion unavailable";
-    }
-}
-
-
-/* =========================================================
-   DISCONNECT
-========================================================= */
-
-function disconnectAccount() {
-
-    autoTrading =
-        false;
-
-
-    analyzerRunning =
-        false;
-
-
-    document.getElementById(
-        "autoTrade"
-    )
-    .checked =
-        false;
+    const usd =
+        Number(
+            document.getElementById(
+                "usdAmount"
+            ).value
+        );
 
 
     if (
-        accountSocket
+        !fxRate ||
+        !usd
     ) {
 
-        accountSocket.close();
-
-        accountSocket =
-            null;
+        return;
     }
 
 
-    derivPAT =
-        null;
-
-
-    accountId =
-        null;
+    const kes =
+        usd *
+        fxRate;
 
 
     document.getElementById(
-        "accountConnection"
-    )
-    .textContent =
-        "NOT CONNECTED";
+        "fxUsd"
+    ).textContent =
+        "$" +
+        usd.toFixed(2);
 
 
     document.getElementById(
-        "balanceUSD"
-    )
-    .textContent =
-        "—";
-
-
-    document.getElementById(
-        "balanceKES"
-    )
-    .textContent =
-        "—";
-
-
-    setStatus(
-        "ACCOUNT DISCONNECTED",
-        false
-    );
-
-
-    addLog(
-        "Account disconnected."
-    );
+        "fxKes"
+    ).textContent =
+        "KSh " +
+        kes.toFixed(2);
 }
 
 
 /* =========================================================
-   BARRIER UI
+   HELPERS
 ========================================================= */
 
-function updateBarrierVisibility() {
-
-    const type =
-        document.getElementById(
-            "contractType"
-        ).value;
-
-
-    const needsBarrier =
-        [
-            "DIGITOVER",
-            "DIGITUNDER",
-            "DIGITMATCH",
-            "DIGITDIFF"
-        ].includes(
-            type
-        );
-
-
-    document.getElementById(
-        "barrierBox"
-    )
-    .classList.toggle(
-        "hidden",
-        !needsBarrier
-    );
-}
-
-
-document
-    .getElementById(
-        "contractType"
-    )
-    .addEventListener(
-        "change",
-        updateBarrierVisibility
-    );
-
-
-updateBarrierVisibility();
-
-
-/* =========================================================
-   FX RATE UPDATE
-========================================================= */
-
-document
-    .getElementById(
-        "fxRate"
-    )
-    .addEventListener(
-        "input",
-        function() {
-
-            /*
-               Recalculate KES from the currently displayed USD balance.
-            */
-
-            const text =
-                document.getElementById(
-                    "balanceUSD"
-                ).textContent;
-
-
-            const number =
-                parseFloat(
-                    text
-                );
-
-
-            const rate =
-                Number(
-                    this.value
-                );
-
-
-            if (
-                isFinite(number) &&
-                isFinite(rate)
-            ) {
-
-                document.getElementById(
-                    "balanceKES"
-                )
-                .textContent =
-                    "KES " +
-                    (
-                        number *
-                        rate
-                    ).toFixed(2);
-            }
-
-        }
-    );
-
-
-/* =========================================================
-   RECENT TICKS
-========================================================= */
-
-function showTicks() {
-
-    const box =
-        document.getElementById(
-            "ticks"
-        );
-
-
-    box.innerHTML =
-        "";
-
-
-    ticks
-        .slice(
-            -50
-        )
-        .reverse()
-        .forEach(
-            function(tick) {
-
-                const span =
-                    document.createElement(
-                        "span"
-                    );
-
-
-                span.className =
-                    "tick";
-
-
-                span.textContent =
-                    tick.price +
-                    " → " +
-                    tick.digit;
-
-
-                box.appendChild(
-                    span
-                );
-
-            }
-        );
-}
-
-
-/* =========================================================
-   LOGGING
-========================================================= */
-
-function addLog(
-    message
+function line(
+    name,
+    value
 ) {
 
-    console.log(
-        "[V4]",
-        message
+    return (
+
+        "<div class='analysis-line'>" +
+
+        "<span>" +
+        escapeHTML(
+            name
+        ) +
+        "</span>" +
+
+        "<strong>" +
+        escapeHTML(
+            value
+        ) +
+        "</strong>" +
+
+        "</div>"
+
+    );
+}
+
+
+function escapeHTML(
+    text
+) {
+
+    return String(
+        text
+    )
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+}
+
+
+function formatMoney(
+    value
+) {
+
+    const number =
+        Number(
+            value
+        );
+
+
+    if (
+        Number.isNaN(
+            number
+        )
+    ) {
+
+        return "—";
+    }
+
+
+    return number.toFixed(
+        2
     );
 }
 
@@ -5477,21 +4771,69 @@ document
     );
 
 
-/* =========================================================
-   INITIAL UI
-========================================================= */
+document
+    .getElementById(
+        "tradeMode"
+    )
+    .addEventListener(
+        "change",
+        function() {
+
+            if (
+                this.value ===
+                "auto"
+            ) {
+
+                log(
+                    "Auto Trade selected. Analyzer must be running."
+                );
+
+            }
+
+            else {
+
+                stopAutoTrading();
+            }
+
+        }
+    );
+
 
 document
     .getElementById(
-        "executeTradeBtn"
+        "fxRate"
     )
-    .disabled =
-        false;
+    .addEventListener(
+        "input",
+        updateFX
+    );
 
 
-renderTradeHistory();
+document
+    .getElementById(
+        "usdAmount"
+    )
+    .addEventListener(
+        "input",
+        updateFX
+    );
+
+
+/* =========================================================
+   INITIALIZE
+========================================================= */
+
+updateFX();
+
+log(
+    "Deriv Market Analyzer V4 loaded."
+);
+
+log(
+    "Select a market and press START ANALYZER."
+);
 
 </script>
 
 </body>
-</html>
+                        </html>>

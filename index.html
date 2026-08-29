@@ -3466,200 +3466,6 @@ function analyzeWindows(){
 }
 
 
-/* =========================================================
-   SIGNAL ENGINE
-========================================================= */
-
-function generateSignal(
-    counts,
-    total,
-    data
-){
-
-    const confidenceMinimum =
-        Number(
-            document.getElementById(
-                "minConfidence"
-            ).value
-        );
-
-
-    const last =
-        data[
-            data.length - 1
-        ].digit;
-
-
-    const evenCount =
-        counts[0] +
-        counts[2] +
-        counts[4] +
-        counts[6] +
-        counts[8];
-
-
-    const oddCount =
-        total -
-        evenCount;
-
-
-    const evenPct =
-        evenCount /
-        total *
-        100;
-
-
-    const oddPct =
-        oddCount /
-        total *
-        100;
-
-
-    let signal =
-        "NO STRONG SIGNAL";
-
-
-    let confidence = 0;
-
-
-    let reason =
-        "The sample does not currently provide enough statistical separation.";
-
-
-    if(
-        evenPct >=
-        confidenceMinimum
-    ){
-
-        signal =
-            "EVEN";
-
-        confidence =
-            evenPct;
-
-        reason =
-            "Even digits are above the configured threshold.";
-
-    }
-    else if(
-        oddPct >=
-        confidenceMinimum
-    ){
-
-        signal =
-            "ODD";
-
-        confidence =
-            oddPct;
-
-        reason =
-            "Odd digits are above the configured threshold.";
-
-    }
-    else{
-
-        const sorted =
-            counts
-                .map(
-                    (count,digit) => ({
-                        digit,
-                        count
-                    })
-                )
-                .sort(
-                    (a,b) =>
-                        b.count -
-                        a.count
-                );
-
-
-        const top =
-            sorted[0];
-
-
-        const pct =
-            top.count /
-            total *
-            100;
-
-
-        if(
-            pct >=
-            confidenceMinimum
-        ){
-
-            signal =
-                "DIGIT " +
-                top.digit;
-
-            confidence =
-                pct;
-
-            reason =
-                "The most frequent digit exceeds the configured threshold.";
-        }
-    }
-
-
-    lastSignal = {
-
-        signal,
-
-        confidence,
-
-        lastDigit:last,
-
-        reason
-    };
-
-
-    document.getElementById(
-        "signal"
-    ).innerHTML = `
-
-        <div class="signal-title">
-            ${escapeHTML(signal)}
-        </div>
-
-        <p>
-            Confidence:
-            <strong>
-                ${confidence.toFixed(2)}%
-            </strong>
-        </p>
-
-        <div class="progress">
-
-            <div
-                class="progress-fill"
-                style="width:${Math.min(
-                    100,
-                    confidence
-                )}%">
-            </div>
-
-        </div>
-
-        <p class="muted">
-            ${escapeHTML(reason)}
-        </p>
-
-        <small class="muted">
-            Latest digit: ${last}
-        </small>
-    `;
-
-
-    if(
-        analyzerRunning &&
-        autoTrading &&
-        !tradeInProgress
-    ){
-
-        considerAutoTrade();
-    }
-}
-
 
 /* =========================================================
    DURATION
@@ -4445,8 +4251,539 @@ function stopAutoTrade(){
         "autoStatus"
     ).textContent =
         "Auto trading is OFF.";
+/* =========================================================
+   MAUVEY STRATEGY ENGINE
+   EVEN / ODD / OVER / UNDER
+========================================================= */
+
+function generateSignal(counts, total, data){
+
+    const minimum =
+        Number(
+            document.getElementById("minConfidence").value
+        );
+
+    if(!data || data.length < 50){
+        lastSignal = null;
+
+        document.getElementById("signal").innerHTML = `
+            <div class="signal-title">
+                WAITING
+            </div>
+            <p class="muted">
+                MAUVEY is collecting enough ticks.
+            </p>
+        `;
+
+        return;
+    }
+
+    /* -----------------------------------------------------
+       BASIC DIGIT PERCENTAGES
+    ----------------------------------------------------- */
+
+    const pct = counts.map(
+        c => (c / total) * 100
+    );
+
+    const evenDigits = [0,2,4,6,8];
+    const oddDigits  = [1,3,5,7,9];
+
+    const upperDigits = [5,6,7,8,9];
+    const lowerDigits = [0,1,2,3,4];
+
+    const evenPct =
+        evenDigits.reduce(
+            (sum,d) => sum + pct[d], 0
+        );
+
+    const oddPct =
+        oddDigits.reduce(
+            (sum,d) => sum + pct[d], 0
+        );
+
+    /* -----------------------------------------------------
+       GREEN = MOST APPEARING
+       RED   = LEAST APPEARING
+    ----------------------------------------------------- */
+
+    const sorted =
+        pct
+        .map((value,digit) => ({
+            digit,
+            value
+        }))
+        .sort((a,b) => b.value - a.value);
+
+    const greenDigit =
+        sorted[0].digit;
+
+    const redDigit =
+        sorted[sorted.length - 1].digit;
+
+    /* -----------------------------------------------------
+       GREEN / RED GROUP AGREEMENT
+    ----------------------------------------------------- */
+
+    const greenIsEven =
+        evenDigits.includes(greenDigit);
+
+    const redIsEven =
+        evenDigits.includes(redDigit);
+
+    const greenIsOdd =
+        oddDigits.includes(greenDigit);
+
+    const redIsOdd =
+        oddDigits.includes(redDigit);
+
+    /* -----------------------------------------------------
+       RECENT OPPOSITE STREAK
+    ----------------------------------------------------- */
+
+    let oppositeStreak = 0;
+
+    const latestDigit =
+        data[data.length - 1].digit;
+
+    if(Number.isInteger(latestDigit)){
+
+        const latestIsEven =
+            evenDigits.includes(latestDigit);
+
+        for(
+            let i = data.length - 1;
+            i >= 0;
+            i--
+        ){
+
+            const d =
+                data[i].digit;
+
+            if(!Number.isInteger(d)){
+                break;
+            }
+
+            const isEven =
+                evenDigits.includes(d);
+
+            if(isEven !== latestIsEven){
+                break;
+            }
+
+            oppositeStreak++;
+        }
+    }
+
+    /* -----------------------------------------------------
+       EVEN / ODD STRATEGY
+       Your rule:
+
+       Green and red should agree on the same side,
+       AND that side should have the higher percentage,
+       AND preferably recent opposite streak >= 3.
+    ----------------------------------------------------- */
+
+    let evenScore = 0;
+    let oddScore = 0;
+
+    if(greenIsEven && redIsEven){
+        evenScore += 30;
+    }
+
+    if(greenIsOdd && redIsOdd){
+        oddScore += 30;
+    }
+
+    if(evenPct > oddPct){
+        evenScore += 30;
+    }
+
+    if(oddPct > evenPct){
+        oddScore += 30;
+    }
+
+    /* Stronger than the other side */
+    const evenEdge =
+        evenPct - oddPct;
+
+    const oddEdge =
+        oddPct - evenPct;
+
+    if(evenEdge >= 2){
+        evenScore += 15;
+    }
+
+    if(oddEdge >= 2){
+        oddScore += 15;
+    }
+
+    /* Recent opposite streak */
+    if(
+        oppositeStreak >= 3 &&
+        evenPct > oddPct
+    ){
+        evenScore += 15;
+    }
+
+    if(
+        oppositeStreak >= 3 &&
+        oddPct > evenPct
+    ){
+        oddScore += 15;
+    }
+
+    /* -----------------------------------------------------
+       OVER / UNDER
+    ----------------------------------------------------- */
+
+    const overScores = [];
+    const underScores = [];
+
+    for(let barrier = 0; barrier <= 8; barrier++){
+
+        const overDigits = [];
+
+        const underDigits = [];
+
+        for(
+            let d = 0;
+            d <= 9;
+            d++
+        ){
+
+            if(d > barrier){
+                overDigits.push(d);
+            }
+
+            if(d < barrier){
+                underDigits.push(d);
+            }
+        }
+
+        if(
+            overDigits.length > 0 &&
+            underDigits.length > 0
+        ){
+
+            const overPct =
+                overDigits.reduce(
+                    (sum,d) => sum + pct[d],
+                    0
+                );
+
+            const underPct =
+                underDigits.reduce(
+                    (sum,d) => sum + pct[d],
+                    0
+                );
+
+            let overScore = 0;
+            let underScore = 0;
+
+            /* Green digit location */
+            if(overDigits.includes(greenDigit)){
+                overScore += 30;
+            }
+
+            if(underDigits.includes(greenDigit)){
+                underScore += 30;
+            }
+
+            /* Red digit location */
+            if(underDigits.includes(redDigit)){
+                overScore += 20;
+            }
+
+            if(overDigits.includes(redDigit)){
+                underScore += 20;
+            }
+
+            /* Group percentage */
+            if(overPct > underPct){
+                overScore += 30;
+            }
+
+            if(underPct > overPct){
+                underScore += 30;
+            }
+
+            /* Edge */
+            if(overPct - underPct >= 3){
+                overScore += 20;
+            }
+
+            if(underPct - overPct >= 3){
+                underScore += 20;
+            }
+
+            overScores.push({
+                barrier,
+                percentage: overPct,
+                score: overScore
+            });
+
+            underScores.push({
+                barrier,
+                percentage: underPct,
+                score: underScore
+            });
+        }
+    }
+
+    const bestOver =
+        overScores.length
+            ? overScores.reduce(
+                (a,b) =>
+                    b.score > a.score ? b : a
+              )
+            : null;
+
+    const bestUnder =
+        underScores.length
+            ? underScores.reduce(
+                (a,b) =>
+                    b.score > a.score ? b : a
+              )
+            : null;
+
+    /* -----------------------------------------------------
+       BUILD CANDIDATES
+    ----------------------------------------------------- */
+
+    const candidates = [];
+
+    if(
+        evenScore >= 70 &&
+        evenPct >= minimum
+    ){
+
+        candidates.push({
+            signal:"EVEN",
+            strategy:"EVEN",
+            confidence:evenPct,
+            score:evenScore,
+            barrier:null
+        });
+    }
+
+    if(
+        oddScore >= 70 &&
+        oddPct >= minimum
+    ){
+
+        candidates.push({
+            signal:"ODD",
+            strategy:"ODD",
+            confidence:oddPct,
+            score:oddScore,
+            barrier:null
+        });
+    }
+
+    if(
+        bestOver &&
+        bestOver.score >= 70 &&
+        bestOver.percentage >= minimum
+    ){
+
+        candidates.push({
+            signal:"OVER " + bestOver.barrier,
+            strategy:"OVER",
+            confidence:bestOver.percentage,
+            score:bestOver.score,
+            barrier:bestOver.barrier
+        });
+    }
+
+    if(
+        bestUnder &&
+        bestUnder.score >= 70 &&
+        bestUnder.percentage >= minimum
+    ){
+
+        candidates.push({
+            signal:"UNDER " + bestUnder.barrier,
+            strategy:"UNDER",
+            confidence:bestUnder.percentage,
+            score:bestUnder.score,
+            barrier:bestUnder.barrier
+        });
+    }
+
+    /* -----------------------------------------------------
+       PICK STRONGEST STRATEGY
+    ----------------------------------------------------- */
+
+    candidates.sort(
+        (a,b) =>
+            b.score - a.score ||
+            b.confidence - a.confidence
+    );
+
+    const best =
+        candidates.length
+            ? candidates[0]
+            : null;
+
+    if(!best){
+
+        lastSignal = {
+            signal:"NO TRADE",
+            strategy:null,
+            confidence:0,
+            score:0,
+            barrier:null,
+            greenDigit,
+            redDigit,
+            evenPct,
+            oddPct,
+            streak:oppositeStreak
+        };
+
+        document.getElementById("signal").innerHTML = `
+
+            <div class="signal-title">
+                NO TRADE
+            </div>
+
+            <p>
+                EVEN:
+                <strong>${evenPct.toFixed(2)}%</strong>
+                &nbsp; | &nbsp;
+                ODD:
+                <strong>${oddPct.toFixed(2)}%</strong>
+            </p>
+
+            <p>
+                Green:
+                <strong>${greenDigit}</strong>
+                &nbsp; | &nbsp;
+                Red:
+                <strong>${redDigit}</strong>
+            </p>
+
+            <p>
+                Recent streak:
+                <strong>${oppositeStreak}</strong>
+            </p>
+
+            <p class="muted">
+                MAUVEY is waiting for stronger agreement.
+            </p>
+        `;
+
+        return;
+    }
+
+    /* -----------------------------------------------------
+       SAVE SIGNAL
+    ----------------------------------------------------- */
+
+    lastSignal = {
+
+        signal:best.signal,
+
+        strategy:best.strategy,
+
+        confidence:best.confidence,
+
+        score:best.score,
+
+        barrier:best.barrier,
+
+        greenDigit,
+
+        redDigit,
+
+        evenPct,
+
+        oddPct,
+
+        streak:oppositeStreak,
+
+        reason:
+            "MAUVEY strategy conditions satisfied."
+    };
+
+    /* -----------------------------------------------------
+       DISPLAY
+    ----------------------------------------------------- */
+
+    document.getElementById("signal").innerHTML = `
+
+        <div class="signal-title">
+            ${escapeHTML(best.signal)}
+        </div>
+
+        <p>
+            Confidence:
+            <strong>
+                ${best.confidence.toFixed(2)}%
+            </strong>
+        </p>
+
+        <p>
+            Strategy score:
+            <strong>
+                ${best.score}
+            </strong>
+        </p>
+
+        <p>
+            Green digit:
+            <strong>${greenDigit}</strong>
+            &nbsp; | &nbsp;
+            Red digit:
+            <strong>${redDigit}</strong>
+        </p>
+
+        <p>
+            EVEN:
+            <strong>${evenPct.toFixed(2)}%</strong>
+            &nbsp; | &nbsp;
+            ODD:
+            <strong>${oddPct.toFixed(2)}%</strong>
+        </p>
+
+        <p>
+            Recent streak:
+            <strong>${oppositeStreak}</strong>
+        </p>
+
+        <div class="progress">
+            <div
+                class="progress-fill"
+                style="width:${Math.min(
+                    100,
+                    best.score
+                )}%">
+            </div>
+        </div>
+
+        <p class="muted">
+            MAUVEY selected the strongest qualifying setup.
+        </p>
+    `;
+
+    /* -----------------------------------------------------
+       AUTO TRADE
+    ----------------------------------------------------- */
+
+    if(
+        analyzerRunning &&
+        autoTrading &&
+        !tradeInProgress
+    ){
+
+        considerAutoTrade();
+    }
 }
 
+
+/* =========================================================
+   MAUVEY AUTO TRADE
+========================================================= */
 
 function considerAutoTrade(){
 
@@ -4456,10 +4793,8 @@ function considerAutoTrade(){
         tradeInProgress ||
         !lastSignal
     ){
-
         return;
     }
-
 
     const max =
         Number(
@@ -4468,67 +4803,111 @@ function considerAutoTrade(){
             ).value
         );
 
-
-    if(
-        autoTradeCount >=
-        max
-    ){
+    if(autoTradeCount >= max){
 
         stopAutoTrade();
 
         return;
     }
 
-
-    const contract =
-        document.getElementById(
-            "contractType"
-        ).value;
-
-
+    /* No qualifying setup */
     if(
-        contract ===
-        "DIGITEVEN" &&
-        lastSignal.signal !==
-        "EVEN"
+        !lastSignal.strategy ||
+        lastSignal.signal === "NO TRADE"
     ){
-
         return;
     }
 
-
-    if(
-        contract ===
-        "DIGITODD" &&
-        lastSignal.signal !==
-        "ODD"
-    ){
-
-        return;
-    }
-
-
-    if(
-        lastSignal.confidence <
+    const minimum =
         Number(
             document.getElementById(
                 "minConfidence"
             ).value
-        )
+        );
+
+    if(
+        lastSignal.confidence <
+        minimum
     ){
+        return;
+    }
+
+    /* -----------------------------------------------------
+       MAUVEY OVERRIDES THE MANUAL CONTRACT DROPDOWN
+       ----------------------------------------------------- */
+
+    const contract =
+        document.getElementById(
+            "contractType"
+        );
+
+    const barrier =
+        document.getElementById(
+            "barrier"
+        );
+
+    if(lastSignal.strategy === "EVEN"){
+
+        contract.value =
+            "DIGITEVEN";
+    }
+
+    else if(lastSignal.strategy === "ODD"){
+
+        contract.value =
+            "DIGITODD";
+    }
+
+    else if(lastSignal.strategy === "OVER"){
+
+        contract.value =
+            "DIGITOVER";
+
+        barrier.value =
+            String(
+                lastSignal.barrier
+            );
+    }
+
+    else if(lastSignal.strategy === "UNDER"){
+
+        contract.value =
+            "DIGITUNDER";
+
+        barrier.value =
+            String(
+                lastSignal.barrier
+            );
+    }
+
+    else{
 
         return;
     }
 
+    updateDurationUI();
 
     log(
-        "Qualifying signal detected. Executing trade."
+        "MAUVEY signal: " +
+        lastSignal.signal +
+        " • Confidence " +
+        lastSignal.confidence.toFixed(2) +
+        "% • Score " +
+        lastSignal.score
     );
 
+    log(
+        "MAUVEY executing " +
+        lastSignal.strategy +
+        (
+            lastSignal.barrier !== null
+                ? " " + lastSignal.barrier
+                : ""
+        )
+    );
 
     requestTradeProposal();
 }
-
 
 /* =========================================================
    TRADE STATE

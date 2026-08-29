@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DO<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -2099,4 +2099,2852 @@ function loadMarkets() {
 
     publicSocket.send(
         JSON.stringify({
-           (
+            active_symbols: "full",
+            req_id: reqId()
+        })
+    );
+}
+
+
+/* =========================================================
+   MARKET RENDERING
+========================================================= */
+
+function renderMarkets() {
+
+    const list =
+        document.getElementById(
+            "marketList"
+        );
+
+    const search =
+        document.getElementById(
+            "search"
+        ).value
+        .toLowerCase()
+        .trim();
+
+    const category =
+        document.getElementById(
+            "category"
+        ).value;
+
+    const filtered =
+        markets.filter(
+            function(market) {
+
+                const name =
+                    String(
+                        market.underlying_symbol_name ||
+                        market.display_name ||
+                        ""
+                    ).toLowerCase();
+
+                const symbol =
+                    String(
+                        market.underlying_symbol ||
+                        market.symbol ||
+                        ""
+                    ).toLowerCase();
+
+                const type =
+                    String(
+                        market.market ||
+                        market.underlying_symbol_type ||
+                        ""
+                    ).toLowerCase();
+
+                const searchOK =
+                    !search ||
+                    name.includes(search) ||
+                    symbol.includes(search);
+
+                let categoryOK = true;
+
+                if (category !== "all") {
+
+                    if (
+                        category === "forex"
+                    ) {
+
+                        categoryOK =
+                            type === "forex";
+
+                    }
+                    else if (
+                        category === "crypto"
+                    ) {
+
+                        categoryOK =
+                            type.includes(
+                                "crypto"
+                            );
+
+                    }
+                    else if (
+                        category === "synthetic"
+                    ) {
+
+                        categoryOK =
+                            type.includes(
+                                "synthetic"
+                            ) ||
+                            name.includes(
+                                "volatility"
+                            ) ||
+                            name.includes(
+                                "crash"
+                            ) ||
+                            name.includes(
+                                "boom"
+                            ) ||
+                            name.includes(
+                                "jump"
+                            ) ||
+                            name.includes(
+                                "range break"
+                            );
+
+                    }
+                    else {
+
+                        categoryOK =
+                            type.includes(
+                                category
+                            );
+                    }
+                }
+
+                return (
+                    searchOK &&
+                    categoryOK
+                );
+            }
+        );
+
+    document.getElementById(
+        "marketCount"
+    ).textContent =
+        filtered.length +
+        " of " +
+        markets.length +
+        " markets";
+
+    list.innerHTML = "";
+
+    filtered
+        .slice(0, 500)
+        .forEach(
+            function(market) {
+
+                const symbol =
+                    market.underlying_symbol ||
+                    market.symbol;
+
+                const name =
+                    market.underlying_symbol_name ||
+                    market.display_name ||
+                    symbol;
+
+                const div =
+                    document.createElement(
+                        "div"
+                    );
+
+                div.className =
+                    "market";
+
+                if (
+                    symbol ===
+                    selectedSymbol
+                ) {
+
+                    div.classList.add(
+                        "selected"
+                    );
+                }
+
+                div.innerHTML =
+
+                    "<div class='market-name'>" +
+
+                    escapeHTML(name) +
+
+                    "</div>" +
+
+                    "<div class='market-info'>" +
+
+                    escapeHTML(symbol) +
+
+                    " • " +
+
+                    escapeHTML(
+                        market.market ||
+                        market.underlying_symbol_type ||
+                        ""
+                    ) +
+
+                    "</div>";
+
+                div.onclick =
+                    function() {
+
+                        selectMarket(
+                            market
+                        );
+                    };
+
+                list.appendChild(div);
+            }
+        );
+}
+
+
+/* =========================================================
+   SELECT MARKET
+========================================================= */
+
+function selectMarket(market) {
+
+    selectedSymbol =
+        market.underlying_symbol ||
+        market.symbol;
+
+    selectedName =
+        market.underlying_symbol_name ||
+        market.display_name ||
+        selectedSymbol;
+
+    document.getElementById(
+        "selectedName"
+    ).textContent =
+        selectedName;
+
+    document.getElementById(
+        "selectedSymbol"
+    ).textContent =
+        selectedSymbol;
+
+    ticks = [];
+
+    renderMarkets();
+
+    log(
+        "Selected market: " +
+        selectedName +
+        " (" +
+        selectedSymbol +
+        ")"
+    );
+
+    if (
+        !publicSocket ||
+        publicSocket.readyState !==
+            WebSocket.OPEN
+    ) {
+
+        return;
+    }
+
+    publicSocket.send(
+        JSON.stringify({
+            ticks_history:
+                selectedSymbol,
+
+            count:
+                5000,
+
+            end:
+                "latest",
+
+            style:
+                "ticks",
+
+            req_id:
+                reqId()
+        })
+    );
+
+    publicSocket.send(
+        JSON.stringify({
+            ticks:
+                selectedSymbol,
+
+            subscribe:
+                1,
+
+            req_id:
+                reqId()
+        })
+    );
+}
+
+
+/* =========================================================
+   HISTORY
+========================================================= */
+
+function loadHistory(data) {
+
+    if (!data.history) {
+        return;
+    }
+
+    const prices =
+        data.history.prices || [];
+
+    const times =
+        data.history.times || [];
+
+    ticks = [];
+
+    for (
+        let i = 0;
+        i < prices.length;
+        i++
+    ) {
+
+        const price =
+            Number(prices[i]);
+
+        ticks.push({
+            price: price,
+            digit: getDigit(price),
+            time: times[i]
+        });
+    }
+
+    log(
+        "Loaded " +
+        ticks.length +
+        " historical ticks."
+    );
+
+    analyze();
+
+    showTicks();
+}
+
+
+/* =========================================================
+   LIVE TICKS
+========================================================= */
+
+function receiveTick(data) {
+
+    if (!data.tick) {
+        return;
+    }
+
+    const price =
+        Number(
+            data.tick.quote
+        );
+
+    const digit =
+        getDigit(price);
+
+    ticks.push({
+        price: price,
+        digit: digit,
+        time: data.tick.epoch
+    });
+
+    if (ticks.length > 5000) {
+
+        ticks =
+            ticks.slice(-5000);
+    }
+
+    document.getElementById(
+        "price"
+    ).textContent =
+        price;
+
+    document.getElementById(
+        "lastDigit"
+    ).textContent =
+        digit;
+
+    analyze();
+
+    showTicks();
+}
+
+
+/* =========================================================
+   DIGIT EXTRACTION
+========================================================= */
+
+function getDigit(price) {
+
+    if (!Number.isFinite(price)) {
+        return null;
+    }
+
+    const text =
+        Number(price)
+            .toFixed(10)
+            .replace(/0+$/, "");
+
+    const numbers =
+        text.replace(
+            /[^0-9]/g,
+            ""
+        );
+
+    if (!numbers) {
+        return null;
+    }
+
+    return Number(
+        numbers[
+            numbers.length - 1
+        ]
+    );
+}
+
+
+/* =========================================================
+   ANALYZER
+========================================================= */
+
+function analyze() {
+
+    const sample =
+        Number(
+            document.getElementById(
+                "sample"
+            ).value
+        );
+
+    const data =
+        ticks.slice(-sample);
+
+    document.getElementById(
+        "count"
+    ).textContent =
+        ticks.length;
+
+    document.getElementById(
+        "window"
+    ).textContent =
+        data.length;
+
+    if (data.length < 10) {
+
+        document.getElementById(
+            "engine"
+        ).textContent =
+            "COLLECTING";
+
+        return;
+    }
+
+    const counts =
+        Array(10).fill(0);
+
+    data.forEach(
+        function(tick) {
+
+            if (
+                Number.isInteger(
+                    tick.digit
+                )
+            ) {
+
+                counts[
+                    tick.digit
+                ]++;
+            }
+        }
+    );
+
+    const total =
+        counts.reduce(
+            (a, b) =>
+                a + b,
+            0
+        );
+
+    if (!total) {
+        return;
+    }
+
+    renderDigits(
+        counts,
+        total
+    );
+
+    statistics(
+        counts,
+        total
+    );
+
+    patterns(data);
+
+    transitions(data);
+
+    multiWindows();
+
+    generateSignal(
+        counts,
+        total,
+        data
+    );
+
+    backtest(data);
+}
+
+
+/* =========================================================
+   DIGIT DISTRIBUTION
+========================================================= */
+
+function renderDigits(
+    counts,
+    total
+) {
+
+    let html = "";
+
+    counts.forEach(
+        function(
+            count,
+            digit
+        ) {
+
+            const pct =
+                count /
+                total *
+                100;
+
+            html +=
+
+                "<div class='digit'>" +
+
+                "<div class='digit-row'>" +
+
+                "<strong>" +
+                digit +
+                "</strong>" +
+
+                "<span>" +
+                pct.toFixed(2) +
+                "%</span>" +
+
+                "</div>" +
+
+                "<div class='bar'>" +
+
+                "<div class='fill' style='width:" +
+                Math.min(
+                    100,
+                    pct * 5
+                ) +
+                "%'></div>" +
+
+                "</div>" +
+
+                "<small>" +
+                count +
+                " occurrences" +
+                "</small>" +
+
+                "</div>";
+        }
+    );
+
+    document.getElementById(
+        "digits"
+    ).innerHTML =
+        html;
+}
+
+
+/* =========================================================
+   STATISTICS
+========================================================= */
+
+function statistics(
+    counts,
+    total
+) {
+
+    const max =
+        Math.max(...counts);
+
+    const min =
+        Math.min(...counts);
+
+    const hot =
+        counts.indexOf(max);
+
+    const cold =
+        counts.indexOf(min);
+
+    const even =
+        counts[0] +
+        counts[2] +
+        counts[4] +
+        counts[6] +
+        counts[8];
+
+    const odd =
+        total -
+        even;
+
+    document.getElementById(
+        "hotDigit"
+    ).textContent =
+        hot;
+
+    document.getElementById(
+        "coldDigit"
+    ).textContent =
+        cold;
+
+    document.getElementById(
+        "stats"
+    ).innerHTML =
+
+        line(
+            "Hot Digit",
+            hot +
+            " (" +
+            (
+                max /
+                total *
+                100
+            ).toFixed(2) +
+            "%)"
+        ) +
+
+        line(
+            "Cold Digit",
+            cold +
+            " (" +
+            (
+                min /
+                total *
+                100
+            ).toFixed(2) +
+            "%)"
+        ) +
+
+        line(
+            "Even",
+            (
+                even /
+                total *
+                100
+            ).toFixed(2) +
+            "%"
+        ) +
+
+        line(
+            "Odd",
+            (
+                odd /
+                total *
+                100
+            ).toFixed(2) +
+            "%"
+        );
+}
+
+
+/* =========================================================
+   PATTERNS
+========================================================= */
+
+function patterns(data) {
+
+    let longest = 1;
+
+    let current = 1;
+
+    for (
+        let i = 1;
+        i < data.length;
+        i++
+    ) {
+
+        if (
+            data[i].digit ===
+            data[i - 1].digit
+        ) {
+
+            current++;
+
+        }
+        else {
+
+            current = 1;
+        }
+
+        longest =
+            Math.max(
+                longest,
+                current
+            );
+    }
+
+    current = 1;
+
+    for (
+        let i =
+            data.length - 1;
+        i > 0;
+        i--
+    ) {
+
+        if (
+            data[i].digit ===
+            data[i - 1].digit
+        ) {
+
+            current++;
+        }
+        else {
+
+            break;
+        }
+    }
+
+    document.getElementById(
+        "longestStreak"
+    ).textContent =
+        longest;
+
+    document.getElementById(
+        "currentStreak"
+    ).textContent =
+        current;
+}
+
+
+/* =========================================================
+   TRANSITIONS
+========================================================= */
+
+function transitions(data) {
+
+    const matrix =
+        Array.from(
+            { length: 10 },
+            () =>
+                Array(10).fill(0)
+        );
+
+    for (
+        let i = 1;
+        i < data.length;
+        i++
+    ) {
+
+        const previous =
+            data[i - 1].digit;
+
+        const next =
+            data[i].digit;
+
+        if (
+            Number.isInteger(previous) &&
+            Number.isInteger(next)
+        ) {
+
+            matrix[
+                previous
+            ][
+                next
+            ]++;
+        }
+    }
+
+    const recent =
+        data[
+            data.length - 1
+        ].digit;
+
+    if (
+        !Number.isInteger(recent)
+    ) {
+        return;
+    }
+
+    const row =
+        matrix[recent];
+
+    const total =
+        row.reduce(
+            (a, b) =>
+                a + b,
+            0
+        );
+
+    if (!total) {
+
+        document.getElementById(
+            "transitions"
+        ).textContent =
+            "Not enough transition data.";
+
+        return;
+    }
+
+    const ranking =
+        row
+            .map(
+                function(
+                    count,
+                    digit
+                ) {
+
+                    return {
+                        digit,
+                        count
+                    };
+                }
+            )
+            .sort(
+                (a, b) =>
+                    b.count -
+                    a.count
+            )
+            .slice(0, 5);
+
+    document.getElementById(
+        "transitions"
+    ).innerHTML =
+
+        "<p>After digit " +
+        recent +
+        ":</p>" +
+
+        ranking
+            .map(
+                function(item) {
+
+                    return line(
+                        "Digit " +
+                        item.digit,
+
+                        (
+                            item.count /
+                            total *
+                            100
+                        ).toFixed(2) +
+                        "%"
+                    );
+                }
+            )
+            .join("");
+}
+
+
+/* =========================================================
+   MULTI-WINDOW ANALYSIS
+========================================================= */
+
+function multiWindows() {
+
+    const sizes =
+        [
+            50,
+            100,
+            250,
+            500,
+            1000
+        ];
+
+    let html = "";
+
+    sizes.forEach(
+        function(size) {
+
+            if (
+                ticks.length <
+                size
+            ) {
+                return;
+            }
+
+            const data =
+                ticks.slice(-size);
+
+            const counts =
+                Array(10).fill(0);
+
+            data.forEach(
+                function(tick) {
+
+                    if (
+                        Number.isInteger(
+                            tick.digit
+                        )
+                    ) {
+
+                        counts[
+                            tick.digit
+                        ]++;
+                    }
+                }
+            );
+
+            const max =
+                Math.max(
+                    ...counts
+                );
+
+            const min =
+                Math.min(
+                    ...counts
+                );
+
+            const hot =
+                counts.indexOf(max);
+
+            const cold =
+                counts.indexOf(min);
+
+            html +=
+
+                "<div class='analysis-line'>" +
+
+                "<span>" +
+                size +
+                " ticks" +
+                "</span>" +
+
+                "<span>" +
+
+                "Hot " +
+                hot +
+                " (" +
+                (
+                    max /
+                    size *
+                    100
+                ).toFixed(2) +
+                "%)" +
+
+                " • Cold " +
+                cold +
+                " (" +
+                (
+                    min /
+                    size *
+                    100
+                ).toFixed(2) +
+                "%)" +
+
+                "</span>" +
+
+                "</div>";
+        }
+    );
+
+    document.getElementById(
+        "windows"
+    ).innerHTML =
+        html ||
+        "Not enough data for multi-window analysis.";
+}
+
+
+/* =========================================================
+   SIGNAL ENGINE
+========================================================= */
+
+function generateSignal(
+    counts,
+    total,
+    data
+) {
+
+    const contract =
+        document.getElementById(
+            "contractType"
+        ).value;
+
+    const minimum =
+        Number(
+            document.getElementById(
+                "minConfidence"
+            ).value
+        );
+
+    let signal =
+        "NO SIGNAL";
+
+    let confidence = 0;
+
+    let explanation =
+        "Waiting for a qualifying statistical condition.";
+
+    /*
+       DIGIT CONTRACTS
+    */
+
+    if (
+        contract === "DIGITEVEN" ||
+        contract === "DIGITODD"
+    ) {
+
+        const even =
+            counts[0] +
+            counts[2] +
+            counts[4] +
+            counts[6] +
+            counts[8];
+
+        const odd =
+            total -
+            even;
+
+        if (
+            contract ===
+            "DIGITEVEN"
+        ) {
+
+            confidence =
+                even /
+                total *
+                100;
+
+        }
+        else {
+
+            confidence =
+                odd /
+                total *
+                100;
+        }
+
+        if (
+            confidence >=
+            minimum
+        ) {
+
+            signal =
+                contract;
+
+            explanation =
+                "Digit parity distribution is above the selected threshold.";
+
+        }
+    }
+
+    else if (
+        contract ===
+        "DIGITOVER"
+    ) {
+
+        const barrier =
+            Number(
+                document.getElementById(
+                    "barrier"
+                ).value
+            );
+
+        let hits = 0;
+
+        data.forEach(
+            tick => {
+
+                if (
+                    tick.digit >
+                    barrier
+                ) {
+                    hits++;
+                }
+            }
+        );
+
+        confidence =
+            hits /
+            data.length *
+            100;
+
+        if (
+            confidence >=
+            minimum
+        ) {
+
+            signal =
+                "OVER " +
+                barrier;
+
+            explanation =
+                "Observed frequency above barrier " +
+                barrier +
+                " is " +
+                confidence.toFixed(2) +
+                "%.";
+        }
+    }
+
+    else if (
+        contract ===
+        "DIGITUNDER"
+    ) {
+
+        const barrier =
+            Number(
+                document.getElementById(
+                    "barrier"
+                ).value
+            );
+
+        let hits = 0;
+
+        data.forEach(
+            tick => {
+
+                if (
+                    tick.digit <
+                    barrier
+                ) {
+                    hits++;
+                }
+            }
+        );
+
+        confidence =
+            hits /
+            data.length *
+            100;
+
+        if (
+            confidence >=
+            minimum
+        ) {
+
+            signal =
+                "UNDER " +
+                barrier;
+
+            explanation =
+                "Observed frequency below barrier " +
+                barrier +
+                " is " +
+                confidence.toFixed(2) +
+                "%.";
+        }
+    }
+
+    else if (
+        contract ===
+        "DIGITMATCH"
+    ) {
+
+        const barrier =
+            Number(
+                document.getElementById(
+                    "barrier"
+                ).value
+            );
+
+        const count =
+            counts[barrier];
+
+        confidence =
+            count /
+            total *
+            100;
+
+        if (
+            confidence >=
+            minimum
+        ) {
+
+            signal =
+                "MATCH " +
+                barrier;
+
+            explanation =
+                "Digit " +
+                barrier +
+                " occurred " +
+                confidence.toFixed(2) +
+                "% of the selected sample.";
+        }
+    }
+
+    else if (
+        contract ===
+        "DIGITDIFF"
+    ) {
+
+        const barrier =
+            Number(
+                document.getElementById(
+                    "barrier"
+                ).value
+            );
+
+        const count =
+            counts[barrier];
+
+        confidence =
+            (
+                1 -
+                count /
+                total
+            ) *
+            100;
+
+        if (
+            confidence >=
+            minimum
+        ) {
+
+            signal =
+                "DIFF " +
+                barrier;
+
+            explanation =
+                "Observed probability of differing from digit " +
+                barrier +
+                " is approximately " +
+                confidence.toFixed(2) +
+                "%.";
+        }
+    }
+
+    /*
+       RISE / FALL
+    */
+
+    else if (
+        contract === "CALL" ||
+        contract === "PUT"
+    ) {
+
+        const lookback =
+            Math.min(
+                30,
+                data.length - 1
+            );
+
+        const start =
+            Number(
+                data[
+                    data.length -
+                    1 -
+                    lookback
+                ].price
+            );
+
+        const end =
+            Number(
+                data[
+                    data.length - 1
+                ].price
+            );
+
+        const change =
+            end - start;
+
+        let direction =
+            change > 0
+                ? "CALL"
+                : "PUT";
+
+        const magnitude =
+            Math.abs(change);
+
+        const range =
+            Math.abs(
+                start
+            ) || 1;
+
+        const movementPct =
+            magnitude /
+            range *
+            100;
+
+        confidence =
+            Math.min(
+                99,
+                50 +
+                movementPct *
+                100
+            );
+
+        if (
+            direction ===
+            contract &&
+            confidence >=
+            minimum
+        ) {
+
+            signal =
+                contract;
+
+            explanation =
+                "Short-term price direction agrees with the selected contract.";
+        }
+    }
+
+    currentSignal = {
+        contract,
+        signal,
+        confidence,
+        explanation
+    };
+
+    renderSignal(
+        currentSignal
+    );
+
+    document.getElementById(
+        "engine"
+    ).textContent =
+        signal !== "NO SIGNAL"
+            ? "SIGNAL READY"
+            : "ANALYZING";
+
+    if (
+        analyzerRunning &&
+        autoTrading &&
+        !tradeInProgress &&
+        signal !== "NO SIGNAL" &&
+        confidence >= minimum
+    ) {
+
+        autoTradeSignal();
+    }
+}
+
+
+/* =========================================================
+   SIGNAL UI
+========================================================= */
+
+function renderSignal(signal) {
+
+    const box =
+        document.getElementById(
+            "signal"
+        );
+
+    if (
+        !signal ||
+        signal.signal ===
+            "NO SIGNAL"
+    ) {
+
+        box.innerHTML =
+
+            "<div class='signal-title'>" +
+            "NO SIGNAL" +
+            "</div>" +
+
+            "<p>" +
+            escapeHTML(
+                signal
+                    ? signal.explanation
+                    : "Waiting for data."
+            ) +
+            "</p>";
+
+        return;
+    }
+
+    box.innerHTML =
+
+        "<div class='signal-title'>" +
+
+        escapeHTML(
+            signal.signal
+        ) +
+
+        "</div>" +
+
+        "<p>" +
+
+        "Confidence: " +
+
+        signal.confidence.toFixed(2) +
+
+        "%</p>" +
+
+        "<div class='progress'>" +
+
+        "<div class='progress-fill' style='width:" +
+
+        Math.min(
+            100,
+            signal.confidence
+        ) +
+
+        "%'></div>" +
+
+        "</div>" +
+
+        "<p class='muted'>" +
+
+        escapeHTML(
+            signal.explanation
+        ) +
+
+        "</p>";
+}
+
+
+/* =========================================================
+   BACKTEST
+========================================================= */
+
+function backtest(data) {
+
+    if (data.length < 30) {
+
+        document.getElementById(
+            "backtest"
+        ).textContent =
+            "Waiting for at least 30 ticks.";
+
+        return;
+    }
+
+    const contract =
+        document.getElementById(
+            "contractType"
+        ).value;
+
+    let wins = 0;
+
+    let tests = 0;
+
+    /*
+       Simple observational backtest.
+       This does NOT predict the future.
+    */
+
+    for (
+        let i = 20;
+        i < data.length;
+        i++
+    ) {
+
+        const previous =
+            data.slice(
+                i - 20,
+                i
+            );
+
+        if (
+            contract ===
+            "DIGITEVEN"
+        ) {
+
+            let even = 0;
+
+            previous.forEach(
+                tick => {
+
+                    if (
+                        tick.digit %
+                        2 ===
+                        0
+                    ) {
+                        even++;
+                    }
+                }
+            );
+
+            const prediction =
+                even >=
+                previous.length /
+                2;
+
+            const actual =
+                data[i].digit %
+                2 ===
+                0;
+
+            if (
+                prediction ===
+                actual
+            ) {
+                wins++;
+            }
+
+            tests++;
+        }
+
+        else if (
+            contract ===
+            "DIGITODD"
+        ) {
+
+            let odd = 0;
+
+            previous.forEach(
+                tick => {
+
+                    if (
+                        tick.digit %
+                        2 !==
+                        0
+                    ) {
+                        odd++;
+                    }
+                }
+            );
+
+            const prediction =
+                odd >=
+                previous.length /
+                2;
+
+            const actual =
+                data[i].digit %
+                2 !==
+                0;
+
+            if (
+                prediction ===
+                actual
+            ) {
+                wins++;
+            }
+
+            tests++;
+        }
+    }
+
+    if (!tests) {
+
+        document.getElementById(
+            "backtest"
+        ).textContent =
+            "Backtest unavailable for this contract.";
+
+        return;
+    }
+
+    document.getElementById(
+        "backtest"
+    ).innerHTML =
+
+        line(
+            "Tests",
+            tests
+        ) +
+
+        line(
+            "Correct",
+            wins
+        ) +
+
+        line(
+            "Observed Hit Rate",
+            (
+                wins /
+                tests *
+                100
+            ).toFixed(2) +
+            "%"
+        );
+}
+
+
+/* =========================================================
+   RECENT TICKS
+========================================================= */
+
+function showTicks() {
+
+    const box =
+        document.getElementById(
+            "ticks"
+        );
+
+    const recent =
+        ticks.slice(-60);
+
+    box.innerHTML = "";
+
+    recent
+        .reverse()
+        .forEach(
+            function(tick) {
+
+                const div =
+                    document.createElement(
+                        "div"
+                    );
+
+                div.className =
+                    "tick";
+
+                div.textContent =
+                    Number(
+                        tick.price
+                    ).toString() +
+                    " → " +
+                    tick.digit;
+
+                box.appendChild(div);
+            }
+        );
+}
+
+
+/* =========================================================
+   DURATION UI
+========================================================= */
+
+function updateDurationUI() {
+
+    const contract =
+        document.getElementById(
+            "contractType"
+        ).value;
+
+    const unit =
+        document.getElementById(
+            "durationUnit"
+        );
+
+    const duration =
+        document.getElementById(
+            "duration"
+        );
+
+    const digitContracts =
+        [
+            "DIGITEVEN",
+            "DIGITODD",
+            "DIGITOVER",
+            "DIGITUNDER",
+            "DIGITMATCH",
+            "DIGITDIFF"
+        ];
+
+    if (
+        digitContracts.includes(
+            contract
+        )
+    ) {
+
+        unit.value = "t";
+
+        unit.disabled = true;
+
+        duration.value = 1;
+
+        duration.min = 1;
+
+        duration.max = 10;
+
+    }
+    else {
+
+        unit.value = "s";
+
+        unit.disabled = true;
+
+        duration.value = 1;
+
+        duration.min = 1;
+
+        duration.max = 3600;
+    }
+
+    /*
+       Barrier is relevant to digit contracts.
+    */
+
+    const barrierGroup =
+        document.getElementById(
+            "barrierGroup"
+        );
+
+    if (
+        digitContracts.includes(
+            contract
+        )
+    ) {
+
+        barrierGroup.classList.remove(
+            "hidden"
+        );
+
+    }
+    else {
+
+        barrierGroup.classList.add(
+            "hidden"
+        );
+    }
+
+    if (analyzerRunning) {
+        analyze();
+    }
+}
+
+
+/* =========================================================
+   START ANALYZER
+========================================================= */
+
+function startAnalyzer() {
+
+    if (!selectedSymbol) {
+
+        alert(
+            "Select a market first."
+        );
+
+        return;
+    }
+
+    if (
+        !publicSocket ||
+        publicSocket.readyState !==
+            WebSocket.OPEN
+    ) {
+
+        alert(
+            "Connect market data first."
+        );
+
+        return;
+    }
+
+    analyzerRunning = true;
+
+    document.getElementById(
+        "analyzerState"
+    ).className =
+        "success";
+
+    document.getElementById(
+        "analyzerState"
+    ).textContent =
+        "Analyzer running.";
+
+    document.getElementById(
+        "engine"
+    ).textContent =
+        "ANALYZING";
+
+    log(
+        "Analyzer started."
+    );
+
+    analyze();
+}
+
+
+/* =========================================================
+   STOP ANALYZER
+========================================================= */
+
+function stopAnalyzer() {
+
+    analyzerRunning = false;
+
+    if (autoTrading) {
+        stopAutoTrade();
+    }
+
+    document.getElementById(
+        "analyzerState"
+    ).className =
+        "warning";
+
+    document.getElementById(
+        "analyzerState"
+    ).textContent =
+        "Analyzer stopped.";
+
+    document.getElementById(
+        "engine"
+    ).textContent =
+        "STOPPED";
+
+    log(
+        "Analyzer stopped."
+    );
+}
+
+
+/* =========================================================
+   AUTO TRADING
+========================================================= */
+
+function toggleAutoTrade() {
+
+    if (autoTrading) {
+
+        stopAutoTrade();
+
+        return;
+    }
+
+    if (!analyzerRunning) {
+
+        alert(
+            "Start the analyzer first."
+        );
+
+        log(
+            "Auto Trade selected. Analyzer must be running."
+        );
+
+        return;
+    }
+
+    if (
+        !selectedAccount ||
+        !derivAccountSocket ||
+        derivAccountSocket.readyState !==
+            WebSocket.OPEN
+    ) {
+
+        alert(
+            "Connect your Deriv trading account first."
+        );
+
+        return;
+    }
+
+    autoTrading = true;
+
+    totalAutoTrades = 0;
+
+    const box =
+        document.getElementById(
+            "autoBox"
+        );
+
+    box.classList.add(
+        "auto-active"
+    );
+
+    document.getElementById(
+        "autoBtn"
+    ).textContent =
+        "AUTO TRADE ON";
+
+    document.getElementById(
+        "autoStatus"
+    ).textContent =
+        "Auto trading is ON. Waiting for a qualifying signal.";
+
+    log(
+        "Auto trading started."
+    );
+
+    analyze();
+}
+
+
+function stopAutoTrade() {
+
+    autoTrading = false;
+
+    document.getElementById(
+        "autoBox"
+    ).classList.remove(
+        "auto-active"
+    );
+
+    document.getElementById(
+        "autoBtn"
+    ).textContent =
+        "AUTO TRADE OFF";
+
+    document.getElementById(
+        "autoStatus"
+    ).textContent =
+        "Auto trading is OFF.";
+
+    log(
+        "Auto trading stopped."
+    );
+}
+
+
+function autoTradeSignal() {
+
+    if (
+        !autoTrading ||
+        tradeInProgress ||
+        !analyzerRunning
+    ) {
+        return;
+    }
+
+    const maxTrades =
+        Number(
+            document.getElementById(
+                "maxTrades"
+            ).value
+        );
+
+    if (
+        totalAutoTrades >=
+        maxTrades
+    ) {
+
+        stopAutoTrade();
+
+        log(
+            "Maximum auto trades reached."
+        );
+
+        return;
+    }
+
+    /*
+       Prevent immediate repeated trades
+       on the same tick.
+    */
+
+    tradeInProgress = true;
+
+    totalAutoTrades++;
+
+    document.getElementById(
+        "autoStatus"
+    ).textContent =
+        "Auto trade " +
+        totalAutoTrades +
+        " of " +
+        maxTrades +
+        " executing...";
+
+    executeTrade(true);
+}
+
+
+/* =========================================================
+   MANUAL TRADE
+========================================================= */
+
+function executeManualTrade() {
+
+    executeTrade(false);
+}
+
+
+/* =========================================================
+   TRADE EXECUTION
+========================================================= */
+
+function executeTrade(isAuto) {
+
+    if (
+        !selectedAccount ||
+        !derivAccountSocket ||
+        derivAccountSocket.readyState !==
+            WebSocket.OPEN
+    ) {
+
+        if (isAuto) {
+            tradeInProgress = false;
+        }
+
+        alert(
+            "Connect your Deriv trading account first."
+        );
+
+        return;
+    }
+
+    if (!selectedSymbol) {
+
+        if (isAuto) {
+            tradeInProgress = false;
+        }
+
+        alert(
+            "Select a market first."
+        );
+
+        return;
+    }
+
+    const contractType =
+        document.getElementById(
+            "contractType"
+        ).value;
+
+    const duration =
+        Number(
+            document.getElementById(
+                "duration"
+            ).value
+        );
+
+    const durationUnit =
+        document.getElementById(
+            "durationUnit"
+        ).value;
+
+    const stake =
+        Number(
+            document.getElementById(
+                "stake"
+            ).value
+        );
+
+    const barrier =
+        document.getElementById(
+            "barrier"
+        ).value;
+
+    if (
+        !Number.isFinite(stake) ||
+        stake <= 0
+    ) {
+
+        if (isAuto) {
+            tradeInProgress = false;
+        }
+
+        alert(
+            "Enter a valid stake."
+        );
+
+        return;
+    }
+
+    if (
+        !Number.isFinite(duration) ||
+        duration < 1
+    ) {
+
+        if (isAuto) {
+            tradeInProgress = false;
+        }
+
+        alert(
+            "Enter a valid duration."
+        );
+
+        return;
+    }
+
+    currentTrade = {
+
+        auto:
+            isAuto,
+
+        contractType:
+            contractType,
+
+        duration:
+            duration,
+
+        durationUnit:
+            durationUnit,
+
+        stake:
+            stake,
+
+        barrier:
+            barrier,
+
+        market:
+            selectedName,
+
+        symbol:
+            selectedSymbol,
+
+        startedAt:
+            Date.now()
+    };
+
+    log(
+        "Trade execution requested."
+    );
+
+    requestProposal(
+        currentTrade
+    );
+}
+
+
+/* =========================================================
+   PROPOSAL REQUEST
+========================================================= */
+
+function requestProposal(trade) {
+
+    if (
+        !publicSocket ||
+        publicSocket.readyState !==
+            WebSocket.OPEN
+    ) {
+
+        log(
+            "Cannot request proposal: public connection unavailable."
+        );
+
+        if (trade.auto) {
+            tradeInProgress = false;
+        }
+
+        return;
+    }
+
+    const request = {
+
+        proposal:
+            1,
+
+        amount:
+            trade.stake,
+
+        basis:
+            "stake",
+
+        contract_type:
+            trade.contractType,
+
+        currency:
+            accountCurrency,
+
+        duration:
+            trade.duration,
+
+        duration_unit:
+            trade.durationUnit,
+
+        underlying_symbol:
+            trade.symbol,
+
+        req_id:
+            reqId()
+    };
+
+    /*
+       Digit contracts need a barrier.
+    */
+
+    const digitContracts =
+        [
+            "DIGITOVER",
+            "DIGITUNDER",
+            "DIGITMATCH",
+            "DIGITDIFF"
+        ];
+
+    if (
+        digitContracts.includes(
+            trade.contractType
+        )
+    ) {
+
+        request.barrier =
+            String(
+                trade.barrier
+            );
+    }
+
+    log(
+        "Requesting proposal: " +
+        trade.contractType
+    );
+
+    publicSocket.send(
+        JSON.stringify(
+            request
+        )
+    );
+}
+
+
+/* =========================================================
+   PROPOSAL RESPONSE
+========================================================= */
+
+function handleProposal(data) {
+
+    if (!data.proposal) {
+        return;
+    }
+
+    const proposal =
+        data.proposal;
+
+    if (!currentTrade) {
+
+        log(
+            "Proposal received without active trade."
+        );
+
+        return;
+    }
+
+    const ask =
+        Number(
+            proposal.ask_price
+        );
+
+    const proposalId =
+        proposal.id;
+
+    if (!proposalId) {
+
+        log(
+            "Proposal did not contain an ID."
+        );
+
+        if (currentTrade.auto) {
+            tradeInProgress = false;
+        }
+
+        return;
+    }
+
+    log(
+        "Proposal received. Ask price: " +
+        ask
+    );
+
+    /*
+       The buy request must go through
+       the authenticated account socket.
+    */
+
+    if (
+        !derivAccountSocket ||
+        derivAccountSocket.readyState !==
+            WebSocket.OPEN
+    ) {
+
+        log(
+            "Authenticated trading connection is not open."
+        );
+
+        if (currentTrade.auto) {
+            tradeInProgress = false;
+        }
+
+        return;
+    }
+
+    derivAccountSocket.send(
+        JSON.stringify({
+
+            buy:
+                proposalId,
+
+            price:
+                ask,
+
+            req_id:
+                reqId()
+        })
+    );
+
+    log(
+        "Sending authenticated buy request..."
+    );
+}
+
+
+/* =========================================================
+   BUY RESPONSE
+========================================================= */
+
+function handleBuy(data) {
+
+    if (data.error) {
+
+        log(
+            "Buy error: " +
+            JSON.stringify(
+                data.error
+            )
+        );
+
+        showTradeError(
+            data.error
+        );
+
+        if (
+            currentTrade &&
+            currentTrade.auto
+        ) {
+
+            tradeInProgress =
+                false;
+        }
+
+        return;
+    }
+
+    const buy =
+        data.buy;
+
+    if (!buy) {
+        return;
+    }
+
+    currentContractId =
+        Number(
+            buy.contract_id
+        );
+
+    tradeNumber++;
+
+    log(
+        "Contract purchased. Contract ID: " +
+        currentContractId
+    );
+
+    if (buy.buy_price !== undefined) {
+
+        log(
+            "Buy price: " +
+            buy.buy_price
+        );
+    }
+
+    monitorContract(
+        currentContractId
+    );
+}
+
+
+/* =========================================================
+   CONTRACT MONITORING
+========================================================= */
+
+function monitorContract(
+    contractId
+) {
+
+    if (
+        !derivAccountSocket ||
+        derivAccountSocket.readyState !==
+            WebSocket.OPEN
+    ) {
+
+        return;
+    }
+
+    derivAccountSocket.send(
+        JSON.stringify({
+
+            proposal_open_contract:
+                1,
+
+            contract_id:
+                contractId,
+
+            subscribe:
+                1,
+
+            req_id:
+                reqId()
+        })
+    );
+
+    log(
+        "Monitoring contract " +
+        contractId +
+        "..."
+    );
+}
+
+
+/* =========================================================
+   CONTRACT UPDATE
+========================================================= */
+
+function handleContractUpdate(data) {
+
+    const contract =
+        data.proposal_open_contract;
+
+    if (!contract) {
+        return;
+    }
+
+    if (
+        currentContractId &&
+        Number(contract.contract_id) !==
+            Number(currentContractId)
+    ) {
+
+        return;
+    }
+
+    /*
+       contract_is_expired indicates that
+       the contract reached its expiry.
+    */
+
+    const expired =
+        Number(
+            contract.is_expired
+        ) === 1;
+
+    const sold =
+        Number(
+            contract.is_sold
+        ) === 1;
+
+    const status =
+        String(
+            contract.status ||
+            ""
+        ).toLowerCase();
+
+    const isClosed =
+        expired ||
+        sold ||
+        status === "won" ||
+        status === "lost" ||
+        status === "sold";
+
+    if (!isClosed) {
+
+        return;
+    }
+
+    finishTrade(
+        contract
+    );
+}
+
+
+/* =========================================================
+   FINISH TRADE
+========================================================= */
+
+function finishTrade(contract) {
+
+    if (
+        !currentTrade
+    ) {
+        return;
+    }
+
+    const trade =
+        currentTrade;
+
+    currentTrade =
+        null;
+
+    const profit =
+        Number(
+            contract.profit
+        );
+
+    const payout =
+        Number(
+            contract.payout
+        );
+
+    const buyPrice =
+        Number(
+            contract.buy_price
+        );
+
+    const won =
+        profit > 0;
+
+    const lost =
+        profit < 0;
+
+    const result =
+        won
+            ? "WIN"
+            : lost
+                ? "LOSS"
+                : "BREAK EVEN";
+
+    addTradeHistory({
+
+        number:
+            tradeNumber,
+
+        contract:
+            trade.contractType,
+
+        market:
+            trade.market,
+
+        stake:
+            trade.stake,
+
+        result:
+            result,
+
+        profit:
+            profit,
+
+        status:
+            String(
+                contract.status ||
+                ""
+            ),
+
+        contractId:
+            contract.contract_id
+    });
+
+    showResultPopup({
+
+        result:
+            result,
+
+        profit:
+            profit,
+
+        payout:
+            payout,
+
+        buyPrice:
+            buyPrice,
+
+        contract:
+            trade.contractType,
+
+        market:
+            trade.market
+    });
+
+    log(
+        "Contract finished: " +
+        result +
+        " | P/L: " +
+        profit.toFixed(2)
+    );
+
+    requestAccountData();
+
+    currentContractId =
+        null;
+
+    tradeInProgress =
+        false;
+
+    if (
+        trade.auto &&
+        autoTrading &&
+        analyzerRunning
+    ) {
+
+        document.getElementById(
+            "autoStatus"
+        ).textContent =
+            "Trade completed. Waiting for the next qualifying signal.";
+
+        /*
+           Small delay prevents the same
+           signal from immediately firing again.
+        */
+
+        setTimeout(
+            function() {
+
+                if (
+                    autoTrading &&
+                    analyzerRunning
+                ) {
+
+                    analyze();
+                }
+
+            },
+            1200
+        );
+    }
+}
+
+
+/* =========================================================
+   TRADE ERROR
+========================================================= */
+
+function showTradeError(error) {
+
+    const message =
+        error &&
+        error.message
+            ? error.message
+            : "Trade failed.";
+
+    document.getElementById(
+        "popupResult"
+    ).textContent =
+        "ERROR";
+
+    document.getElementById(
+        "popupResult"
+    ).className =
+        "popup-result loss";
+
+    document.getElementById(
+        "popupProfit"
+    ).textContent =
+        "";
+
+    document.getElementById(
+        "popupDetails"
+    ).textContent =
+        message;
+
+    document.getElementById(
+        "resultPopup"
+    ).style.display =
+        "flex";
+}
+
+
+/* =========================================================
+   TRADE HISTORY
+========================================================= */
+
+function addTradeHistory(trade) {
+
+    tradeHistory.unshift(
+        trade
+    );
+
+    const body =
+        document.getElementById(
+            "tradeHistoryBody"
+        );
+
+    const row =
+        document.createElement(
+            "tr"
+        );
+
+    let resultClass =
+        "neutral";
+
+    if (
+        trade.result ===
+        "WIN"
+    ) {
+
+        resultClass =
+            "win";
+
+    }
+    else if (
+        trade.result ===
+        "LOSS"
+    ) {
+
+        resultClass =
+            "loss";
+    }
+
+    row.innerHTML =
+
+        "<td>" +
+        escapeHTML(
+            trade.number
+        ) +
+        "</td>" +
+
+        "<td>" +
+        escapeHTML(
+            trade.contract
+        ) +
+        "</td>" +
+
+        "<td>" +
+        escapeHTML(
+            trade.market
+        ) +
+        "</td>" +
+
+        "<td>" +
+        Number(
+            trade.stake
+        ).toFixed(2) +
+        "</td>" +
+
+        "<td class='" +
+        resultClass +
+        "'>" +
+        escapeHTML(
+            trade.result
+        ) +
+        "</td>" +
+
+        "<td class='" +
+        resultClass +
+        "'>" +
+        Number(
+            trade.profit
+        ).toFixed(2) +
+        "</td>" +
+
+        "<td>" +
+        escapeHTML(
+            trade.status
+        ) +
+        "</td>";
+
+    body.prepend(row);
+}
+
+
+/* =========================================================
+   RESULT POPUP
+========================================================= */
+
+function showResultPopup(data) {
+
+    const result =
+        document.getElementById(
+            "popupResult"
+        );
+
+    const profit =
+        document.getElementById(
+            "popupProfit"
+        );
+
+    const details =
+        document.getElementById(
+            "popupDetails"
+        );
+
+    result.textContent =
+        data.result;
+
+    result.className =
+        "popup-result " +
+        (
+            data.result ===
+            "WIN"
+                ? "win"
+                : data.result ===
+                    "LOSS"
+                    ? "loss"
+                    : "neutral"
+        );
+
+    const sign =
+        data.profit >= 0
+            ? "+"
+            : "";
+
+    profit.textContent =
+        sign +
+        Number(
+            data.profit
+        ).toFixed(2) +
+        " " +
+        accountCurrency;
+
+    details.innerHTML =
+
+        escapeHTML(
+            data.contract
+        ) +
+
+        " • " +
+
+        escapeHTML(
+            data.market
+        ) +
+
+        "<br><br>" +
+
+        "Payout: " +
+        Number(
+            data.payout || 0
+        ).toFixed(2);
+
+    document.getElementById(
+        "resultPopup"
+    ).style.display =
+        "flex";
+}
+
+
+function closeResultPopup() {
+
+    document.getElementById(
+        "resultPopup"
+    ).style.display =
+        "none";
+}
+
+
+/* =========================================================
+   INITIAL UI
+========================================================= */
+
+function initializeUI() {
+
+    updateDurationUI();
+
+    document.getElementById(
+        "startAnalyzerBtn"
+    ).disabled =
+        false;
+
+    document.getElementById(
+        "stopAnalyzerBtn"
+    ).disabled =
+        false;
+
+    log(
+        "Deriv Market Analyzer V5 loaded."
+    );
+
+    log(
+        "Select a market and press START ANALYZER."
+    );
+}
+
+
+/* =========================================================
+   BUTTON SAFETY / GLOBAL ERRORS
+========================================================= */
+
+window.addEventListener(
+    "error",
+    function(event) {
+
+        log(
+            "JavaScript error: " +
+            event.message
+        );
+    }
+);
+
+
+window.addEventListener(
+    "unhandledrejection",
+    function(event) {
+
+        log(
+            "Unhandled error: " +
+            event.reason
+        );
+    }
+);
+
+
+/* =========================================================
+   START
+========================================================= */
+
+initializeUI();
+
+</script>
+
+</body>
+</html>

@@ -1,1657 +1,5664 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Deriv Market Analyzer V7 - MAUVEY</title>
 
-    <title>MAUVEY</title>
+<style>
+*{box-sizing:border-box}
 
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+body{
+    margin:0;
+    background:#070c17;
+    color:#fff;
+    font-family:Arial,sans-serif
+}
 
-        body {
-            font-family: Arial, sans-serif;
-            background: #080b12;
-            color: #ffffff;
-            min-height: 100vh;
-        }
+header{
+    padding:18px;
+    background:#0d1425;
+    border-bottom:1px solid #273451
+}
 
-        .app {
-            width: 100%;
-            max-width: 600px;
-            margin: auto;
-            padding: 16px;
-        }
+header h1{
+    margin:0 0 6px
+}
 
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-        }
+header p{
+    margin:0;
+    color:#91a0bd
+}
 
-        .logo {
-            font-size: 26px;
-            font-weight: 800;
-            letter-spacing: 2px;
-        }
+main{
+    max-width:1250px;
+    margin:auto;
+    padding:15px
+}
 
-        .status {
-            display: flex;
-            align-items: center;
-            gap: 7px;
-            font-size: 12px;
-            color: #9da6b5;
-        }
+.card{
+    background:#121a2d;
+    border:1px solid #273451;
+    border-radius:15px;
+    padding:16px;
+    margin-bottom:15px
+}
 
-        .status-dot {
-            width: 9px;
-            height: 9px;
-            border-radius: 50%;
-            background: #555;
-        }
+h2{
+    margin-top:0
+}
 
-        .status-dot.running {
-            background: #20d47b;
-            box-shadow: 0 0 10px rgba(32, 212, 123, .7);
-        }
+.status{
+    padding:13px;
+    border-radius:9px;
+    margin-bottom:15px;
+    font-weight:bold
+}
 
-        .card {
-            background: #111722;
-            border: 1px solid #1e2633;
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 12px;
-        }
+.online{
+    background:#153b2b;
+    color:#72e5a5
+}
 
-        .section-title {
-            font-size: 11px;
-            color: #7f8a9d;
-            text-transform: uppercase;
-            letter-spacing: 1.4px;
-            margin-bottom: 12px;
-        }
+.offline{
+    background:#3b1822;
+    color:#ff9cab
+}
 
-        .market-name {
-            font-size: 21px;
-            font-weight: 700;
-        }
+.warning{
+    background:#302717;
+    color:#ffd166;
+    padding:12px;
+    border-radius:9px
+}
 
-        .symbol {
-            margin-top: 5px;
-            color: #8994a7;
-            font-size: 13px;
-        }
+.success{
+    background:#153b2b;
+    color:#72e5a5;
+    padding:12px;
+    border-radius:9px
+}
 
-        .phase {
-            margin-top: 14px;
-            padding: 10px 12px;
-            border-radius: 10px;
-            background: #0b0f17;
-            color: #d9dee8;
-            font-size: 14px;
-        }
+.danger{
+    background:#3b1822;
+    color:#ff9cab;
+    padding:12px;
+    border-radius:9px
+}
 
-        .checks {
-            margin-top: 12px;
-        }
+button,
+input,
+select{
+    width:100%;
+    min-height:45px;
+    border:0;
+    border-radius:9px;
+    padding:0 12px;
+    font-size:15px
+}
 
-        .check-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid #1c2330;
-            font-size: 14px;
-        }
+input,
+select{
+    background:#202b45;
+    color:#fff;
+    outline:none
+}
 
-        .check-row:last-child {
-            border-bottom: none;
-        }
+button{
+    background:#5b61f0;
+    color:#fff;
+    font-weight:bold;
+    cursor:pointer
+}
 
-        .check-value {
-            font-weight: 700;
-        }
+button:disabled{
+    opacity:.45;
+    cursor:not-allowed
+}
 
-        .waiting {
-            color: #8994a7;
-        }
+button.secondary{
+    background:#273451
+}
 
-        .good {
-            color: #20d47b;
-        }
+button.green{
+    background:#168b55
+}
 
-        .bad {
-            color: #ff5364;
-        }
+button.red{
+    background:#a83b4c
+}
 
-        .neutral {
-            color: #f1c75b;
-        }
+button.orange{
+    background:#c98218
+}
 
-        .entry-box {
-            border: 1px solid #20d47b;
-            background: rgba(32, 212, 123, .06);
-        }
+button.mauvey{
+    background:#8b4de8;
+    font-size:18px;
+    min-height:55px
+}
 
-        .entry-title {
-            color: #20d47b;
-            font-size: 18px;
-            font-weight: 800;
-            margin-bottom: 12px;
-        }
+.grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:12px
+}
 
-        .entry-line {
-            display: flex;
-            justify-content: space-between;
-            padding: 7px 0;
-            font-size: 14px;
-        }
+.grid.four{
+    grid-template-columns:repeat(4,1fr)
+}
 
-        .entry-line span:first-child {
-            color: #8b95a7;
-        }
+.controls{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px
+}
 
-        .batch-number {
-            font-size: 32px;
-            font-weight: 800;
-        }
+.stat{
+    background:#0d1425;
+    padding:15px;
+    border-radius:10px
+}
 
-        .batch-label {
-            color: #8994a7;
-            font-size: 13px;
-            margin-top: 3px;
-        }
+.stat small{
+    display:block;
+    color:#91a0bd;
+    margin-bottom:7px
+}
 
-        .progress {
-            width: 100%;
-            height: 8px;
-            background: #202735;
-            border-radius: 20px;
-            overflow: hidden;
-            margin-top: 15px;
-        }
+.stat strong{
+    font-size:20px
+}
 
-        .progress-bar {
-            height: 100%;
-            width: 0%;
-            background: #20d47b;
-            transition: width .25s ease;
-        }
+.muted{
+    color:#91a0bd
+}
 
-        .trade {
-            border-top: 1px solid #202735;
-            padding: 12px 0;
-        }
+.small{
+    font-size:12px
+}
 
-        .trade:first-child {
-            border-top: none;
-        }
+.form-label{
+    display:block;
+    color:#91a0bd;
+    margin-bottom:6px;
+    font-size:13px
+}
 
-        .trade-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+.form-group{
+    margin-bottom:10px
+}
 
-        .trade-number {
-            font-weight: 700;
-        }
+.market-list{
+    max-height:330px;
+    overflow-y:auto;
+    margin-top:12px
+}
 
-        .trade-result {
-            font-weight: 800;
-        }
+.market{
+    background:#0d1425;
+    padding:13px;
+    margin-bottom:7px;
+    border-radius:9px;
+    cursor:pointer;
+    border:1px solid transparent
+}
 
-        .trade-info {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 7px;
-            margin-top: 8px;
-            font-size: 12px;
-            color: #8994a7;
-        }
+.market.selected{
+    border-color:#6870ff
+}
 
-        .profit {
-            margin-top: 7px;
-            font-size: 13px;
-        }
+.market-name{
+    font-weight:bold
+}
 
-        .controls {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
+.market-info{
+    color:#91a0bd;
+    font-size:12px;
+    margin-top:4px
+}
 
-        .control-group {
-            background: #0b0f17;
-            padding: 12px;
-            border-radius: 10px;
-        }
+.digits{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:8px
+}
 
-        .control-group label {
-            display: block;
-            color: #8994a7;
-            font-size: 11px;
-            margin-bottom: 7px;
-        }
+.digit{
+    background:#0d1425;
+    padding:12px;
+    border-radius:9px
+}
 
-        input {
-            width: 100%;
-            border: none;
-            outline: none;
-            background: transparent;
-            color: white;
-            font-size: 17px;
-            font-weight: 700;
-        }
+.digit.green-digit{
+    border:2px solid #168b55
+}
 
-        button {
-            width: 100%;
-            border: none;
-            border-radius: 12px;
-            padding: 15px;
-            font-size: 15px;
-            font-weight: 800;
-            cursor: pointer;
-        }
+.digit.red-digit{
+    border:2px solid #a83b4c
+}
 
-        .start {
-            background: #20d47b;
-            color: #06110b;
-        }
+.digit-row{
+    display:flex;
+    justify-content:space-between
+}
 
-        .stop {
-            background: #ff5364;
-            color: white;
-        }
+.bar{
+    height:7px;
+    background:#283450;
+    border-radius:5px;
+    margin-top:8px;
+    overflow:hidden
+}
 
-        .buttons {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 12px;
-        }
+.fill{
+    height:100%;
+    background:#6870ff
+}
 
-        .log {
-            max-height: 230px;
-            overflow-y: auto;
-            font-family: monospace;
-            font-size: 11px;
-            line-height: 1.7;
-            color: #8f9aab;
-        }
+.analysis-line{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    padding:9px 0;
+    border-bottom:1px solid #202b45
+}
 
-        .log-line {
-            border-bottom: 1px solid #171e2a;
-            padding: 4px 0;
-        }
+.signal{
+    background:#0d1425;
+    padding:18px;
+    border-radius:12px
+}
 
-        .summary {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-        }
+.signal-title{
+    font-size:27px;
+    font-weight:bold
+}
 
-        .summary-box {
-            background: #0b0f17;
-            padding: 12px;
-            border-radius: 10px;
-            text-align: center;
-        }
+.progress{
+    height:9px;
+    background:#283450;
+    border-radius:10px;
+    overflow:hidden
+}
 
-        .summary-number {
-            font-size: 20px;
-            font-weight: 800;
-        }
+.progress-fill{
+    height:100%;
+    background:#6870ff
+}
 
-        .summary-label {
-            color: #7f8a9d;
-            font-size: 10px;
-            margin-top: 4px;
-        }
+.tick-list{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px
+}
 
-        @media (max-width: 380px) {
-            .app {
-                padding: 10px;
-            }
+.tick{
+    background:#0d1425;
+    padding:7px;
+    border-radius:7px;
+    font-family:monospace;
+    font-size:12px
+}
 
-            .market-name {
-                font-size: 18px;
-            }
-        }
-    </style>
+.trade-history{
+    overflow-x:auto
+}
+
+.trade-table{
+    width:100%;
+    border-collapse:collapse;
+    min-width:750px
+}
+
+.trade-table th,
+.trade-table td{
+    padding:9px;
+    border-bottom:1px solid #273451;
+    text-align:left
+}
+
+.win{
+    color:#72e5a5;
+    font-weight:bold
+}
+
+.loss{
+    color:#ff9cab;
+    font-weight:bold
+}
+
+.neutral{
+    color:#ffd166;
+    font-weight:bold
+}
+
+.log{
+    background:#050912;
+    border-radius:10px;
+    padding:12px;
+    max-height:300px;
+    overflow-y:auto;
+    font-family:monospace;
+    font-size:12px
+}
+
+.log-line{
+    margin-bottom:5px;
+    color:#aab6d0
+}
+
+.account-mode{
+    padding:8px 12px;
+    border-radius:20px;
+    display:inline-block;
+    font-weight:bold
+}
+
+.demo{
+    background:#253b67;
+    color:#9fc0ff
+}
+
+.real{
+    background:#54252e;
+    color:#ff9cab
+}
+
+.mauvey-box{
+    border:2px solid #8b4de8;
+    padding:18px;
+    border-radius:14px;
+    background:#100d1c
+}
+
+.hidden{
+    display:none!important
+}
+
+.center{
+    text-align:center
+}
+
+@media(max-width:699px){
+    .grid,
+    .grid.four,
+    .controls{
+        grid-template-columns:1fr
+    }
+
+    .digits{
+        grid-template-columns:repeat(2,1fr)
+    }
+}
+</style>
 </head>
 
 <body>
 
-<div class="app">
+<header>
+    <h1>Deriv Market Analyzer V7</h1>
+    <p>MAUVEY • Statistical Market Analyzer • Contract Execution</p>
+</header>
 
-    <div class="header">
-        <div class="logo">MAUVEY</div>
+<main>
 
-        <div class="status">
-            <div id="statusDot" class="status-dot"></div>
-            <span id="statusText">STOPPED</span>
+<div id="status" class="status offline">
+    DISCONNECTED
+</div>
+
+<!-- ACCOUNT -->
+<div class="card">
+    <h2>Account</h2>
+
+    <div class="grid four">
+
+        <div class="stat">
+            <small>Connection</small>
+            <strong id="accountConnection">NOT CONNECTED</strong>
         </div>
-    </div>
 
+        <div class="stat">
+            <small>Account</small>
+            <strong id="accountMode">—</strong>
+        </div>
 
-    <!-- CONTROLS -->
+        <div class="stat">
+            <small>Balance</small>
+            <strong id="balance">—</strong>
+        </div>
 
-    <div class="card">
-
-        <div class="section-title">Settings</div>
-
-        <div class="controls">
-
-            <div class="control-group">
-                <label>RUNS PER BATCH</label>
-                <input
-                    id="runsInput"
-                    type="number"
-                    min="1"
-                    value="10"
-                >
-            </div>
-
-            <div class="control-group">
-                <label>STAKE</label>
-                <input
-                    id="stakeInput"
-                    type="number"
-                    min="0.35"
-                    step="0.01"
-                    value="1.00"
-                >
-            </div>
-
+        <div class="stat">
+            <small>KES Value</small>
+            <strong id="balanceKES">—</strong>
         </div>
 
     </div>
 
+    <br>
 
-    <!-- CURRENT MARKET -->
+    <div class="controls">
 
-    <div class="card">
-
-        <div class="section-title">Current Market</div>
-
-        <div id="marketName" class="market-name">
-            Waiting...
-        </div>
-
-        <div id="marketSymbol" class="symbol">
-            —
-        </div>
-
-        <div id="phase" class="phase">
-            Analyzer stopped.
-        </div>
-
-        <div class="checks">
-
-            <div class="check-row">
-                <span>Even</span>
-                <span id="evenCheck" class="check-value waiting">—</span>
-            </div>
-
-            <div class="check-row">
-                <span>Odd</span>
-                <span id="oddCheck" class="check-value waiting">—</span>
-            </div>
-
-            <div class="check-row">
-                <span>Over</span>
-                <span id="overCheck" class="check-value waiting">—</span>
-            </div>
-
-            <div class="check-row">
-                <span>Under</span>
-                <span id="underCheck" class="check-value waiting">—</span>
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- ENTRY -->
-
-    <div id="entryCard" class="card entry-box" style="display:none;">
-
-        <div class="entry-title">
-            ✓ GOOD ENTRY FOUND
-        </div>
-
-        <div class="entry-line">
-            <span>Contract</span>
-            <strong id="entryContract">—</strong>
-        </div>
-
-        <div class="entry-line">
-            <span>Market</span>
-            <strong id="entryMarket">—</strong>
-        </div>
-
-        <div class="entry-line">
-            <span>Stake</span>
-            <strong id="entryStake">—</strong>
-        </div>
-
-    </div>
-
-
-    <!-- BATCH -->
-
-    <div class="card">
-
-        <div class="section-title">Current Batch</div>
-
-        <div class="batch-number">
-            <span id="tradeNumber">0</span>
-            <span style="color:#687386;">/</span>
-            <span id="tradeTotal">10</span>
-        </div>
-
-        <div class="batch-label">
-            Trades completed in this batch
-        </div>
-
-        <div class="progress">
-            <div id="progressBar" class="progress-bar"></div>
-        </div>
-
-    </div>
-
-
-    <!-- SUMMARY -->
-
-    <div class="card">
-
-        <div class="section-title">Batch Result</div>
-
-        <div class="summary">
-
-            <div class="summary-box">
-                <div id="wins" class="summary-number">0</div>
-                <div class="summary-label">WINS</div>
-            </div>
-
-            <div class="summary-box">
-                <div id="losses" class="summary-number">0</div>
-                <div class="summary-label">LOSSES</div>
-            </div>
-
-            <div class="summary-box">
-                <div id="profit" class="summary-number">0.00</div>
-                <div class="summary-label">PROFIT</div>
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- TRADE HISTORY -->
-
-    <div class="card">
-
-        <div class="section-title">
-            Trade History
-        </div>
-
-        <div id="tradeHistory">
-            No trades yet.
-        </div>
-
-    </div>
-
-
-    <!-- LIVE LOG -->
-
-    <div class="card">
-
-        <div class="section-title">
-            Live Activity
-        </div>
-
-        <div id="liveLog" class="log"></div>
-
-    </div>
-
-
-    <!-- BUTTONS -->
-
-    <div class="buttons">
-
-        <button
-            id="startButton"
-            class="start"
-            onclick="startMauvey()"
-        >
-            START
+        <button onclick="connectPublic()">
+            CONNECT MARKET DATA
         </button>
 
-        <button
-            id="stopButton"
-            class="stop"
-            onclick="stopMauvey()"
-        >
-            STOP
+        <button class="secondary" onclick="connectAccount()">
+            CONNECT DERIV ACCOUNT
         </button>
+
+        <button class="orange" onclick="switchAccountMode()">
+            SWITCH DEMO / REAL
+        </button>
+
+    </div>
+
+    <br>
+
+    <label class="form-label">
+        USD → KES exchange rate
+    </label>
+
+    <input
+        id="fxRate"
+        type="number"
+        step="0.01"
+        value="129.50"
+        oninput="updateBalanceDisplay()"
+    >
+
+    <br><br>
+
+    <div class="muted small">
+        MAUVEY performs one complete market analysis,
+        selects one qualifying entry, then executes the
+        requested number of trades using that locked setup.
+    </div>
+
+</div>
+
+
+<!-- MARKETS -->
+<div class="card">
+
+    <h2>Markets</h2>
+
+    <div class="controls">
+
+        <select id="category" onchange="renderMarkets()">
+            <option value="all">All Markets</option>
+            <option value="forex">Forex</option>
+            <option value="synthetic">Synthetic Indices</option>
+            <option value="crypto">Cryptocurrency</option>
+            <option value="commodities">Commodities</option>
+            <option value="indices">Indices</option>
+        </select>
+
+        <input
+            id="search"
+            placeholder="Search market..."
+            oninput="renderMarkets()"
+        >
+
+        <button onclick="loadMarkets()">
+            REFRESH MARKETS
+        </button>
+
+    </div>
+
+    <div id="marketCount" class="muted">
+        No markets loaded
+    </div>
+
+    <div id="marketList" class="market-list">
+        Connect to load markets.
+    </div>
+
+</div>
+
+
+<!-- SELECTED MARKET -->
+<div class="card">
+
+    <h2>Selected Market</h2>
+
+    <div class="grid four">
+
+        <div class="stat">
+            <small>Market</small>
+            <strong id="selectedName">None</strong>
+        </div>
+
+        <div class="stat">
+            <small>Symbol</small>
+            <strong id="selectedSymbol">—</strong>
+        </div>
+
+        <div class="stat">
+            <small>Price</small>
+            <strong id="price">—</strong>
+        </div>
+
+        <div class="stat">
+            <small>Last Digit</small>
+            <strong id="lastDigit">—</strong>
+        </div>
 
     </div>
 
 </div>
 
 
-<script>
+<!-- GENERAL ANALYZER -->
+<div class="card">
 
-/*
-==========================================================
-                    MAUVEY ENGINE
-==========================================================
+    <h2>Analyzer</h2>
 
-CORE RULE:
+    <div class="grid">
 
-ANALYSIS
-    ↓
-GOOD ENTRY
-    ↓
-BATCH
-    ↓
-TRADE 1
-    ↓
-TRADE 2
-    ↓
-TRADE 3
-    ↓
-...
-    ↓
-TRADE N
-    ↓
-BATCH COMPLETE
-    ↓
-NEW ANALYSIS
-    ↓
-NEW ENTRY
-    ↓
-NEW BATCH
+        <div class="form-group">
 
-IMPORTANT:
+            <label class="form-label">
+                Analysis window
+            </label>
 
-A WIN DOES NOT STOP THE BATCH.
+            <select id="sample" onchange="analyze()">
 
-A LOSS DOES NOT STOP THE BATCH.
+                <option value="50">
+                    50 ticks
+                </option>
 
-THE BATCH ONLY ENDS WHEN THE
-CONFIGURED NUMBER OF TRADES IS COMPLETE.
+                <option value="100">
+                    100 ticks
+                </option>
 
-NO MARTINGALE.
-==========================================================
-*/
+                <option value="250">
+                    250 ticks
+                </option>
 
+                <option value="500">
+                    500 ticks
+                </option>
 
-const MAUVEY = {
+                <option value="1000" selected>
+                    1,000 ticks
+                </option>
 
-    running: false,
+                <option value="5000">
+                    5,000 ticks
+                </option>
 
-    phase: "STOPPED",
+            </select>
 
-    runsPerBatch: 10,
+        </div>
 
-    currentTrade: 0,
 
-    wins: 0,
+        <div class="form-group">
 
-    losses: 0,
+            <label class="form-label">
+                Minimum confidence
+            </label>
 
-    profit: 0,
+            <select id="minConfidence" onchange="analyze()">
 
-    currentEntry: null,
+                <option value="50">50%</option>
+                <option value="55">55%</option>
+                <option value="60" selected>60%</option>
+                <option value="65">65%</option>
+                <option value="70">70%</option>
+                <option value="75">75%</option>
+                <option value="80">80%</option>
 
-    marketIndex: 0,
+            </select>
 
-    markets: [],
+        </div>
 
-    tradeHistory: []
+    </div>
 
-};
+    <br>
 
+    <div class="grid">
 
-/*
-==========================================================
-                    UI HELPERS
-==========================================================
-*/
+        <button
+            id="startAnalyzerBtn"
+            class="green"
+            onclick="startAnalyzer()"
+        >
+            START ANALYZER
+        </button>
 
-function setStatus(text, running = false) {
+        <button
+            id="stopAnalyzerBtn"
+            class="red"
+            onclick="stopAnalyzer()"
+        >
+            STOP ANALYZER
+        </button>
 
-    document.getElementById("statusText").textContent = text;
+    </div>
 
-    const dot = document.getElementById("statusDot");
+    <br>
 
-    if (running) {
-        dot.classList.add("running");
-    } else {
-        dot.classList.remove("running");
-    }
-}
+    <div id="analyzerState" class="warning">
+        Analyzer stopped.
+    </div>
 
+</div>
 
-function setPhase(text) {
 
-    document.getElementById("phase").textContent = text;
+<!-- MAUVEY -->
+<div class="card">
 
-    MAUVEY.phase = text;
-}
+    <div class="mauvey-box">
 
+        <h2>MAUVEY</h2>
 
-function log(message) {
+        <p class="muted">
+            MAUVEY analyzes the available markets once,
+            finds a qualifying EVEN, ODD, OVER or UNDER entry,
+            locks that setup, and completes the requested
+            batch before performing another analysis.
+        </p>
 
-    const container = document.getElementById("liveLog");
+        <div class="grid">
 
-    const line = document.createElement("div");
+            <div>
 
-    line.className = "log-line";
+                <label class="form-label">
+                    MAUVEY
+                </label>
 
-    const time = new Date().toLocaleTimeString();
+                <button
+                    id="mauveyBtn"
+                    class="mauvey"
+                    onclick="toggleMauvey()"
+                >
+                    START MAUVEY
+                </button>
 
-    line.textContent = `[${time}] ${message}`;
-
-    container.prepend(line);
-
-}
-
-
-function setCheck(id, value, type = "neutral") {
-
-    const element = document.getElementById(id);
-
-    element.textContent = value;
-
-    element.className = `check-value ${type}`;
-
-}
-
-
-function resetChecks() {
-
-    setCheck("evenCheck", "—", "waiting");
-    setCheck("oddCheck", "—", "waiting");
-    setCheck("overCheck", "—", "waiting");
-    setCheck("underCheck", "—", "waiting");
-
-}
-
-
-function updateBatchDisplay() {
-
-    const total = MAUVEY.runsPerBatch;
-
-    document.getElementById("tradeNumber").textContent =
-        MAUVEY.currentTrade;
-
-    document.getElementById("tradeTotal").textContent =
-        total;
-
-    const percentage =
-        total > 0
-        ? (MAUVEY.currentTrade / total) * 100
-        : 0;
-
-    document.getElementById("progressBar").style.width =
-        `${percentage}%`;
-
-    document.getElementById("wins").textContent =
-        MAUVEY.wins;
-
-    document.getElementById("losses").textContent =
-        MAUVEY.losses;
-
-    document.getElementById("profit").textContent =
-        MAUVEY.profit.toFixed(2);
-
-}
-
-
-function showMarket(market) {
-
-    document.getElementById("marketName").textContent =
-        market.name;
-
-    document.getElementById("marketSymbol").textContent =
-        market.symbol;
-
-}
-
-
-function showEntry(entry) {
-
-    MAUVEY.currentEntry = entry;
-
-    document.getElementById("entryCard").style.display =
-        "block";
-
-    document.getElementById("entryContract").textContent =
-        entry.contract;
-
-    document.getElementById("entryMarket").textContent =
-        entry.market.name;
-
-    document.getElementById("entryStake").textContent =
-        Number(entry.stake).toFixed(2);
-
-}
-
-
-function hideEntry() {
-
-    document.getElementById("entryCard").style.display =
-        "none";
-
-}
-
-
-function addTradeToHistory(trade) {
-
-    const container =
-        document.getElementById("tradeHistory");
-
-    if (MAUVEY.tradeHistory.length === 1) {
-        container.innerHTML = "";
-    }
-
-    const row =
-        document.createElement("div");
-
-    row.className = "trade";
-
-    const resultClass =
-        trade.result === "WON"
-        ? "good"
-        : "bad";
-
-    row.innerHTML = `
-
-        <div class="trade-top">
-
-            <div class="trade-number">
-                Trade #${trade.number}
             </div>
 
-            <div class="trade-result ${resultClass}">
-                ${trade.result}
+
+            <div>
+
+                <label class="form-label">
+                    Number of trades per batch
+                </label>
+
+                <input
+                    id="mauveyMaxTrades"
+                    type="number"
+                    min="1"
+                    value="10"
+                >
+
             </div>
 
         </div>
 
-        <div class="trade-info">
+        <br>
 
-            <div>
-                Contract: ${trade.contract}
+        <div id="mauveyStatus" class="warning">
+            MAUVEY is OFF.
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- MANUAL TRADE -->
+<div class="card">
+
+    <h2>Manual Trade Setup</h2>
+
+    <div class="controls">
+
+        <div class="form-group">
+
+            <label class="form-label">
+                Contract
+            </label>
+
+            <select
+                id="contractType"
+                onchange="updateDurationUI()"
+            >
+
+                <option value="CALL">Rise</option>
+                <option value="PUT">Fall</option>
+                <option value="DIGITEVEN">Even</option>
+                <option value="DIGITODD">Odd</option>
+                <option value="DIGITOVER">Over</option>
+                <option value="DIGITUNDER">Under</option>
+                <option value="DIGITMATCH">Matches</option>
+                <option value="DIGITDIFF">Differs</option>
+
+            </select>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label class="form-label">
+                Duration
+            </label>
+
+            <input
+                id="duration"
+                type="number"
+                min="1"
+                value="1"
+            >
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label class="form-label">
+                Unit
+            </label>
+
+            <select id="durationUnit">
+
+                <option value="s">
+                    Seconds
+                </option>
+
+                <option value="t">
+                    Ticks
+                </option>
+
+            </select>
+
+        </div>
+
+    </div>
+
+
+    <div class="controls">
+
+        <div class="form-group">
+
+            <label class="form-label">
+                Stake
+            </label>
+
+            <input
+                id="stake"
+                type="number"
+                min="0.01"
+                step="0.01"
+                value="1"
+            >
+
+        </div>
+
+
+        <div class="form-group" id="barrierGroup">
+
+            <label class="form-label">
+                Digit / Barrier
+            </label>
+
+            <select id="barrier"></select>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label class="form-label">
+                Trade status
+            </label>
+
+            <div id="tradeState" class="warning">
+                READY
             </div>
 
-            <div>
-                Stake: ${trade.stake.toFixed(2)}
-            </div>
+        </div>
 
-            <div>
-                Market: ${trade.market}
-            </div>
+    </div>
 
-            <div>
-                Profit: ${trade.profit.toFixed(2)}
-            </div>
+    <br>
+
+    <button
+        class="orange"
+        onclick="executeManualTrade()"
+    >
+        EXECUTE MANUAL TRADE
+    </button>
+
+</div>
+
+
+<!-- STATS -->
+<div class="grid four">
+
+    <div class="stat">
+        <small>Total Ticks</small>
+        <strong id="count">0</strong>
+    </div>
+
+    <div class="stat">
+        <small>Sample</small>
+        <strong id="window">0</strong>
+    </div>
+
+    <div class="stat">
+        <small>Expected Digit</small>
+        <strong>10%</strong>
+    </div>
+
+    <div class="stat">
+        <small>Engine</small>
+        <strong id="engine">WAITING</strong>
+    </div>
+
+</div>
+
+
+<!-- SIGNAL -->
+<div class="card">
+
+    <h2>Current Signal</h2>
+
+    <div id="signal" class="signal">
+
+        <div class="signal-title">
+            NO SIGNAL
+        </div>
+
+        <p class="muted">
+            Start the analyzer and collect data.
+        </p>
+
+    </div>
+
+</div>
+
+
+<!-- DIGITS -->
+<div class="card">
+
+    <h2>Digit Distribution</h2>
+
+    <div id="digits" class="digits"></div>
+
+</div>
+
+
+<!-- SUMMARY -->
+<div class="card">
+
+    <h2>Statistical Summary</h2>
+
+    <div id="stats">
+        Waiting for data...
+    </div>
+
+</div>
+
+
+<!-- PATTERN -->
+<div class="card">
+
+    <h2>Pattern Intelligence</h2>
+
+    <div class="grid four">
+
+        <div class="stat">
+            <small>Longest Same-Digit Streak</small>
+            <strong id="longestStreak">0</strong>
+        </div>
+
+        <div class="stat">
+            <small>Current Same-Digit Streak</small>
+            <strong id="currentStreak">0</strong>
+        </div>
+
+        <div class="stat">
+            <small>Green Digit</small>
+            <strong id="hotDigit">—</strong>
+        </div>
+
+        <div class="stat">
+            <small>Red Digit</small>
+            <strong id="coldDigit">—</strong>
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- TRANSITIONS -->
+<div class="card">
+
+    <h2>Digit Transition Analysis</h2>
+
+    <div id="transitions">
+        Waiting for data...
+    </div>
+
+</div>
+
+
+<!-- WINDOWS -->
+<div class="card">
+
+    <h2>Multi-Window Analysis</h2>
+
+    <div id="windows">
+        Waiting...
+    </div>
+
+</div>
+
+
+<!-- TICKS -->
+<div class="card">
+
+    <h2>Recent Ticks</h2>
+
+    <div id="ticks" class="tick-list"></div>
+
+</div>
+
+
+<!-- TRADE HISTORY -->
+<div class="card">
+
+    <h2>Trade History</h2>
+
+    <div class="trade-history">
+
+        <table class="trade-table">
+
+            <thead>
+
+                <tr>
+                    <th>#</th>
+                    <th>Strategy</th>
+                    <th>Market</th>
+                    <th>Stake</th>
+                    <th>Result</th>
+                    <th>P/L</th>
+                    <th>Status</th>
+                </tr>
+
+            </thead>
+
+            <tbody id="tradeHistoryBody"></tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+<!-- LOG -->
+<div class="card">
+
+    <h2>System Log</h2>
+
+    <div id="systemLog" class="log"></div>
+
+</div>
+
+</main>
+
+
+<script>
+
+/* =========================================================
+   CONFIG
+========================================================= */
+
+const APP_ID = "34fv9KSI5Got7lmvR0eqY";
+
+const PUBLIC_WS =
+    "wss://api.derivws.com/trading/v1/options/ws/public";
+
+const API_BASE =
+    "https://api.derivws.com/trading/v1/options";
+
+
+/* =========================================================
+   GLOBAL STATE
+========================================================= */
+
+let publicWS = null;
+let accountWS = null;
+
+let PAT = null;
+
+let accounts = [];
+let selectedAccount = null;
+
+let accountBalance = null;
+let accountCurrency = "USD";
+
+let markets = [];
+
+let selectedSymbol = null;
+let selectedName = null;
+
+let ticks = [];
+
+let analyzerRunning = false;
+
+let mauveyRunning = false;
+
+let tradeInProgress = false;
+
+let tradeCounter = 0;
+
+let mauveyTradeCount = 0;
+
+let currentContractId = null;
+
+let requestIdCounter = 1000;
+
+let pendingProposal = null;
+
+let mauveyWaitTimer = null;
+
+
+/*
+    THIS IS THE IMPORTANT PART.
+
+    Once MAUVEY finds a strategy, it is stored here.
+
+    It does NOT analyze again between trades.
+
+    Example:
+
+    {
+        type: "OVER",
+        barrier: 4,
+        symbol: "1HZ15V",
+        marketName: "Volatility 15 (1s) Index"
+    }
+
+    That exact setup is used for the entire batch.
+*/
+
+let lockedMauveyStrategy = null;
+
+
+/*
+    Requests for historical market analysis.
+*/
+
+const historyRequests = new Map();
+
+
+/* =========================================================
+   UTILITIES
+========================================================= */
+
+function reqId(){
+    return ++requestIdCounter;
+}
+
+
+function sleep(ms){
+    return new Promise(resolve => setTimeout(resolve,ms));
+}
+
+
+function escapeHTML(value){
+
+    return String(value)
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+
+}
+
+
+function log(message){
+
+    const box =
+        document.getElementById("systemLog");
+
+    if(!box)return;
+
+    const row =
+        document.createElement("div");
+
+    row.className = "log-line";
+
+    row.textContent =
+        "[" +
+        new Date().toLocaleTimeString() +
+        "] " +
+        message;
+
+    box.prepend(row);
+}
+
+
+function setStatus(text,online){
+
+    const el =
+        document.getElementById("status");
+
+    el.textContent = text;
+
+    el.className =
+        "status " +
+        (online ? "online" : "offline");
+}
+
+
+function setTradeState(text,kind="warning"){
+
+    const el =
+        document.getElementById("tradeState");
+
+    el.className = kind;
+
+    el.textContent = text;
+}
+
+
+function line(name,value){
+
+    return `
+        <div class="analysis-line">
+            <span>${escapeHTML(name)}</span>
+            <strong>${escapeHTML(value)}</strong>
+        </div>
+    `;
+}
+
+
+/* =========================================================
+   ACCOUNT
+========================================================= */
+
+async function connectAccount(){
+
+    const token =
+        prompt("Paste your Deriv PAT token:");
+
+    if(!token)return;
+
+    PAT = token.trim();
+
+    if(!PAT)return;
+
+    localStorage.setItem(
+        "deriv_v7_pat",
+        PAT
+    );
+
+    await loadAccounts();
+}
+
+
+async function loadAccounts(){
+
+    if(!PAT)return;
+
+    log("Checking Deriv account...");
+
+    try{
+
+        const response =
+            await fetch(
+                API_BASE + "/accounts",
+                {
+                    headers:{
+                        "Authorization":
+                            "Bearer " + PAT,
+
+                        "Deriv-App-ID":
+                            APP_ID
+                    }
+                }
+            );
+
+        const data =
+            await response.json();
+
+        if(!response.ok){
+
+            log(
+                "Account error: " +
+                JSON.stringify(data)
+            );
+
+            localStorage.removeItem(
+                "deriv_v7_pat"
+            );
+
+            PAT = null;
+
+            alert(
+                "Deriv authentication failed.\n\n" +
+                JSON.stringify(data)
+            );
+
+            return;
+        }
+
+
+        accounts =
+            Array.isArray(data.data)
+                ? data.data
+                : data.data
+                    ? [data.data]
+                    : [];
+
+
+        if(!accounts.length){
+
+            alert(
+                "No Deriv Options account found."
+            );
+
+            return;
+        }
+
+
+        log(
+            "Found " +
+            accounts.length +
+            " account(s)."
+        );
+
+
+        chooseAccount();
+
+    }catch(error){
+
+        log(
+            "Account request failed: " +
+            error.message
+        );
+
+        alert(error.message);
+    }
+}
+
+
+function chooseAccount(){
+
+    selectedAccount =
+        accounts.find(
+            a =>
+                String(
+                    a.account_type || ""
+                ).toLowerCase() === "demo"
+        ) || accounts[0];
+
+    connectAuthenticatedSocket();
+}
+
+
+async function switchAccountMode(){
+
+    if(!accounts.length){
+
+        alert(
+            "Connect your Deriv account first."
+        );
+
+        return;
+    }
+
+
+    const current =
+        String(
+            selectedAccount.account_type || ""
+        ).toLowerCase();
+
+
+    const targetType =
+        current === "demo"
+            ? "real"
+            : "demo";
+
+
+    const target =
+        accounts.find(
+            a =>
+                String(
+                    a.account_type || ""
+                ).toLowerCase() === targetType
+        );
+
+
+    if(!target){
+
+        alert(
+            "No " +
+            targetType +
+            " Options account is available."
+        );
+
+        return;
+    }
+
+
+    if(
+        targetType === "real" &&
+        !confirm(
+            "REAL ACCOUNT SELECTED.\n\n" +
+            "Trades can use real money.\n\n" +
+            "Continue?"
+        )
+    ){
+
+        return;
+    }
+
+
+    stopMauvey();
+
+    selectedAccount = target;
+
+    await connectAuthenticatedSocket();
+}
+
+
+async function connectAuthenticatedSocket(){
+
+    if(!PAT || !selectedAccount)return;
+
+
+    if(
+        accountWS &&
+        (
+            accountWS.readyState === WebSocket.OPEN ||
+            accountWS.readyState === WebSocket.CONNECTING
+        )
+    ){
+
+        updateAccountUI();
+
+        requestBalance();
+
+        return;
+    }
+
+
+    const accountId =
+        selectedAccount.account_id;
+
+
+    if(!accountId){
+
+        alert("Account ID missing.");
+
+        return;
+    }
+
+
+    accountCurrency =
+        selectedAccount.currency || "USD";
+
+
+    updateAccountUI();
+
+    log(
+        "Requesting authenticated WebSocket..."
+    );
+
+
+    try{
+
+        const response =
+            await fetch(
+                API_BASE +
+                "/accounts/" +
+                encodeURIComponent(accountId) +
+                "/otp",
+                {
+                    method:"POST",
+
+                    headers:{
+                        "Authorization":
+                            "Bearer " + PAT,
+
+                        "Deriv-App-ID":
+                            APP_ID
+                    }
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if(!response.ok){
+
+            log(
+                "OTP error: " +
+                JSON.stringify(data)
+            );
+
+            alert(
+                "Could not authenticate trading connection.\n\n" +
+                JSON.stringify(data)
+            );
+
+            return;
+        }
+
+
+        const wsURL =
+            data?.data?.url;
+
+
+        if(!wsURL){
+
+            alert(
+                "Deriv did not return a WebSocket URL."
+            );
+
+            return;
+        }
+
+
+        accountWS =
+            new WebSocket(wsURL);
+
+
+        accountWS.onopen = () => {
+
+            log(
+                "Authenticated trading connection established."
+            );
+
+            document.getElementById(
+                "accountConnection"
+            ).textContent = "CONNECTED";
+
+
+            setStatus(
+                "DERIV ACCOUNT CONNECTED",
+                true
+            );
+
+
+            requestBalance();
+
+        };
+
+
+        accountWS.onmessage = event => {
+
+            try{
+
+                handleAccountMessage(
+                    JSON.parse(event.data)
+                );
+
+            }catch(error){
+
+                log(
+                    "Account message error: " +
+                    error.message
+                );
+
+            }
+
+        };
+
+
+        accountWS.onerror = () => {
+
+            log(
+                "Authenticated WebSocket error."
+            );
+
+            setStatus(
+                "ACCOUNT CONNECTION ERROR",
+                false
+            );
+
+        };
+
+
+        accountWS.onclose = () => {
+
+            log(
+                "Authenticated WebSocket closed."
+            );
+
+            accountWS = null;
+
+            document.getElementById(
+                "accountConnection"
+            ).textContent =
+                "DISCONNECTED";
+
+
+            if(mauveyRunning){
+
+                stopMauvey();
+
+            }
+
+
+            setStatus(
+                "ACCOUNT CONNECTION CLOSED",
+                false
+            );
+
+        };
+
+
+    }catch(error){
+
+        log(
+            "Authentication connection failed: " +
+            error.message
+        );
+
+    }
+}
+
+
+function requestBalance(){
+
+    if(
+        accountWS?.readyState !==
+        WebSocket.OPEN
+    ){
+
+        return;
+    }
+
+
+    accountWS.send(
+        JSON.stringify({
+            balance:1,
+            subscribe:1,
+            req_id:reqId()
+        })
+    );
+
+}
+
+
+function handleAccountMessage(data){
+
+    if(data.error){
+
+        log(
+            "Deriv error: " +
+            JSON.stringify(data.error)
+        );
+
+        tradeInProgress = false;
+
+        setTradeState(
+            "ERROR",
+            "danger"
+        );
+
+        return;
+    }
+
+
+    if(data.msg_type === "balance"){
+
+        accountBalance =
+            Number(data.balance.balance);
+
+        accountCurrency =
+            data.balance.currency ||
+            accountCurrency;
+
+        updateBalanceDisplay();
+
+        return;
+    }
+
+
+    if(data.msg_type === "proposal"){
+
+        handleProposal(data);
+
+        return;
+    }
+
+
+    if(data.msg_type === "buy"){
+
+        handleBuy(data);
+
+        return;
+    }
+
+
+    if(
+        data.msg_type ===
+        "proposal_open_contract"
+    ){
+
+        handleContractUpdate(data);
+
+        return;
+    }
+
+}
+
+
+function updateAccountUI(){
+
+    const el =
+        document.getElementById(
+            "accountMode"
+        );
+
+
+    const type =
+        String(
+            selectedAccount?.account_type || ""
+        ).toLowerCase();
+
+
+    if(type === "demo"){
+
+        el.innerHTML =
+            '<span class="account-mode demo">DEMO</span>';
+
+    }else if(type === "real"){
+
+        el.innerHTML =
+            '<span class="account-mode real">REAL</span>';
+
+    }else{
+
+        el.textContent =
+            type || "—";
+
+    }
+
+}
+
+
+function updateBalanceDisplay(){
+
+    const balance =
+        document.getElementById("balance");
+
+    const kes =
+        document.getElementById("balanceKES");
+
+
+    if(
+        accountBalance === null ||
+        Number.isNaN(accountBalance)
+    ){
+
+        balance.textContent = "—";
+        kes.textContent = "—";
+
+        return;
+    }
+
+
+    balance.textContent =
+        accountBalance.toFixed(2) +
+        " " +
+        accountCurrency;
+
+
+    const rate =
+        Number(
+            document.getElementById(
+                "fxRate"
+            ).value
+        );
+
+
+    if(
+        accountCurrency === "USD" &&
+        rate > 0
+    ){
+
+        kes.textContent =
+            "KES " +
+            (
+                accountBalance *
+                rate
+            ).toFixed(2);
+
+    }else{
+
+        kes.textContent = "—";
+
+    }
+
+}
+
+
+/* =========================================================
+   PUBLIC MARKET CONNECTION
+========================================================= */
+
+function connectPublic(){
+
+    if(
+        publicWS?.readyState ===
+        WebSocket.OPEN
+    ){
+
+        loadMarkets();
+
+        return;
+    }
+
+
+    log(
+        "Opening public market connection..."
+    );
+
+
+    publicWS =
+        new WebSocket(PUBLIC_WS);
+
+
+    publicWS.onopen = () => {
+
+        log(
+            "Public market connection established."
+        );
+
+        setStatus(
+            "MARKET DATA CONNECTED",
+            true
+        );
+
+        loadMarkets();
+
+    };
+
+
+    publicWS.onmessage = event => {
+
+        try{
+
+            handlePublicMessage(
+                JSON.parse(event.data)
+            );
+
+        }catch(error){
+
+            log(
+                "Public message error: " +
+                error.message
+            );
+
+        }
+
+    };
+
+
+    publicWS.onerror = () => {
+
+        log(
+            "Public WebSocket error."
+        );
+
+    };
+
+
+    publicWS.onclose = () => {
+
+        log(
+            "Public WebSocket closed."
+        );
+
+        publicWS = null;
+
+    };
+
+}
+
+
+function handlePublicMessage(data){
+
+    if(data.error){
+
+        log(
+            "Deriv public error: " +
+            JSON.stringify(data.error)
+        );
+
+        return;
+    }
+
+
+    if(
+        data.msg_type ===
+        "active_symbols"
+    ){
+
+        markets =
+            data.active_symbols || [];
+
+        renderMarkets();
+
+        log(
+            "Loaded " +
+            markets.length +
+            " markets."
+        );
+
+        return;
+    }
+
+
+    if(data.msg_type === "history"){
+
+        const req =
+            data.echo_req?.req_id;
+
+        if(
+            req &&
+            historyRequests.has(req)
+        ){
+
+            const resolver =
+                historyRequests.get(req);
+
+            historyRequests.delete(req);
+
+            resolver(data);
+
+            return;
+        }
+
+
+        loadHistory(data);
+
+        return;
+    }
+
+
+    if(data.msg_type === "tick"){
+
+        receiveTick(data);
+
+        return;
+    }
+
+}
+
+
+function loadMarkets(){
+
+    if(
+        publicWS?.readyState !==
+        WebSocket.OPEN
+    ){
+
+        log(
+            "Connect market data first."
+        );
+
+        return;
+    }
+
+
+    publicWS.send(
+        JSON.stringify({
+            active_symbols:"full",
+            req_id:reqId()
+        })
+    );
+
+}
+
+
+/* =========================================================
+   MARKET DISPLAY
+========================================================= */
+
+function renderMarkets(){
+
+    const list =
+        document.getElementById(
+            "marketList"
+        );
+
+
+    const search =
+        document.getElementById(
+            "search"
+        ).value
+        .toLowerCase()
+        .trim();
+
+
+    const category =
+        document.getElementById(
+            "category"
+        ).value;
+
+
+    const filtered =
+        markets.filter(m => {
+
+            const name =
+                String(
+                    m.underlying_symbol_name ||
+                    ""
+                ).toLowerCase();
+
+
+            const symbol =
+                String(
+                    m.underlying_symbol ||
+                    ""
+                ).toLowerCase();
+
+
+            const type =
+                String(
+                    m.market ||
+                    m.underlying_symbol_type ||
+                    ""
+                ).toLowerCase();
+
+
+            if(
+                search &&
+                !name.includes(search) &&
+                !symbol.includes(search)
+            ){
+
+                return false;
+
+            }
+
+
+            if(category === "all"){
+
+                return true;
+
+            }
+
+
+            if(category === "synthetic"){
+
+                return (
+                    type.includes("synthetic") ||
+                    name.includes("volatility") ||
+                    name.includes("crash") ||
+                    name.includes("boom") ||
+                    name.includes("jump")
+                );
+
+            }
+
+
+            return type.includes(category);
+
+        });
+
+
+    document.getElementById(
+        "marketCount"
+    ).textContent =
+        filtered.length +
+        " of " +
+        markets.length +
+        " markets";
+
+
+    list.innerHTML = "";
+
+
+    filtered
+        .slice(0,500)
+        .forEach(m => {
+
+            const d =
+                document.createElement("div");
+
+
+            d.className = "market";
+
+
+            if(
+                m.underlying_symbol ===
+                selectedSymbol
+            ){
+
+                d.classList.add("selected");
+
+            }
+
+
+            d.innerHTML = `
+                <div class="market-name">
+                    ${escapeHTML(
+                        m.underlying_symbol_name ||
+                        m.underlying_symbol
+                    )}
+                </div>
+
+                <div class="market-info">
+                    ${escapeHTML(
+                        m.underlying_symbol
+                    )}
+                    •
+                    ${escapeHTML(
+                        m.market ||
+                        m.underlying_symbol_type ||
+                        ""
+                    )}
+                </div>
+            `;
+
+
+            d.onclick = () =>
+                selectMarket(m);
+
+
+            list.appendChild(d);
+
+        });
+
+}
+
+
+function selectMarket(m){
+
+    if(mauveyRunning){
+
+        stopMauvey();
+
+    }
+
+
+    selectedSymbol =
+        m.underlying_symbol;
+
+
+    selectedName =
+        m.underlying_symbol_name ||
+        selectedSymbol;
+
+
+    document.getElementById(
+        "selectedName"
+    ).textContent =
+        selectedName;
+
+
+    document.getElementById(
+        "selectedSymbol"
+    ).textContent =
+        selectedSymbol;
+
+
+    ticks = [];
+
+
+    renderMarkets();
+
+
+    log(
+        "Selected market: " +
+        selectedName +
+        " (" +
+        selectedSymbol +
+        ")"
+    );
+
+
+    subscribeSelectedMarket();
+
+}
+
+
+function subscribeSelectedMarket(){
+
+    if(
+        publicWS?.readyState !==
+        WebSocket.OPEN ||
+        !selectedSymbol
+    ){
+
+        return;
+
+    }
+
+
+    publicWS.send(
+        JSON.stringify({
+            ticks_history:
+                selectedSymbol,
+
+            count:1000,
+
+            end:"latest",
+
+            style:"ticks",
+
+            req_id:reqId()
+        })
+    );
+
+
+    publicWS.send(
+        JSON.stringify({
+            ticks:
+                selectedSymbol,
+
+            subscribe:1,
+
+            req_id:reqId()
+        })
+    );
+
+}
+
+
+/* =========================================================
+   HISTORY
+========================================================= */
+
+function requestMarketHistory(
+    symbol,
+    count = 1000
+){
+
+    return new Promise(resolve => {
+
+        if(
+            publicWS?.readyState !==
+            WebSocket.OPEN
+        ){
+
+            resolve(null);
+
+            return;
+        }
+
+
+        const id = reqId();
+
+
+        historyRequests.set(
+            id,
+            resolve
+        );
+
+
+        publicWS.send(
+            JSON.stringify({
+
+                ticks_history:
+                    symbol,
+
+                count:
+                    count,
+
+                end:
+                    "latest",
+
+                style:
+                    "ticks",
+
+                req_id:
+                    id
+
+            })
+        );
+
+
+        setTimeout(() => {
+
+            if(
+                historyRequests.has(id)
+            ){
+
+                historyRequests.delete(id);
+
+                resolve(null);
+
+            }
+
+        },10000);
+
+    });
+
+}
+
+
+function loadHistory(data){
+
+    if(!data.history)return;
+
+
+    const prices =
+        data.history.prices || [];
+
+
+    const times =
+        data.history.times || [];
+
+
+    ticks = [];
+
+
+    for(
+        let i = 0;
+        i < prices.length;
+        i++
+    ){
+
+        const price =
+            Number(prices[i]);
+
+
+        ticks.push({
+
+            price:price,
+
+            digit:getDigit(price),
+
+            time:times[i]
+
+        });
+
+    }
+
+
+    log(
+        "Loaded " +
+        ticks.length +
+        " historical ticks."
+    );
+
+
+    analyze();
+
+    showTicks();
+
+}
+
+
+/* =========================================================
+   LIVE TICKS
+========================================================= */
+
+function receiveTick(data){
+
+    if(!data.tick)return;
+
+
+    const price =
+        Number(data.tick.quote);
+
+
+    const digit =
+        getDigit(price);
+
+
+    ticks.push({
+
+        price:price,
+
+        digit:digit,
+
+        time:data.tick.epoch
+
+    });
+
+
+    if(ticks.length > 5000){
+
+        ticks =
+            ticks.slice(-5000);
+
+    }
+
+
+    document.getElementById(
+        "price"
+    ).textContent =
+        price;
+
+
+    document.getElementById(
+        "lastDigit"
+    ).textContent =
+        digit;
+
+
+    /*
+        IMPORTANT:
+
+        General analyzer can update live.
+
+        MAUVEY DOES NOT ANALYZE HERE.
+
+        This is what prevents it from
+        recalculating between every trade.
+    */
+
+    if(analyzerRunning){
+
+        analyze();
+
+    }
+
+
+    if(
+        mauveyRunning &&
+        lockedMauveyStrategy
+    ){
+
+        updateMauveyLiveDisplay();
+
+    }
+
+}
+
+
+function getDigit(price){
+
+    const clean =
+        String(price)
+        .replace(/[^0-9]/g,"");
+
+
+    return clean
+        ? Number(
+            clean[clean.length - 1]
+        )
+        : null;
+
+}
+
+
+/* =========================================================
+   GENERAL ANALYZER
+========================================================= */
+
+function startAnalyzer(){
+
+    if(!selectedSymbol){
+
+        alert(
+            "Select a market first."
+        );
+
+        return;
+    }
+
+
+    if(
+        publicWS?.readyState !==
+        WebSocket.OPEN
+    ){
+
+        alert(
+            "Connect market data first."
+        );
+
+        return;
+    }
+
+
+    analyzerRunning = true;
+
+
+    document.getElementById(
+        "analyzerState"
+    ).className =
+        "success";
+
+
+    document.getElementById(
+        "analyzerState"
+    ).textContent =
+        "Analyzer running.";
+
+
+    document.getElementById(
+        "engine"
+    ).textContent =
+        "LIVE";
+
+
+    log(
+        "Analyzer started."
+    );
+
+
+    analyze();
+
+}
+
+
+function stopAnalyzer(){
+
+    analyzerRunning = false;
+
+
+    document.getElementById(
+        "analyzerState"
+    ).className =
+        "warning";
+
+
+    document.getElementById(
+        "analyzerState"
+    ).textContent =
+        "Analyzer stopped.";
+
+
+    document.getElementById(
+        "engine"
+    ).textContent =
+        "STOPPED";
+
+
+    log(
+        "Analyzer stopped."
+    );
+
+}
+
+
+function analyze(){
+
+    const sample =
+        Number(
+            document.getElementById(
+                "sample"
+            ).value
+        );
+
+
+    const data =
+        ticks.slice(-sample);
+
+
+    document.getElementById(
+        "count"
+    ).textContent =
+        ticks.length;
+
+
+    document.getElementById(
+        "window"
+    ).textContent =
+        data.length;
+
+
+    if(data.length < 30){
+
+        document.getElementById(
+            "engine"
+        ).textContent =
+            "COLLECTING";
+
+        return;
+
+    }
+
+
+    const counts =
+        Array(10).fill(0);
+
+
+    data.forEach(t => {
+
+        if(
+            Number.isInteger(t.digit)
+        ){
+
+            counts[t.digit]++;
+
+        }
+
+    });
+
+
+    const total =
+        counts.reduce(
+            (a,b) => a + b,
+            0
+        );
+
+
+    if(!total)return;
+
+
+    renderDigits(
+        counts,
+        total
+    );
+
+
+    renderStatistics(
+        counts,
+        total
+    );
+
+
+    analyzePatterns(data);
+
+    analyzeTransitions(data);
+
+    analyzeWindows();
+
+    generateSignal(
+        counts,
+        total,
+        data
+    );
+
+    showTicks();
+
+}
+
+
+function renderDigits(
+    counts,
+    total
+){
+
+    let html = "";
+
+
+    const max =
+        Math.max(...counts);
+
+
+    const min =
+        Math.min(...counts);
+
+
+    counts.forEach(
+        (count,digit) => {
+
+            const pct =
+                count /
+                total *
+                100;
+
+
+            const green =
+                count === max;
+
+
+            const red =
+                count === min;
+
+
+            html += `
+
+                <div class="
+                    digit
+                    ${green ? "green-digit" : ""}
+                    ${red ? "red-digit" : ""}
+                ">
+
+                    <div class="digit-row">
+
+                        <strong>
+                            ${digit}
+                        </strong>
+
+                        <span>
+                            ${pct.toFixed(2)}%
+                        </span>
+
+                    </div>
+
+                    <div class="bar">
+
+                        <div
+                            class="fill"
+                            style="
+                                width:${Math.min(
+                                    100,
+                                    pct * 5
+                                )}%
+                            "
+                        ></div>
+
+                    </div>
+
+                    <small>
+                        ${count}
+                        occurrences
+                        ${green ? " • GREEN" : ""}
+                        ${red ? " • RED" : ""}
+                    </small>
+
+                </div>
+
+            `;
+
+        }
+    );
+
+
+    document.getElementById(
+        "digits"
+    ).innerHTML = html;
+
+}
+
+
+function renderStatistics(
+    counts,
+    total
+){
+
+    const max =
+        Math.max(...counts);
+
+
+    const min =
+        Math.min(...counts);
+
+
+    const hot =
+        counts.indexOf(max);
+
+
+    const cold =
+        counts.indexOf(min);
+
+
+    const even =
+        counts[0] +
+        counts[2] +
+        counts[4] +
+        counts[6] +
+        counts[8];
+
+
+    const odd =
+        total - even;
+
+
+    document.getElementById(
+        "hotDigit"
+    ).textContent =
+        hot;
+
+
+    document.getElementById(
+        "coldDigit"
+    ).textContent =
+        cold;
+
+
+    document.getElementById(
+        "stats"
+    ).innerHTML =
+
+        line(
+            "Green digit",
+            hot +
+            " • " +
+            (
+                max /
+                total *
+                100
+            ).toFixed(2) +
+            "%"
+        )
+
+        +
+
+        line(
+            "Red digit",
+            cold +
+            " • " +
+            (
+                min /
+                total *
+                100
+            ).toFixed(2) +
+            "%"
+        )
+
+        +
+
+        line(
+            "Even",
+            (
+                even /
+                total *
+                100
+            ).toFixed(2) +
+            "%"
+        )
+
+        +
+
+        line(
+            "Odd",
+            (
+                odd /
+                total *
+                100
+            ).toFixed(2) +
+            "%"
+        );
+
+}
+
+
+function analyzePatterns(data){
+
+    if(!data.length)return;
+
+
+    let longest = 1;
+
+    let current = 1;
+
+
+    for(
+        let i = 1;
+        i < data.length;
+        i++
+    ){
+
+        if(
+            data[i].digit ===
+            data[i - 1].digit
+        ){
+
+            current++;
+
+        }else{
+
+            current = 1;
+
+        }
+
+
+        longest =
+            Math.max(
+                longest,
+                current
+            );
+
+    }
+
+
+    let latest = 1;
+
+
+    for(
+        let i = data.length - 1;
+        i > 0;
+        i--
+    ){
+
+        if(
+            data[i].digit ===
+            data[i - 1].digit
+        ){
+
+            latest++;
+
+        }else{
+
+            break;
+
+        }
+
+    }
+
+
+    document.getElementById(
+        "longestStreak"
+    ).textContent =
+        longest;
+
+
+    document.getElementById(
+        "currentStreak"
+    ).textContent =
+        latest;
+
+}
+
+
+function analyzeTransitions(data){
+
+    if(data.length < 20){
+
+        document.getElementById(
+            "transitions"
+        ).textContent =
+            "Waiting for more data...";
+
+        return;
+
+    }
+
+
+    const matrix =
+        Array.from(
+            {length:10},
+            () => Array(10).fill(0)
+        );
+
+
+    for(
+        let i = 1;
+        i < data.length;
+        i++
+    ){
+
+        const a =
+            data[i - 1].digit;
+
+
+        const b =
+            data[i].digit;
+
+
+        if(
+            Number.isInteger(a) &&
+            Number.isInteger(b)
+        ){
+
+            matrix[a][b]++;
+
+        }
+
+    }
+
+
+    const recent =
+        data[data.length - 1].digit;
+
+
+    const row =
+        matrix[recent] || [];
+
+
+    const total =
+        row.reduce(
+            (a,b) => a + b,
+            0
+        );
+
+
+    if(!total){
+
+        document.getElementById(
+            "transitions"
+        ).textContent =
+            "Not enough transition data.";
+
+        return;
+
+    }
+
+
+    const best =
+        row.indexOf(
+            Math.max(...row)
+        );
+
+
+    document.getElementById(
+        "transitions"
+    ).innerHTML =
+
+        line(
+            "After digit",
+            recent
+        )
+
+        +
+
+        line(
+            "Most common next digit",
+            best
+        )
+
+        +
+
+        line(
+            "Transition frequency",
+            (
+                row[best] /
+                total *
+                100
+            ).toFixed(2) +
+            "%"
+        );
+
+}
+
+
+function analyzeWindows(){
+
+    const sizes =
+        [50,100,250,500,1000];
+
+
+    let html = "";
+
+
+    sizes.forEach(n => {
+
+        const data =
+            ticks
+            .slice(-n)
+            .filter(
+                x =>
+                    Number.isInteger(
+                        x.digit
+                    )
+            );
+
+
+        if(!data.length)return;
+
+
+        const counts =
+            Array(10).fill(0);
+
+
+        data.forEach(x => {
+
+            counts[x.digit]++;
+
+        });
+
+
+        const hot =
+            counts.indexOf(
+                Math.max(...counts)
+            );
+
+
+        const even =
+            counts[0] +
+            counts[2] +
+            counts[4] +
+            counts[6] +
+            counts[8];
+
+
+        html +=
+            line(
+                n + " ticks",
+                hot +
+                " hot • Even " +
+                (
+                    even /
+                    data.length *
+                    100
+                ).toFixed(1) +
+                "% • Odd " +
+                (
+                    (
+                        data.length -
+                        even
+                    ) /
+                    data.length *
+                    100
+                ).toFixed(1) +
+                "%"
+            );
+
+    });
+
+
+    document.getElementById(
+        "windows"
+    ).innerHTML =
+        html || "Waiting...";
+
+}
+
+
+function generateSignal(
+    counts,
+    total
+){
+
+    const even =
+        counts[0] +
+        counts[2] +
+        counts[4] +
+        counts[6] +
+        counts[8];
+
+
+    const odd =
+        total - even;
+
+
+    const confidence =
+        Math.max(
+            even,
+            odd
+        ) /
+        total *
+        100;
+
+
+    let signal =
+        "NO SIGNAL";
+
+
+    if(
+        confidence >=
+        Number(
+            document.getElementById(
+                "minConfidence"
+            ).value
+        )
+    ){
+
+        signal =
+            even >= odd
+                ? "EVEN"
+                : "ODD";
+
+    }
+
+
+    document.getElementById(
+        "signal"
+    ).innerHTML = `
+
+        <div class="signal-title">
+            ${signal}
+        </div>
+
+        <p class="muted">
+            Parity confidence:
+            ${confidence.toFixed(2)}%
+        </p>
+
+        <div class="progress">
+
+            <div
+                class="progress-fill"
+                style="
+                    width:${Math.min(
+                        100,
+                        confidence
+                    )}%
+                "
+            ></div>
 
         </div>
 
     `;
 
-    container.prepend(row);
-
 }
 
 
-/*
-==========================================================
-                 START / STOP
-==========================================================
-*/
+function showTicks(){
 
-function startMauvey() {
-
-    if (MAUVEY.running) {
-        return;
-    }
-
-    MAUVEY.running = true;
-
-    MAUVEY.runsPerBatch =
-        Math.max(
-            1,
-            Number(
-                document.getElementById("runsInput").value
-            )
+    const box =
+        document.getElementById(
+            "ticks"
         );
 
-    updateBatchDisplay();
 
-    setStatus("RUNNING", true);
-
-    log("MAUVEY started.");
-
-    /*
-        THIS IS WHERE YOUR EXISTING DERIV
-        CONNECTION SHOULD START.
-    */
-
-    beginAnalysis();
-
-}
-
-
-function stopMauvey() {
-
-    MAUVEY.running = false;
-
-    setStatus("STOPPED", false);
-
-    setPhase("Analyzer stopped.");
-
-    log("MAUVEY stopped.");
+    box.innerHTML =
+        ticks
+        .slice(-50)
+        .reverse()
+        .map(
+            t =>
+                `<span class="tick">
+                    ${escapeHTML(t.digit)}
+                    @
+                    ${escapeHTML(t.price)}
+                </span>`
+        )
+        .join("");
 
 }
 
 
-/*
-==========================================================
-                    ANALYSIS
-==========================================================
-*/
+/* =========================================================
+   MAUVEY STRATEGY
+========================================================= */
 
-async function beginAnalysis() {
+function parityCounts(data){
 
-    if (!MAUVEY.running) {
-        return;
-    }
-
-    /*
-        IMPORTANT:
-
-        ANALYSIS ONLY HAPPENS BETWEEN BATCHES.
-
-        Once a good entry is found,
-        we leave this phase and enter
-        the batch.
-
-        We DO NOT re-analyze after every trade.
-    */
-
-    MAUVEY.currentTrade = 0;
-
-    MAUVEY.wins = 0;
-
-    MAUVEY.losses = 0;
-
-    MAUVEY.profit = 0;
-
-    MAUVEY.tradeHistory = [];
-
-    updateBatchDisplay();
-
-    hideEntry();
-
-    setPhase("ANALYZING...");
-
-    log("Starting market scan.");
-
-    /*
-        YOUR EXISTING DERIV MARKET LIST
-        SHOULD BE PROVIDED HERE.
-    */
-
-    MAUVEY.markets =
-        await getMarkets();
-
-    if (!MAUVEY.running) {
-        return;
-    }
-
-    MAUVEY.marketIndex = 0;
-
-    scanNextMarket();
-
-}
+    const valid =
+        data.filter(
+            t =>
+                Number.isInteger(
+                    t.digit
+                )
+        );
 
 
-/*
-==========================================================
-                 SCAN MARKETS
-==========================================================
-*/
-
-async function scanNextMarket() {
-
-    if (!MAUVEY.running) {
-        return;
-    }
-
-    /*
-        ALL MARKETS EXHAUSTED
-
-        No valid entry was found.
-        Refresh and start again.
-    */
-
-    if (
-        MAUVEY.marketIndex >=
-        MAUVEY.markets.length
-    ) {
-
-        log("All markets checked.");
-
-        setPhase("REFRESHING MARKETS...");
-
-        await delay(500);
-
-        if (!MAUVEY.running) {
-            return;
-        }
-
-        beginAnalysis();
-
-        return;
-    }
+    const counts =
+        Array(10).fill(0);
 
 
-    const market =
-        MAUVEY.markets[
-            MAUVEY.marketIndex
-        ];
+    valid.forEach(t => {
 
-    MAUVEY.marketIndex++;
+        counts[t.digit]++;
 
-    showMarket(market);
+    });
 
-    resetChecks();
-
-    setPhase("CHECKING MARKET...");
-
-    log(
-        `Checking ${market.name} (${market.symbol})`
-    );
-
-
-    /*
-        GET THE DATA NEEDED FOR THIS MARKET.
-
-        CONNECT THIS TO YOUR EXISTING
-        DERIV TICK/HISTORICAL DATA FUNCTION.
-    */
-
-    const data =
-        await getMarketData(market);
-
-    if (!MAUVEY.running) {
-        return;
-    }
-
-
-    /*
-        CHECK EVEN
-    */
-
-    setPhase("CHECKING EVEN...");
 
     const even =
-        checkEven(data);
+        counts[0] +
+        counts[2] +
+        counts[4] +
+        counts[6] +
+        counts[8];
 
-    setCheck(
-        "evenCheck",
-        even ? "MATCH" : "NO MATCH",
-        even ? "good" : "bad"
-    );
-
-    if (even) {
-
-        const entry =
-            createEntry(
-                market,
-                "EVEN"
-            );
-
-        showEntry(entry);
-
-        log(
-            `GOOD ENTRY FOUND: EVEN`
-        );
-
-        startBatch(entry);
-
-        return;
-    }
-
-
-    /*
-        CHECK ODD
-    */
-
-    setPhase("CHECKING ODD...");
 
     const odd =
-        checkOdd(data);
+        valid.length -
+        even;
 
-    setCheck(
-        "oddCheck",
-        odd ? "MATCH" : "NO MATCH",
-        odd ? "good" : "bad"
-    );
 
-    if (odd) {
+    return {
+        valid,
+        counts,
+        even,
+        odd,
+        total:valid.length
+    };
 
-        const entry =
-            createEntry(
-                market,
-                "ODD"
-            );
+}
 
-        showEntry(entry);
 
-        log(
-            `GOOD ENTRY FOUND: ODD`
-        );
+function consecutiveSide(
+    data,
+    side
+){
 
-        startBatch(entry);
+    let n = 0;
 
-        return;
+
+    for(
+        let i = data.length - 1;
+        i >= 0;
+        i--
+    ){
+
+        const d =
+            data[i].digit;
+
+
+        if(!Number.isInteger(d))
+            break;
+
+
+        const isEven =
+            d % 2 === 0;
+
+
+        if(
+            (
+                side === "EVEN" &&
+                isEven
+            )
+            ||
+            (
+                side === "ODD" &&
+                !isEven
+            )
+        ){
+
+            n++;
+
+        }else{
+
+            break;
+
+        }
+
     }
 
 
-    /*
-        CHECK OVER
-    */
+    return n;
 
-    setPhase("CHECKING OVER...");
+}
+
+
+function consecutiveRelation(
+    data,
+    barrier,
+    relation
+){
+
+    let n = 0;
+
+
+    for(
+        let i = data.length - 1;
+        i >= 0;
+        i--
+    ){
+
+        const d =
+            data[i].digit;
+
+
+        if(!Number.isInteger(d))
+            break;
+
+
+        const ok =
+            relation === "OVER"
+                ? d > barrier
+                : d < barrier;
+
+
+        if(ok){
+
+            n++;
+
+        }else{
+
+            break;
+
+        }
+
+    }
+
+
+    return n;
+
+}
+
+
+function greenRedParity(counts){
+
+    let max = -1;
+    let min = Infinity;
+
+    let green = -1;
+    let red = -1;
+
+
+    counts.forEach(
+        (count,digit) => {
+
+            if(count > max){
+
+                max = count;
+                green = digit;
+
+            }
+
+
+            if(count < min){
+
+                min = count;
+                red = digit;
+
+            }
+
+        }
+    );
+
+
+    return {
+        green,
+        red,
+        max,
+        min
+    };
+
+}
+
+
+/*
+    EVEN / ODD strategy.
+
+    MAUVEY wants:
+
+    1. Enough data
+    2. Green digit agrees with target
+    3. Red digit is opposite
+    4. Target percentage is greater
+    5. Three consecutive opposite-side digits
+
+    Once this is true, it becomes the
+    batch's locked strategy.
+*/
+
+function mauveyEvenOddStrategy(
+    target,
+    data
+){
+
+    const p =
+        parityCounts(data);
+
+
+    if(p.total < 100){
+
+        return {
+            ready:false,
+            reason:
+                "Waiting for at least 100 valid ticks."
+        };
+
+    }
+
+
+    const g =
+        greenRedParity(
+            p.counts
+        );
+
+
+    const greenParity =
+        g.green % 2 === 0
+            ? "EVEN"
+            : "ODD";
+
+
+    const redParity =
+        g.red % 2 === 0
+            ? "EVEN"
+            : "ODD";
+
+
+    const opposite =
+        target === "EVEN"
+            ? "ODD"
+            : "EVEN";
+
+
+    const targetPct =
+        target === "EVEN"
+            ? p.even / p.total * 100
+            : p.odd / p.total * 100;
+
+
+    const oppositePct =
+        target === "EVEN"
+            ? p.odd / p.total * 100
+            : p.even / p.total * 100;
+
+
+    const streak =
+        consecutiveSide(
+            p.valid,
+            opposite
+        );
+
+
+    const valid =
+        greenParity === target &&
+        redParity === opposite &&
+        targetPct > oppositePct;
+
+
+    return {
+
+        ready:
+            valid &&
+            streak >= 3,
+
+        valid,
+
+        type:
+            target,
+
+        green:
+            g.green,
+
+        red:
+            g.red,
+
+        targetPct,
+
+        oppositePct,
+
+        streak,
+
+        reason:
+            !valid
+                ? (
+                    "Green " +
+                    g.green +
+                    "=" +
+                    greenParity +
+                    ", Red " +
+                    g.red +
+                    "=" +
+                    redParity +
+                    ", " +
+                    target +
+                    " " +
+                    targetPct.toFixed(2) +
+                    "% vs " +
+                    opposite +
+                    " " +
+                    oppositePct.toFixed(2) +
+                    "%"
+                )
+                : streak < 3
+                    ? (
+                        streak +
+                        "/3 consecutive " +
+                        opposite +
+                        " digits."
+                    )
+                    : (
+                        "ENTRY CONFIRMED: " +
+                        target
+                    )
+
+    };
+
+}
+
+
+/*
+    OVER / UNDER strategy.
+*/
+
+function mauveyOverUnderStrategy(
+    target,
+    data,
+    barrier
+){
+
+    const p =
+        parityCounts(data);
+
+
+    if(p.total < 100){
+
+        return {
+            ready:false,
+            reason:
+                "Waiting for at least 100 valid ticks."
+        };
+
+    }
+
 
     const over =
-        checkOver(data);
-
-    setCheck(
-        "overCheck",
-        over ? "MATCH" : "NO MATCH",
-        over ? "good" : "bad"
-    );
-
-    if (over) {
-
-        const entry =
-            createEntry(
-                market,
-                "OVER"
-            );
-
-        showEntry(entry);
-
-        log(
-            `GOOD ENTRY FOUND: OVER`
+        p.counts.reduce(
+            (sum,count,digit) =>
+                sum +
+                (
+                    digit > barrier
+                        ? count
+                        : 0
+                ),
+            0
         );
 
-        startBatch(entry);
-
-        return;
-    }
-
-
-    /*
-        CHECK UNDER
-    */
-
-    setPhase("CHECKING UNDER...");
 
     const under =
-        checkUnder(data);
+        p.total - over;
 
-    setCheck(
-        "underCheck",
-        under ? "MATCH" : "NO MATCH",
-        under ? "good" : "bad"
-    );
 
-    if (under) {
+    const overPct =
+        over /
+        p.total *
+        100;
 
-        const entry =
-            createEntry(
-                market,
-                "UNDER"
-            );
 
-        showEntry(entry);
+    const underPct =
+        under /
+        p.total *
+        100;
 
-        log(
-            `GOOD ENTRY FOUND: UNDER`
+
+    const g =
+        greenRedParity(
+            p.counts
         );
 
-        startBatch(entry);
 
-        return;
-    }
+    const greenOnTarget =
+        target === "OVER"
+            ? g.green > barrier
+            : g.green < barrier;
 
 
-    /*
-        NO ENTRY ON THIS MARKET.
+    const redOnOpposite =
+        target === "OVER"
+            ? g.red <= barrier
+            : g.red > barrier;
 
-        IMMEDIATELY MOVE TO THE NEXT MARKET.
-    */
 
-    setPhase("NO ENTRY → NEXT MARKET");
+    const targetPct =
+        target === "OVER"
+            ? overPct
+            : underPct;
 
-    log(
-        `${market.name}: no valid entry.`
-    );
 
-    await delay(100);
+    const oppositePct =
+        target === "OVER"
+            ? underPct
+            : overPct;
 
-    scanNextMarket();
+
+    const oppositeSide =
+        target === "OVER"
+            ? "UNDER"
+            : "OVER";
+
+
+    const streak =
+        consecutiveRelation(
+            p.valid,
+            barrier,
+            oppositeSide
+        );
+
+
+    const valid =
+        greenOnTarget &&
+        redOnOpposite &&
+        targetPct > oppositePct;
+
+
+    return {
+
+        ready:
+            valid &&
+            streak >= 3,
+
+        valid,
+
+        type:
+            target,
+
+        barrier,
+
+        green:
+            g.green,
+
+        red:
+            g.red,
+
+        overPct,
+
+        underPct,
+
+        targetPct,
+
+        oppositePct,
+
+        streak,
+
+        reason:
+            !valid
+                ? (
+                    "Green " +
+                    g.green +
+                    ", Red " +
+                    g.red +
+                    " • " +
+                    target +
+                    " " +
+                    targetPct.toFixed(2) +
+                    "% vs " +
+                    oppositeSide +
+                    " " +
+                    oppositePct.toFixed(2) +
+                    "%"
+                )
+                : streak < 3
+                    ? (
+                        streak +
+                        "/3 consecutive " +
+                        oppositeSide +
+                        " digits."
+                    )
+                    : (
+                        "ENTRY CONFIRMED: " +
+                        target +
+                        " " +
+                        barrier
+                    )
+
+    };
 
 }
 
 
-/*
-==========================================================
-                    START BATCH
-==========================================================
-*/
+/* =========================================================
+   FIND BEST ENTRY IN ONE MARKET
+========================================================= */
 
-async function startBatch(entry) {
+function findBestMauveyEntry(data){
 
-    if (!MAUVEY.running) {
-        return;
-    }
-
-    MAUVEY.currentTrade = 0;
-
-    MAUVEY.wins = 0;
-
-    MAUVEY.losses = 0;
-
-    MAUVEY.profit = 0;
-
-    MAUVEY.tradeHistory = [];
-
-    updateBatchDisplay();
-
-    log(
-        `BATCH STARTED: ${MAUVEY.runsPerBatch} trades.`
-    );
-
-    setPhase(
-        `BATCH RUNNING — ${MAUVEY.runsPerBatch} TRADES`
-    );
+    const candidates = [];
 
 
     /*
-        RUN EXACTLY THE NUMBER OF TRADES
-        SELECTED BY THE USER.
+        EVEN
     */
 
-    while (
-        MAUVEY.running &&
-        MAUVEY.currentTrade <
-        MAUVEY.runsPerBatch
-    ) {
-
-        await executeBatchTrade(entry);
-
-    }
+    const even =
+        mauveyEvenOddStrategy(
+            "EVEN",
+            data
+        );
 
 
-    if (!MAUVEY.running) {
-        return;
+    if(even.ready){
+
+        candidates.push({
+            type:"EVEN",
+            barrier:undefined,
+            details:even
+        });
+
     }
 
 
     /*
-        ONLY AFTER ALL TRADES ARE COMPLETE
-        CAN ANALYSIS START AGAIN.
+        ODD
     */
 
-    setPhase("BATCH COMPLETE");
+    const odd =
+        mauveyEvenOddStrategy(
+            "ODD",
+            data
+        );
 
-    log("Batch complete.");
 
-    await delay(800);
+    if(odd.ready){
 
-    if (!MAUVEY.running) {
-        return;
+        candidates.push({
+            type:"ODD",
+            barrier:undefined,
+            details:odd
+        });
+
     }
 
-    log("Starting new analysis.");
 
-    beginAnalysis();
+    /*
+        OVER / UNDER
+
+        Barrier 0 through 8.
+
+        Barrier 9 is not useful for OVER.
+        Barrier 0 is not useful for UNDER.
+    */
+
+    for(
+        let barrier = 0;
+        barrier <= 8;
+        barrier++
+    ){
+
+        const over =
+            mauveyOverUnderStrategy(
+                "OVER",
+                data,
+                barrier
+            );
+
+
+        if(over.ready){
+
+            candidates.push({
+                type:"OVER",
+                barrier,
+                details:over
+            });
+
+        }
+
+
+        const under =
+            mauveyOverUnderStrategy(
+                "UNDER",
+                data,
+                barrier
+            );
+
+
+        if(under.ready){
+
+            candidates.push({
+                type:"UNDER",
+                barrier,
+                details:under
+            });
+
+        }
+
+    }
+
+
+    if(!candidates.length){
+
+        return null;
+
+    }
+
+
+    candidates.sort(
+        (a,b) =>
+            (
+                b.details.targetPct || 0
+            )
+            -
+            (
+                a.details.targetPct || 0
+            )
+    );
+
+
+    return candidates[0];
 
 }
 
 
-/*
-==========================================================
-                 EXECUTE ONE TRADE
-==========================================================
-*/
+/* =========================================================
+   SCAN ALL MARKETS ONCE
+========================================================= */
 
-async function executeBatchTrade(entry) {
+async function scanAllMarketsForEntry(){
 
-    const tradeNumber =
-        MAUVEY.currentTrade + 1;
+    if(
+        !publicWS ||
+        publicWS.readyState !==
+        WebSocket.OPEN
+    ){
 
-    const stake =
+        throw new Error(
+            "Public market connection is not open."
+        );
+
+    }
+
+
+    if(!markets.length){
+
+        loadMarkets();
+
+        await sleep(1000);
+
+    }
+
+
+    /*
+        We scan markets sequentially.
+
+        We do NOT trade while scanning.
+
+        We do NOT analyze again after
+        finding the entry.
+
+        Once a winner is found, the scan ends.
+    */
+
+
+    const candidates =
+        markets.filter(m => {
+
+            const name =
+                String(
+                    m.underlying_symbol_name ||
+                    ""
+                ).toLowerCase();
+
+
+            const type =
+                String(
+                    m.market ||
+                    m.underlying_symbol_type ||
+                    ""
+                ).toLowerCase();
+
+
+            /*
+                Digit strategies are primarily
+                intended for synthetic indices.
+
+                This prevents wasting time trying
+                unsupported FX/crypto markets.
+            */
+
+            return (
+                type.includes("synthetic") ||
+                name.includes("volatility") ||
+                name.includes("crash") ||
+                name.includes("boom") ||
+                name.includes("jump")
+            );
+
+        });
+
+
+    log(
+        "MAUVEY market scan started. " +
+        candidates.length +
+        " synthetic markets available."
+    );
+
+
+    for(
+        let i = 0;
+        i < candidates.length;
+        i++
+    ){
+
+        if(!mauveyRunning){
+
+            return null;
+
+        }
+
+
+        const market =
+            candidates[i];
+
+
+        const symbol =
+            market.underlying_symbol;
+
+
+        const name =
+            market.underlying_symbol_name ||
+            symbol;
+
+
+        updateMauveyScanStatus(
+            "ANALYZING MARKET",
+            name,
+            symbol,
+            i + 1,
+            candidates.length
+        );
+
+
+        log(
+            "Analyzing " +
+            name +
+            " (" +
+            symbol +
+            ")"
+        );
+
+
+        const response =
+            await requestMarketHistory(
+                symbol,
+                1000
+            );
+
+
+        if(!response){
+
+            log(
+                name +
+                " • history unavailable."
+            );
+
+            continue;
+
+        }
+
+
+        if(response.error){
+
+            log(
+                name +
+                " • history error: " +
+                JSON.stringify(
+                    response.error
+                )
+            );
+
+            continue;
+
+        }
+
+
+        const prices =
+            response.history?.prices || [];
+
+
+        const times =
+            response.history?.times || [];
+
+
+        const data = [];
+
+
+        for(
+            let j = 0;
+            j < prices.length;
+            j++
+        ){
+
+            const price =
+                Number(prices[j]);
+
+
+            data.push({
+
+                price,
+
+                digit:
+                    getDigit(price),
+
+                time:
+                    times[j]
+
+            });
+
+        }
+
+
+        if(data.length < 100){
+
+            log(
+                name +
+                " • insufficient history."
+            );
+
+            continue;
+
+        }
+
+
+        const candidate =
+            findBestMauveyEntry(
+                data
+            );
+
+
+        if(!candidate){
+
+            log(
+                name +
+                " • no qualifying entry."
+            );
+
+            continue;
+
+        }
+
+
+        /*
+            WE FOUND IT.
+
+            From this point onward the strategy
+            is LOCKED for the whole batch.
+        */
+
+        log(
+            "QUALIFYING ENTRY FOUND: " +
+            candidate.type +
+            (
+                candidate.barrier !== undefined
+                    ? " " + candidate.barrier
+                    : ""
+            ) +
+            " on " +
+            name
+        );
+
+
+        return {
+
+            symbol,
+
+            name,
+
+            type:
+                candidate.type,
+
+            barrier:
+                candidate.barrier,
+
+            details:
+                candidate.details,
+
+            history:
+                data
+
+        };
+
+    }
+
+
+    return null;
+
+}
+
+
+/* =========================================================
+   MAUVEY STATUS
+========================================================= */
+
+function updateMauveyScanStatus(
+    state,
+    market,
+    symbol,
+    current,
+    total
+){
+
+    document.getElementById(
+        "mauveyStatus"
+    ).className =
+        "warning";
+
+
+    document.getElementById(
+        "mauveyStatus"
+    ).innerHTML = `
+
+        <strong>
+            ${escapeHTML(state)}
+        </strong>
+
+        <br>
+
+        <span class="small">
+            ${escapeHTML(market)}
+            •
+            ${escapeHTML(symbol)}
+            <br>
+            Market ${current} / ${total}
+        </span>
+
+    `;
+
+}
+
+
+function updateMauveyLockedStatus(){
+
+    if(!lockedMauveyStrategy)return;
+
+
+    const s =
+        lockedMauveyStrategy;
+
+
+    document.getElementById(
+        "mauveyStatus"
+    ).className =
+        "success";
+
+
+    document.getElementById(
+        "mauveyStatus"
+    ).innerHTML = `
+
+        <strong>
+            BATCH RUNNING
+        </strong>
+
+        <br>
+
+        <span class="small">
+
+            Market:
+            ${escapeHTML(s.name)}
+
+            <br>
+
+            Symbol:
+            ${escapeHTML(s.symbol)}
+
+            <br>
+
+            Contract:
+            ${escapeHTML(s.type)}
+
+            ${
+                s.barrier !== undefined
+                    ? " • Barrier " +
+                      escapeHTML(
+                          s.barrier
+                      )
+                    : ""
+            }
+
+            <br>
+
+            Trade:
+            ${mauveyTradeCount + 1}
+            /
+            ${document.getElementById(
+                "mauveyMaxTrades"
+            ).value}
+
+            <br>
+
+            Strategy LOCKED.
+            No re-analysis between trades.
+
+        </span>
+
+    `;
+
+}
+
+
+/* =========================================================
+   MAUVEY START / STOP
+========================================================= */
+
+function toggleMauvey(){
+
+    if(mauveyRunning){
+
+        stopMauvey();
+
+    }else{
+
+        startMauvey();
+
+    }
+
+}
+
+
+async function startMauvey(){
+
+    if(!publicWS){
+
+        connectPublic();
+
+        alert(
+            "Connect market data first."
+        );
+
+        return;
+
+    }
+
+
+    if(
+        publicWS.readyState !==
+        WebSocket.OPEN
+    ){
+
+        alert(
+            "Connect market data first."
+        );
+
+        return;
+
+    }
+
+
+    if(
+        !accountWS ||
+        accountWS.readyState !==
+        WebSocket.OPEN
+    ){
+
+        alert(
+            "Connect your Deriv account first."
+        );
+
+        return;
+
+    }
+
+
+    const max =
         Number(
             document.getElementById(
-                "stakeInput"
+                "mauveyMaxTrades"
             ).value
         );
 
 
-    setPhase(
-        `PLACING TRADE ${tradeNumber} / ${MAUVEY.runsPerBatch}`
+    if(max < 1){
+
+        alert(
+            "Number of trades must be at least 1."
+        );
+
+        return;
+
+    }
+
+
+    mauveyRunning = true;
+
+    mauveyTradeCount = 0;
+
+    lockedMauveyStrategy = null;
+
+
+    document.getElementById(
+        "mauveyBtn"
+    ).textContent =
+        "STOP MAUVEY";
+
+
+    document.getElementById(
+        "engine"
+    ).textContent =
+        "SCANNING";
+
+
+    log(
+        "MAUVEY started."
     );
 
 
     log(
-        `Trade ${tradeNumber}/${MAUVEY.runsPerBatch} — ${entry.contract}`
+        "MAUVEY will analyze once, " +
+        "lock the entry, then execute " +
+        max +
+        " trades."
     );
 
 
-    /*
-        IMPORTANT:
-
-        CONNECT THIS FUNCTION TO YOUR
-        EXISTING DERIV CONTRACT PURCHASE
-        FUNCTION.
-
-        IT MUST RETURN THE ACTUAL RESULT:
-
-        {
-            won: true/false,
-            profit: number
-        }
-    */
-
-    const result =
-        await placeDerivTrade(
-            entry,
-            stake
-        );
-
-
-    if (!MAUVEY.running) {
-        return;
-    }
-
-
-    MAUVEY.currentTrade++;
-
-
-    const trade = {
-
-        number:
-            tradeNumber,
-
-        contract:
-            entry.contract,
-
-        market:
-            entry.market.name,
-
-        stake:
-            stake,
-
-        result:
-            result.won
-            ? "WON"
-            : "LOST",
-
-        profit:
-            Number(result.profit)
-
-    };
-
-
-    if (result.won) {
-
-        MAUVEY.wins++;
-
-        setPhase(
-            `TRADE ${tradeNumber}: WON`
-        );
-
-        log(
-            `Trade ${tradeNumber} WON. Profit: ${result.profit.toFixed(2)}`
-        );
-
-    } else {
-
-        MAUVEY.losses++;
-
-        setPhase(
-            `TRADE ${tradeNumber}: LOST`
-        );
-
-        log(
-            `Trade ${tradeNumber} LOST. Profit: ${result.profit.toFixed(2)}`
-        );
-
-    }
-
-
-    MAUVEY.profit +=
-        Number(result.profit);
-
-
-    MAUVEY.tradeHistory.push(
-        trade
-    );
-
-
-    addTradeToHistory(
-        trade
-    );
-
-
-    updateBatchDisplay();
-
-
-    /*
-        VERY IMPORTANT:
-
-        WE DO NOT CALL beginAnalysis()
-        HERE.
-
-        WE DO NOT SCAN ANOTHER MARKET.
-
-        WE DO NOT STOP BECAUSE OF A LOSS.
-
-        WE DO NOT STOP BECAUSE OF A WIN.
-
-        WE SIMPLY CONTINUE THE SAME BATCH.
-    */
-
-    await delay(300);
+    await beginNewBatch();
 
 }
 
 
-/*
-==========================================================
-                 ENTRY CREATION
-==========================================================
-*/
+function stopMauvey(){
 
-function createEntry(
-    market,
-    contract
-) {
+    mauveyRunning = false;
 
-    return {
 
-        market:
-            market,
+    lockedMauveyStrategy = null;
 
-        contract:
-            contract,
+
+    if(mauveyWaitTimer){
+
+        clearTimeout(
+            mauveyWaitTimer
+        );
+
+    }
+
+
+    mauveyWaitTimer = null;
+
+
+    document.getElementById(
+        "mauveyBtn"
+    ).textContent =
+        "START MAUVEY";
+
+
+    document.getElementById(
+        "mauveyStatus"
+    ).className =
+        "warning";
+
+
+    document.getElementById(
+        "mauveyStatus"
+    ).textContent =
+        "MAUVEY is OFF.";
+
+
+    document.getElementById(
+        "engine"
+    ).textContent =
+        "STOPPED";
+
+
+    log(
+        "MAUVEY stopped."
+    );
+
+}
+
+
+/* =========================================================
+   START A NEW BATCH
+========================================================= */
+
+async function beginNewBatch(){
+
+    if(!mauveyRunning)return;
+
+
+    if(tradeInProgress)return;
+
+
+    lockedMauveyStrategy = null;
+
+    mauveyTradeCount = 0;
+
+
+    document.getElementById(
+        "engine"
+    ).textContent =
+        "SCANNING";
+
+
+    const strategy =
+        await scanAllMarketsForEntry();
+
+
+    if(!mauveyRunning)return;
+
+
+    if(!strategy){
+
+        log(
+            "No qualifying setup found across the markets."
+        );
+
+
+        document.getElementById(
+            "mauveyStatus"
+        ).className =
+            "warning";
+
+
+        document.getElementById(
+            "mauveyStatus"
+        ).innerHTML = `
+
+            <strong>
+                NO ENTRY FOUND
+            </strong>
+
+            <br>
+
+            <span class="small">
+                All available synthetic markets
+                were checked.
+                Refreshing market data and
+                starting another scan.
+            </span>
+
+        `;
+
+
+        document.getElementById(
+            "engine"
+        ).textContent =
+            "REFRESHING";
+
+
+        await sleep(1500);
+
+
+        if(
+            mauveyRunning &&
+            publicWS?.readyState ===
+            WebSocket.OPEN
+        ){
+
+            loadMarkets();
+
+            await sleep(1000);
+
+            beginNewBatch();
+
+        }
+
+
+        return;
+
+    }
+
+
+    /*
+        LOCK THE STRATEGY.
+
+        No more analysis until the batch
+        is completely finished.
+    */
+
+    lockedMauveyStrategy =
+        strategy;
+
+
+    selectedSymbol =
+        strategy.symbol;
+
+
+    selectedName =
+        strategy.name;
+
+
+    ticks =
+        strategy.history.slice(-5000);
+
+
+    document.getElementById(
+        "selectedName"
+    ).textContent =
+        selectedName;
+
+
+    document.getElementById(
+        "selectedSymbol"
+    ).textContent =
+        selectedSymbol;
+
+
+    analyze();
+
+    showTicks();
+
+
+    subscribeSelectedMarket();
+
+
+    document.getElementById(
+        "engine"
+    ).textContent =
+        "ENTRY LOCKED";
+
+
+    log(
+        "ENTRY LOCKED: " +
+        strategy.type +
+        (
+            strategy.barrier !== undefined
+                ? " " + strategy.barrier
+                : ""
+        ) +
+        " • " +
+        strategy.name
+    );
+
+
+    updateMauveyLockedStatus();
+
+
+    /*
+        Give the market connection a moment to
+        continue receiving live ticks.
+
+        Then trade 1.
+
+        There is NO new analysis here.
+    */
+
+    await sleep(500);
+
+
+    if(!mauveyRunning)return;
+
+
+    executeLockedMauveyTrade();
+
+}
+
+
+/* =========================================================
+   EXECUTE LOCKED BATCH TRADE
+========================================================= */
+
+function executeLockedMauveyTrade(){
+
+    if(!mauveyRunning)return;
+
+
+    if(!lockedMauveyStrategy){
+
+        return;
+
+    }
+
+
+    if(tradeInProgress){
+
+        return;
+
+    }
+
+
+    const max =
+        Number(
+            document.getElementById(
+                "mauveyMaxTrades"
+            ).value
+        );
+
+
+    if(
+        mauveyTradeCount >= max
+    ){
+
+        finishBatch();
+
+        return;
+
+    }
+
+
+    updateMauveyLockedStatus();
+
+
+    const strategy =
+        lockedMauveyStrategy;
+
+
+    const contractType =
+        strategy.type === "EVEN"
+            ? "DIGITEVEN"
+            : strategy.type === "ODD"
+                ? "DIGITODD"
+                : strategy.type === "OVER"
+                    ? "DIGITOVER"
+                    : "DIGITUNDER";
+
+
+    log(
+        "Preparing TRADE " +
+        (mauveyTradeCount + 1) +
+        "/" +
+        max +
+        " • " +
+        contractType +
+        (
+            strategy.barrier !== undefined
+                ? " barrier " +
+                  strategy.barrier
+                : ""
+        )
+    );
+
+
+    requestProposal({
+
+        type:
+            contractType,
+
+        barrier:
+            strategy.barrier,
 
         stake:
             Number(
                 document.getElementById(
-                    "stakeInput"
+                    "stake"
                 ).value
+            ),
+
+        duration:
+            Number(
+                document.getElementById(
+                    "duration"
+                ).value
+            ),
+
+        unit:"t",
+
+        strategy:
+            "MAUVEY " +
+            strategy.type +
+            (
+                strategy.barrier !== undefined
+                    ? " " +
+                      strategy.barrier
+                    : ""
             )
 
-    };
+    });
 
 }
 
 
-/*
-==========================================================
-              DERIV INTEGRATION POINTS
-==========================================================
+/* =========================================================
+   UPDATE LIVE BATCH DISPLAY
 
-THE FUNCTIONS BELOW ARE INTENTIONALLY
-SEPARATED FROM THE MAUVEY ENGINE.
+   This function ONLY displays live information.
 
-CONNECT THEM TO THE DERIV CODE YOU
-ALREADY HAVE.
+   It does NOT change the locked strategy.
+========================================================= */
 
-==========================================================
-*/
+function updateMauveyLiveDisplay(){
+
+    if(!lockedMauveyStrategy)return;
 
 
-async function getMarkets() {
+    const s =
+        lockedMauveyStrategy;
 
-    /*
-        REPLACE THIS WITH YOUR EXISTING
-        DERIV MARKET-LOADING FUNCTION.
 
-        IT SHOULD RETURN:
+    const max =
+        Number(
+            document.getElementById(
+                "mauveyMaxTrades"
+            ).value
+        );
 
-        [
-            {
-                name: "Volatility 10 (1s)",
-                symbol: "1HZ10V"
-            },
 
-            {
-                name: "Volatility 15 (1s)",
-                symbol: "1HZ15V"
+    document.getElementById(
+        "mauveyStatus"
+    ).innerHTML = `
+
+        <strong>
+            BATCH RUNNING
+        </strong>
+
+        <br>
+
+        <span class="small">
+
+            ${escapeHTML(s.name)}
+            •
+            ${escapeHTML(s.symbol)}
+
+            <br>
+
+            LOCKED ENTRY:
+            ${escapeHTML(s.type)}
+
+            ${
+                s.barrier !== undefined
+                    ? " • Barrier " +
+                      escapeHTML(
+                          s.barrier
+                      )
+                    : ""
             }
 
-            ...
-        ]
-    */
+            <br>
 
+            COMPLETED:
+            ${mauveyTradeCount}
+            /
+            ${max}
 
-    return [
+            <br>
 
-        {
-            name: "Volatility 10 (1s)",
-            symbol: "1HZ10V"
-        },
+            ${
+                tradeInProgress
+                    ? "Current trade in progress..."
+                    : "Waiting for next trade..."
+            }
 
-        {
-            name: "Volatility 15 (1s)",
-            symbol: "1HZ15V"
-        },
+        </span>
 
-        {
-            name: "Volatility 25 (1s)",
-            symbol: "1HZ25V"
-        },
-
-        {
-            name: "Volatility 50 (1s)",
-            symbol: "1HZ50V"
-        },
-
-        {
-            name: "Volatility 75 (1s)",
-            symbol: "1HZ75V"
-        }
-
-    ];
+    `;
 
 }
 
 
-async function getMarketData(market) {
+/* =========================================================
+   TRADING
+========================================================= */
 
-    /*
-        CONNECT THIS TO YOUR EXISTING
-        HISTORICAL-TICK / LIVE-TICK FUNCTION.
+function updateDurationUI(){
 
-        DO NOT USE RANDOM DATA FOR THE REAL
-        ANALYZER.
+    const type =
+        document.getElementById(
+            "contractType"
+        ).value;
 
-        THIS FUNCTION MUST RETURN THE ACTUAL
-        DERIV DATA USED BY YOUR STRATEGY.
-    */
 
-    return await new Promise(
-        resolve => {
+    const group =
+        document.getElementById(
+            "barrierGroup"
+        );
 
-            setTimeout(
-                () => {
 
-                    resolve({
+    const barrier =
+        document.getElementById(
+            "barrier"
+        );
 
-                        market:
-                            market,
 
-                        digits: []
+    barrier.innerHTML = "";
 
-                    });
 
-                },
-                200
+    if(
+        type === "DIGITOVER" ||
+        type === "DIGITUNDER" ||
+        type === "DIGITMATCH" ||
+        type === "DIGITDIFF"
+    ){
+
+        group.classList.remove(
+            "hidden"
+        );
+
+
+        for(
+            let i = 0;
+            i <= 9;
+            i++
+        ){
+
+            barrier.insertAdjacentHTML(
+                "beforeend",
+                `
+                    <option value="${i}">
+                        ${i}
+                    </option>
+                `
             );
 
         }
+
+    }else{
+
+        group.classList.add(
+            "hidden"
+        );
+
+    }
+
+
+    document.getElementById(
+        "durationUnit"
+    ).value =
+        type.startsWith("DIGIT")
+            ? "t"
+            : "s";
+
+}
+
+
+function executeManualTrade(){
+
+    const type =
+        document.getElementById(
+            "contractType"
+        ).value;
+
+
+    const barrier =
+        Number(
+            document.getElementById(
+                "barrier"
+            ).value
+        );
+
+
+    requestProposal({
+
+        type,
+
+        barrier,
+
+        stake:
+            Number(
+                document.getElementById(
+                    "stake"
+                ).value
+            ),
+
+        duration:
+            Number(
+                document.getElementById(
+                    "duration"
+                ).value
+            ),
+
+        unit:
+            document.getElementById(
+                "durationUnit"
+            ).value,
+
+        strategy:"MANUAL"
+
+    });
+
+}
+
+
+/*
+    THIS FUNCTION IS THE ACTUAL PROPOSAL REQUEST.
+
+    Notice:
+
+    underlying_symbol: selectedSymbol
+
+    NOT:
+
+    symbol: selectedSymbol
+*/
+
+function requestProposal(cfg){
+
+    if(
+        !accountWS ||
+        accountWS.readyState !==
+        WebSocket.OPEN
+    ){
+
+        alert(
+            "Connect Deriv account first."
+        );
+
+        return;
+
+    }
+
+
+    if(!selectedSymbol){
+
+        alert(
+            "No market selected."
+        );
+
+        return;
+
+    }
+
+
+    if(tradeInProgress){
+
+        return;
+
+    }
+
+
+    const amount =
+        Number(cfg.stake);
+
+
+    if(!(amount > 0)){
+
+        alert(
+            "Invalid stake."
+        );
+
+        return;
+
+    }
+
+
+    tradeInProgress = true;
+
+    pendingProposal = cfg;
+
+
+    setTradeState(
+        "REQUESTING PROPOSAL...",
+        "warning"
+    );
+
+
+    if(
+        cfg.strategy.startsWith("MAUVEY")
+    ){
+
+        updateMauveyLiveDisplay();
+
+    }
+
+
+    const proposal = {
+
+        proposal:1,
+
+        amount:amount,
+
+        basis:"stake",
+
+        contract_type:
+            cfg.type,
+
+        currency:
+            accountCurrency,
+
+        duration:
+            Number(cfg.duration),
+
+        duration_unit:
+            cfg.unit,
+
+        underlying_symbol:
+            selectedSymbol,
+
+        req_id:
+            reqId()
+
+    };
+
+
+    if(
+        [
+            "DIGITOVER",
+            "DIGITUNDER",
+            "DIGITMATCH",
+            "DIGITDIFF"
+        ].includes(cfg.type)
+    ){
+
+        proposal.barrier =
+            String(cfg.barrier);
+
+    }
+
+
+    log(
+        "Requesting proposal: " +
+        cfg.strategy +
+        " • " +
+        selectedSymbol
+    );
+
+
+    accountWS.send(
+        JSON.stringify(
+            proposal
+        )
     );
 
 }
 
 
-/*
-==========================================================
-             EVEN / ODD / OVER / UNDER
-==========================================================
+/* =========================================================
+   PROPOSAL RESPONSE
+========================================================= */
 
-THESE MUST USE YOUR ACTUAL MAUVEY
-ANALYSIS RULES.
+function handleProposal(data){
 
-THE PLACEHOLDERS BELOW ARE NOT A
-TRADING SIGNAL.
+    if(!pendingProposal){
 
-==========================================================
-*/
+        return;
+
+    }
 
 
-function checkEven(data) {
+    if(data.error){
 
-    /*
-        INSERT YOUR ACTUAL EVEN
-        ENTRY CONDITIONS HERE.
-    */
-
-    return false;
-
-}
-
-
-function checkOdd(data) {
-
-    /*
-        INSERT YOUR ACTUAL ODD
-        ENTRY CONDITIONS HERE.
-    */
-
-    return false;
-
-}
-
-
-function checkOver(data) {
-
-    /*
-        INSERT YOUR ACTUAL OVER
-        ENTRY CONDITIONS HERE.
-    */
-
-    return false;
-
-}
-
-
-function checkUnder(data) {
-
-    /*
-        INSERT YOUR ACTUAL UNDER
-        ENTRY CONDITIONS HERE.
-    */
-
-    return false;
-
-}
-
-
-/*
-==========================================================
-                 DERIV TRADE FUNCTION
-==========================================================
-*/
-
-async function placeDerivTrade(
-    entry,
-    stake
-) {
-
-    /*
-        CONNECT THIS TO YOUR EXISTING
-        AUTHENTICATED DERIV WEBSOCKET.
-
-        IT MUST:
-
-        1. Send the appropriate proposal.
-        2. Buy the contract.
-        3. Monitor the contract.
-        4. Wait for the actual result.
-        5. Return:
-
-           {
-               won: true,
-               profit: 0.95
-           }
-
-        OR:
-
-           {
-               won: false,
-               profit: -1.00
-           }
-
-        DO NOT RETURN UNTIL THE CONTRACT
-        HAS ACTUALLY FINISHED.
-    */
-
-
-    throw new Error(
-        "Deriv trade function has not been connected yet."
-    );
-
-}
-
-
-/*
-==========================================================
-                    UTILITY
-==========================================================
-*/
-
-function delay(ms) {
-
-    return new Promise(
-        resolve =>
-            setTimeout(
-                resolve,
-                ms
+        log(
+            "Proposal error: " +
+            JSON.stringify(
+                data.error
             )
+        );
+
+
+        tradeInProgress = false;
+
+
+        setTradeState(
+            "PROPOSAL ERROR",
+            "danger"
+        );
+
+
+        const isMauvey =
+            pendingProposal.strategy
+                .startsWith(
+                    "MAUVEY"
+                );
+
+
+        pendingProposal = null;
+
+
+        if(isMauvey){
+
+            log(
+                "Current MAUVEY trade failed at proposal stage."
+            );
+
+
+            scheduleNextLockedTrade(
+                2000
+            );
+
+        }
+
+
+        return;
+
+    }
+
+
+    const proposalId =
+        data.proposal?.id;
+
+
+    const askPrice =
+        Number(
+            data.proposal?.ask_price
+        );
+
+
+    if(
+        !proposalId ||
+        !Number.isFinite(askPrice)
+    ){
+
+        tradeInProgress = false;
+
+
+        setTradeState(
+            "INVALID PROPOSAL",
+            "danger"
+        );
+
+
+        pendingProposal = null;
+
+
+        return;
+
+    }
+
+
+    log(
+        "Proposal received. Buying contract..."
+    );
+
+
+    setTradeState(
+        "BUYING...",
+        "warning"
+    );
+
+
+    accountWS.send(
+        JSON.stringify({
+
+            buy:
+                proposalId,
+
+            price:
+                askPrice,
+
+            req_id:
+                reqId()
+
+        })
     );
 
 }
+
+
+/* =========================================================
+   BUY RESPONSE
+========================================================= */
+
+function handleBuy(data){
+
+    if(data.error){
+
+        log(
+            "Buy error: " +
+            JSON.stringify(
+                data.error
+            )
+        );
+
+
+        tradeInProgress = false;
+
+
+        setTradeState(
+            "BUY ERROR",
+            "danger"
+        );
+
+
+        const isMauvey =
+            pendingProposal &&
+            pendingProposal.strategy
+                .startsWith(
+                    "MAUVEY"
+                );
+
+
+        pendingProposal = null;
+
+
+        if(isMauvey){
+
+            scheduleNextLockedTrade(
+                2000
+            );
+
+        }
+
+
+        return;
+
+    }
+
+
+    currentContractId =
+        data.buy?.contract_id;
+
+
+    if(!currentContractId){
+
+        tradeInProgress = false;
+
+
+        setTradeState(
+            "NO CONTRACT ID",
+            "danger"
+        );
+
+
+        return;
+
+    }
+
+
+    tradeCounter++;
+
+
+    const strategy =
+        pendingProposal?.strategy ||
+        "MANUAL";
+
+
+    const stake =
+        pendingProposal?.stake ||
+        0;
+
+
+    addTradeRow(
+
+        tradeCounter,
+
+        strategy,
+
+        selectedName ||
+            selectedSymbol,
+
+        stake,
+
+        "OPEN",
+
+        "—",
+
+        "OPEN"
+
+    );
+
+
+    setTradeState(
+        "CONTRACT OPEN",
+        "success"
+    );
+
+
+    log(
+        "Contract purchased: " +
+        currentContractId
+    );
+
+
+    accountWS.send(
+        JSON.stringify({
+
+            proposal_open_contract:
+                1,
+
+            contract_id:
+                currentContractId,
+
+            subscribe:
+                1,
+
+            req_id:
+                reqId()
+
+        })
+    );
+
+}
+
+
+/* =========================================================
+   CONTRACT RESULT
+========================================================= */
+
+function handleContractUpdate(data){
+
+    const c =
+        data.proposal_open_contract;
+
+
+    if(!c)return;
+
+
+    const finished =
+        Boolean(c.is_sold) ||
+        c.status === "won" ||
+        c.status === "lost" ||
+        c.status === "sold";
+
+
+    if(!finished){
+
+        return;
+
+    }
+
+
+    const won =
+        c.status === "won" ||
+        Number(c.profit) > 0;
+
+
+    const profit =
+        Number(
+            c.profit || 0
+        );
+
+
+    const result =
+        won
+            ? "WIN"
+            : "LOSS";
+
+
+    tradeInProgress = false;
+
+
+    setTradeState(
+        result,
+        won
+            ? "success"
+            : "danger"
+    );
+
+
+    updateLastTradeRow(
+        result,
+        profit
+    );
+
+
+    log(
+        "TRADE RESULT: " +
+        result +
+        " • P/L " +
+        profit.toFixed(2)
+    );
+
+
+    pendingProposal = null;
+
+    currentContractId = null;
+
+
+    requestBalance();
+
+
+    /*
+        THIS IS THE IMPORTANT BATCH LOGIC.
+
+        One completed trade = one batch trade.
+
+        WIN:
+            continue
+
+        LOSS:
+            continue
+
+        There is no analysis here.
+    */
+
+    if(mauveyRunning){
+
+        mauveyTradeCount++;
+
+
+        const max =
+            Number(
+                document.getElementById(
+                    "mauveyMaxTrades"
+                ).value
+            );
+
+
+        log(
+            "MAUVEY completed trade " +
+            mauveyTradeCount +
+            "/" +
+            max
+        );
+
+
+        if(
+            mauveyTradeCount >= max
+        ){
+
+            finishBatch();
+
+        }else{
+
+            updateMauveyLiveDisplay();
+
+
+            /*
+                Same locked strategy.
+
+                No scanning.
+                No analysis.
+                No new market selection.
+            */
+
+            scheduleNextLockedTrade(
+                700
+            );
+
+        }
+
+    }
+
+}
+
+
+/* =========================================================
+   NEXT TRADE IN SAME BATCH
+========================================================= */
+
+function scheduleNextLockedTrade(
+    delay = 700
+){
+
+    if(!mauveyRunning)return;
+
+
+    if(
+        mauveyWaitTimer
+    ){
+
+        clearTimeout(
+            mauveyWaitTimer
+        );
+
+    }
+
+
+    mauveyWaitTimer =
+        setTimeout(() => {
+
+            mauveyWaitTimer =
+                null;
+
+
+            if(!mauveyRunning)
+                return;
+
+
+            if(!lockedMauveyStrategy)
+                return;
+
+
+            /*
+                NO ANALYSIS HERE.
+
+                DIRECTLY EXECUTE THE NEXT
+                TRADE USING THE LOCKED ENTRY.
+            */
+
+            executeLockedMauveyTrade();
+
+        },delay);
+
+}
+
+
+/* =========================================================
+   BATCH COMPLETE
+========================================================= */
+
+async function finishBatch(){
+
+    if(!mauveyRunning)return;
+
+
+    const max =
+        Number(
+            document.getElementById(
+                "mauveyMaxTrades"
+            ).value
+        );
+
+
+    log(
+        "MAUVEY BATCH COMPLETE: " +
+        max +
+        " trades finished."
+    );
+
+
+    document.getElementById(
+        "mauveyStatus"
+    ).className =
+        "success";
+
+
+    document.getElementById(
+        "mauveyStatus"
+    ).innerHTML = `
+
+        <strong>
+            BATCH COMPLETE
+        </strong>
+
+        <br>
+
+        <span class="small">
+            ${max}
+            trades completed.
+            <br>
+            Starting a fresh market analysis...
+        </span>
+
+    `;
+
+
+    document.getElementById(
+        "engine"
+    ).textContent =
+        "NEW ANALYSIS";
+
+
+    /*
+        NOW, and only now,
+        do we unlock the strategy.
+    */
+
+    lockedMauveyStrategy = null;
+
+    mauveyTradeCount = 0;
+
+
+    await sleep(1000);
+
+
+    if(!mauveyRunning)return;
+
+
+    beginNewBatch();
+
+}
+
+
+/* =========================================================
+   TRADE TABLE
+========================================================= */
+
+function addTradeRow(
+    num,
+    strategy,
+    market,
+    stake,
+    result,
+    pl,
+    status
+){
+
+    const body =
+        document.getElementById(
+            "tradeHistoryBody"
+        );
+
+
+    const tr =
+        document.createElement("tr");
+
+
+    tr.dataset.trade =
+        String(num);
+
+
+    tr.innerHTML = `
+
+        <td>
+            ${num}
+        </td>
+
+        <td>
+            ${escapeHTML(strategy)}
+        </td>
+
+        <td>
+            ${escapeHTML(market)}
+        </td>
+
+        <td>
+            ${Number(stake).toFixed(2)}
+        </td>
+
+        <td>
+            ${escapeHTML(result)}
+        </td>
+
+        <td>
+            ${escapeHTML(
+                String(pl)
+            )}
+        </td>
+
+        <td>
+            ${escapeHTML(status)}
+        </td>
+
+    `;
+
+
+    body.prepend(tr);
+
+}
+
+
+function updateLastTradeRow(
+    result,
+    profit
+){
+
+    const row =
+        document.querySelector(
+            "#tradeHistoryBody tr"
+        );
+
+
+    if(!row)return;
+
+
+    row.cells[4].textContent =
+        result;
+
+
+    row.cells[4].className =
+        result === "WIN"
+            ? "win"
+            : "loss";
+
+
+    row.cells[5].textContent =
+        (
+            profit >= 0
+                ? "+"
+                : ""
+        ) +
+        profit.toFixed(2);
+
+
+    row.cells[5].className =
+        profit > 0
+            ? "win"
+            : profit < 0
+                ? "loss"
+                : "neutral";
+
+
+    row.cells[6].textContent =
+        "CLOSED";
+
+}
+
+
+/* =========================================================
+   STARTUP
+========================================================= */
+
+updateDurationUI();
+
+
+(function(){
+
+    try{
+
+        const saved =
+            localStorage.getItem(
+                "deriv_v7_pat"
+            );
+
+
+        if(saved){
+
+            PAT = saved;
+
+        }
+
+    }catch(error){
+
+        console.log(error);
+
+    }
+
+
+    log(
+        "V7 loaded."
+    );
+
+
+    log(
+        "MAUVEY batch engine ready."
+    );
+
+
+    log(
+        "MAUVEY analyzes once per batch."
+    );
+
+
+})();
 
 </script>
 

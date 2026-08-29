@@ -1,2706 +1,807 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
-
-<title>
-Deriv Market Analyzer V3
-</title>
-
+<title>Deriv Market Analyzer V3</title>
 
 <style>
-
 * {
-    box-sizing:
-        border-box;
+    box-sizing: border-box;
 }
-
 
 body {
-
-    margin:
-        0;
-
-    background:
-        #070c17;
-
-    color:
-        white;
-
-    font-family:
-        Arial,
-        sans-serif;
-
+    margin: 0;
+    background: #070c17;
+    color: white;
+    font-family: Arial, sans-serif;
 }
-
 
 header {
-
-    padding:
-        20px;
-
-    background:
-        #0d1425;
-
-    border-bottom:
-        1px solid #273451;
-
+    padding: 20px;
+    background: #0d1425;
+    border-bottom: 1px solid #273451;
 }
-
 
 header h1 {
-
-    margin:
-        0 0 6px;
-
+    margin: 0 0 6px;
 }
-
 
 header p {
-
-    margin:
-        0;
-
-    color:
-        #91a0bd;
-
+    margin: 0;
+    color: #91a0bd;
 }
-
 
 main {
-
-    max-width:
-        1200px;
-
-    margin:
-        auto;
-
-    padding:
-        15px;
-
+    max-width: 1200px;
+    margin: auto;
+    padding: 15px;
 }
-
 
 .card {
-
-    background:
-        #121a2d;
-
-    border:
-        1px solid #273451;
-
-    border-radius:
-        15px;
-
-    padding:
-        16px;
-
-    margin-bottom:
-        15px;
-
+    background: #121a2d;
+    border: 1px solid #273451;
+    border-radius: 15px;
+    padding: 16px;
+    margin-bottom: 15px;
 }
-
 
 .status {
-
-    padding:
-        12px;
-
-    border-radius:
-        9px;
-
-    margin-bottom:
-        15px;
-
-    font-weight:
-        bold;
-
+    padding: 12px;
+    border-radius: 9px;
+    margin-bottom: 15px;
+    font-weight: bold;
 }
-
 
 .online {
-
-    background:
-        #153b2b;
-
-    color:
-        #72e5a5;
-
+    background: #153b2b;
+    color: #72e5a5;
 }
-
 
 .offline {
-
-    background:
-        #3b1822;
-
-    color:
-        #ff9cab;
-
+    background: #3b1822;
+    color: #ff9cab;
 }
-
 
 button,
 input,
 select {
-
-    width:
-        100%;
-
-    height:
-        45px;
-
-    border:
-        0;
-
-    border-radius:
-        9px;
-
-    padding:
-        0 12px;
-
-    font-size:
-        15px;
-
+    width: 100%;
+    height: 45px;
+    border: 0;
+    border-radius: 9px;
+    padding: 0 12px;
+    font-size: 15px;
 }
-
 
 input,
 select {
-
-    background:
-        #202b45;
-
-    color:
-        white;
-
+    background: #202b45;
+    color: white;
 }
-
 
 button {
-
-    background:
-        #5b61f0;
-
-    color:
-        white;
-
-    font-weight:
-        bold;
-
+    background: #5b61f0;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
 }
-
 
 button.secondary {
-
-    background:
-        #273451;
-
+    background: #273451;
 }
-
-
-button.danger {
-
-    background:
-        #8f2638;
-
-}
-
 
 .grid {
-
-    display:
-        grid;
-
-    grid-template-columns:
-        repeat(
-            2,
-            1fr
-        );
-
-    gap:
-        12px;
-
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
 }
-
 
 .stat {
-
-    background:
-        #0d1425;
-
-    padding:
-        15px;
-
-    border-radius:
-        10px;
-
+    background: #0d1425;
+    padding: 15px;
+    border-radius: 10px;
 }
-
 
 .stat small {
-
-    display:
-        block;
-
-    color:
-        #91a0bd;
-
-    margin-bottom:
-        7px;
-
+    display: block;
+    color: #91a0bd;
+    margin-bottom: 7px;
 }
-
 
 .stat strong {
-
-    font-size:
-        21px;
-
+    font-size: 21px;
 }
-
 
 .controls {
-
-    display:
-        grid;
-
-    gap:
-        10px;
-
+    display: grid;
+    gap: 10px;
 }
-
-
-.account-switch {
-
-    display:
-        grid;
-
-    grid-template-columns:
-        1fr 1fr;
-
-    gap:
-        8px;
-
-}
-
-
-.account-switch button {
-
-    background:
-        #202b45;
-
-}
-
-
-.account-switch button.active {
-
-    background:
-        #5b61f0;
-
-}
-
 
 .market-list {
-
-    max-height:
-        320px;
-
-    overflow-y:
-        auto;
-
-    margin-top:
-        12px;
-
+    max-height: 320px;
+    overflow-y: auto;
+    margin-top: 12px;
 }
-
 
 .market {
-
-    background:
-        #0d1425;
-
-    padding:
-        13px;
-
-    margin-bottom:
-        7px;
-
-    border-radius:
-        9px;
-
-    cursor:
-        pointer;
-
-    border:
-        1px solid transparent;
-
+    background: #0d1425;
+    padding: 13px;
+    margin-bottom: 7px;
+    border-radius: 9px;
+    cursor: pointer;
+    border: 1px solid transparent;
 }
-
 
 .market.selected {
-
-    border-color:
-        #6870ff;
-
+    border-color: #6870ff;
 }
-
 
 .market-name {
-
-    font-weight:
-        bold;
-
+    font-weight: bold;
 }
-
 
 .market-info {
-
-    color:
-        #91a0bd;
-
-    font-size:
-        12px;
-
-    margin-top:
-        4px;
-
+    color: #91a0bd;
+    font-size: 12px;
+    margin-top: 4px;
 }
-
 
 .muted {
-
-    color:
-        #91a0bd;
-
+    color: #91a0bd;
 }
-
 
 .digits {
-
-    display:
-        grid;
-
-    grid-template-columns:
-        repeat(
-            2,
-            1fr
-        );
-
-    gap:
-        8px;
-
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
 }
-
 
 .digit {
-
-    background:
-        #0d1425;
-
-    padding:
-        12px;
-
-    border-radius:
-        9px;
-
+    background: #0d1425;
+    padding: 12px;
+    border-radius: 9px;
 }
-
 
 .digit-row {
-
-    display:
-        flex;
-
-    justify-content:
-        space-between;
-
+    display: flex;
+    justify-content: space-between;
 }
-
 
 .bar {
-
-    height:
-        7px;
-
-    background:
-        #283450;
-
-    border-radius:
-        5px;
-
-    margin-top:
-        8px;
-
-    overflow:
-        hidden;
-
+    height: 7px;
+    background: #283450;
+    border-radius: 5px;
+    margin-top: 8px;
+    overflow: hidden;
 }
-
 
 .fill {
-
-    height:
-        100%;
-
-    background:
-        #6870ff;
-
+    height: 100%;
+    background: #6870ff;
 }
-
 
 .analysis-line {
-
-    display:
-        flex;
-
-    justify-content:
-        space-between;
-
-    padding:
-        9px 0;
-
-    border-bottom:
-        1px solid #202b45;
-
+    display: flex;
+    justify-content: space-between;
+    padding: 9px 0;
+    border-bottom: 1px solid #202b45;
 }
-
 
 .signal {
-
-    background:
-        #0d1425;
-
-    padding:
-        18px;
-
-    border-radius:
-        12px;
-
+    background: #0d1425;
+    padding: 18px;
+    border-radius: 12px;
 }
-
 
 .signal-title {
-
-    font-size:
-        25px;
-
-    font-weight:
-        bold;
-
+    font-size: 25px;
+    font-weight: bold;
 }
-
 
 .progress {
-
-    height:
-        9px;
-
-    background:
-        #283450;
-
-    border-radius:
-        10px;
-
-    overflow:
-        hidden;
-
+    height: 9px;
+    background: #283450;
+    border-radius: 10px;
+    overflow: hidden;
 }
-
 
 .progress-fill {
-
-    height:
-        100%;
-
-    background:
-        #6870ff;
-
+    height: 100%;
+    background: #6870ff;
 }
-
 
 .tick-list {
-
-    display:
-        flex;
-
-    flex-wrap:
-        wrap;
-
-    gap:
-        6px;
-
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
 }
-
 
 .tick {
-
-    background:
-        #0d1425;
-
-    padding:
-        7px;
-
-    border-radius:
-        7px;
-
-    font-family:
-        monospace;
-
-    font-size:
-        12px;
-
+    background: #0d1425;
+    padding: 7px;
+    border-radius: 7px;
+    font-family: monospace;
+    font-size: 12px;
 }
-
-
-.login-panel {
-
-    text-align:
-        center;
-
-    padding:
-        25px;
-
-}
-
-
-.login-panel button {
-
-    max-width:
-        400px;
-
-    margin:
-        6px auto;
-
-}
-
-
-.account-card {
-
-    border:
-        1px solid #273451;
-
-    border-radius:
-        12px;
-
-    padding:
-        14px;
-
-    margin-bottom:
-        10px;
-
-    background:
-        #0d1425;
-
-}
-
-
-.account-card.demo {
-
-    border-color:
-        #3b7c60;
-
-}
-
-
-.account-card.real {
-
-    border-color:
-        #8f4050;
-
-}
-
-
-.hidden {
-
-    display:
-        none !important;
-
-}
-
 
 .warning {
-
-    background:
-        #302717;
-
-    color:
-        #ffd166;
-
-    padding:
-        12px;
-
-    border-radius:
-        9px;
-
+    background: #302717;
+    color: #ffd166;
+    padding: 12px;
+    border-radius: 9px;
 }
 
-
-@media(
-    min-width:700px
-) {
-
+@media (min-width: 700px) {
     .controls {
-
-        grid-template-columns:
-            repeat(
-                3,
-                1fr
-            );
-
+        grid-template-columns: repeat(3, 1fr);
     }
-
 
     .digits {
-
-        grid-template-columns:
-            repeat(
-                5,
-                1fr
-            );
-
+        grid-template-columns: repeat(5, 1fr);
     }
-
 }
-
-
 </style>
-
 </head>
-
-
 
 <body>
 
-
 <header>
-
-<h1>
-Deriv Market Analyzer V3
-</h1>
-
-<p>
-Statistical Intelligence • Market Analysis • Deriv Integration
-</p>
-
+    <h1>Deriv Market Analyzer V3</h1>
+    <p>Statistical Intelligence • Market Analysis • Deriv Integration</p>
 </header>
-
-
 
 <main>
 
-
-<!-- =================================================
-LOGIN
-================================================= -->
-
-<div
-    id="loginCard"
-    class="card login-panel"
->
-
-<h2>
-Connect Your Deriv Account
-</h2>
-
-<p class="muted">
-
-Login or create your Deriv account securely
-through Deriv.
-
-</p>
-
-<button
-    onclick="loginDeriv()"
->
-LOGIN WITH DERIV
-</button>
-
-
-<button
-    class="secondary"
-    onclick="signupDeriv()"
->
-CREATE DERIV ACCOUNT
-</button>
-
+<div id="status" class="status offline">
+    DISCONNECTED
 </div>
 
+<div class="card">
 
+    <h2>Markets</h2>
 
-<!-- =================================================
-ACCOUNT
-================================================= -->
+    <div class="controls">
 
-<div
-    id="accountPanel"
-    class="hidden"
->
+        <select id="category">
+            <option value="all">All Markets</option>
+            <option value="forex">Forex</option>
+            <option value="synthetic">Synthetic Indices</option>
+            <option value="crypto">Cryptocurrency</option>
+            <option value="commodities">Commodities</option>
+            <option value="indices">Indices</option>
+            <option value="other">Other</option>
+        </select>
+
+        <input
+            id="search"
+            placeholder="Search market..."
+        >
+
+        <button onclick="connectPublic()">
+            CONNECT MARKET DATA
+        </button>
+
+    </div>
+
+    <div id="marketCount" class="muted">
+        No markets loaded
+    </div>
+
+    <div id="marketList" class="market-list">
+        Connect to load markets.
+    </div>
+
+</div>
 
 
 <div class="card">
 
-<h2>
-Account
-</h2>
+    <h2>Selected Market</h2>
 
+    <div class="grid">
 
-<div class="account-switch">
+        <div class="stat">
+            <small>Market</small>
+            <strong id="selectedName">None</strong>
+        </div>
 
-<button
-    id="demoButton"
-    class="active"
-    onclick="chooseMode('demo')"
->
-DEMO
-</button>
+        <div class="stat">
+            <small>Symbol</small>
+            <strong id="selectedSymbol">—</strong>
+        </div>
 
+        <div class="stat">
+            <small>Price</small>
+            <strong id="price">—</strong>
+        </div>
 
-<button
-    id="realButton"
-    onclick="chooseMode('real')"
->
-REAL
-</button>
+        <div class="stat">
+            <small>Last Digit</small>
+            <strong id="lastDigit">—</strong>
+        </div>
 
-</div>
-
-<br>
-
-
-<div
-    id="accounts"
->
-Loading accounts...
-</div>
-
+    </div>
 
 </div>
-
 
 
 <div class="card">
 
-<h2>
-Balance
-</h2>
+    <h2>Analysis Window</h2>
+
+    <select id="sample">
+
+        <option value="50">50 ticks</option>
+        <option value="100">100 ticks</option>
+        <option value="250">250 ticks</option>
+        <option value="500">500 ticks</option>
+        <option value="1000" selected>1,000 ticks</option>
+        <option value="5000">5,000 ticks</option>
+
+    </select>
+
+</div>
 
 
 <div class="grid">
 
+    <div class="stat">
+        <small>Total Ticks</small>
+        <strong id="count">0</strong>
+    </div>
 
-<div class="stat">
+    <div class="stat">
+        <small>Sample</small>
+        <strong id="window">0</strong>
+    </div>
 
-<small>
-Account
-</small>
+    <div class="stat">
+        <small>Expected Digit</small>
+        <strong>10%</strong>
+    </div>
 
-<strong
-    id="accountId"
->
-—
-</strong>
-
-</div>
-
-
-<div class="stat">
-
-<small>
-Balance
-</small>
-
-<strong
-    id="balance"
->
-—
-</strong>
+    <div class="stat">
+        <small>Engine</small>
+        <strong id="engine">WAITING</strong>
+    </div>
 
 </div>
 
-
-<div class="stat">
-
-<small>
-Account Currency
-</small>
-
-<strong
-    id="accountCurrency"
->
-—
-</strong>
-
-</div>
-
-
-<div class="stat">
-
-<small>
-Display Currency
-</small>
-
-<strong
-    id="displayCurrency"
->
-USD
-</strong>
-
-</div>
-
-
-</div>
-
-
-<br>
-
-
-<select
-    id="currency"
-    onchange="changeDisplayCurrency()"
->
-
-<option value="USD">
-USD — US Dollar
-</option>
-
-<option value="QAR">
-QAR — Qatar Riyal
-</option>
-
-<option value="KES">
-KES — Kenyan Shilling
-</option>
-
-<option value="GBP">
-GBP — British Pound
-</option>
-
-<option value="BTC">
-BTC — Bitcoin
-</option>
-
-<option value="USDT">
-USDT — Tether
-</option>
-
-<option value="SAR">
-SAR — Saudi Riyal
-</option>
-
-<option value="AED">
-AED — UAE Dirham
-</option>
-
-</select>
-
-
-<p
-    class="muted"
-    id="conversionNote"
->
-Display conversion only.
-</p>
-
-</div>
-
-
-<button
-    class="danger"
-    onclick="logout()"
->
-LOG OUT
-</button>
-
-
-</div>
-
-
-
-<!-- =================================================
-PUBLIC CONNECTION
-================================================= -->
-
-<div
-    id="status"
-    class="status offline"
->
-DISCONNECTED
-</div>
-
-
-
-<!-- =================================================
-MARKETS
-================================================= -->
 
 <div class="card">
 
-<h2>
-Markets
-</h2>
+    <h2>Digit Distribution</h2>
 
-
-<div class="controls">
-
-
-<select
-    id="category"
->
-
-<option value="all">
-All Markets
-</option>
-
-<option value="forex">
-Forex
-</option>
-
-<option value="synthetic">
-Synthetic Indices
-</option>
-
-<option value="crypto">
-Cryptocurrency
-</option>
-
-<option value="commodities">
-Commodities
-</option>
-
-<option value="indices">
-Indices
-</option>
-
-<option value="other">
-Other
-</option>
-
-</select>
-
-
-<input
-    id="search"
-    placeholder="Search market..."
->
-
-
-<button
-    onclick="connectPublic()"
->
-CONNECT MARKET DATA
-</button>
+    <div id="digits" class="digits">
+    </div>
 
 </div>
 
-
-<div
-    id="marketCount"
-    class="muted"
->
-No markets loaded
-</div>
-
-
-<div
-    id="marketList"
-    class="market-list"
->
-Connect to load markets.
-</div>
-
-
-</div>
-
-
-
-<!-- =================================================
-SELECTED MARKET
-================================================= -->
 
 <div class="card">
 
-<h2>
-Selected Market
-</h2>
+    <h2>Statistical Summary</h2>
 
-
-<div class="grid">
-
-
-<div class="stat">
-
-<small>
-Market
-</small>
-
-<strong
-    id="selectedName"
->
-None
-</strong>
+    <div id="stats">
+        Waiting for data...
+    </div>
 
 </div>
 
-
-<div class="stat">
-
-<small>
-Symbol
-</small>
-
-<strong
-    id="selectedSymbol"
->
-—
-</strong>
-
-</div>
-
-
-<div class="stat">
-
-<small>
-Price
-</small>
-
-<strong
-    id="price"
->
-—
-</strong>
-
-</div>
-
-
-<div class="stat">
-
-<small>
-Last Digit
-</small>
-
-<strong
-    id="lastDigit"
->
-—
-</strong>
-
-</div>
-
-
-</div>
-
-</div>
-
-
-
-<!-- =================================================
-ANALYSIS
-================================================= -->
 
 <div class="card">
 
-<h2>
-Analysis Window
-</h2>
+    <h2>Pattern Intelligence</h2>
 
+    <div class="grid">
 
-<select
-    id="sample"
->
+        <div class="stat">
+            <small>Longest Streak</small>
+            <strong id="longestStreak">0</strong>
+        </div>
 
-<option value="50">
-50 ticks
-</option>
+        <div class="stat">
+            <small>Current Streak</small>
+            <strong id="currentStreak">0</strong>
+        </div>
 
-<option value="100">
-100 ticks
-</option>
+        <div class="stat">
+            <small>Hot Digit</small>
+            <strong id="hotDigit">—</strong>
+        </div>
 
-<option value="250">
-250 ticks
-</option>
+        <div class="stat">
+            <small>Cold Digit</small>
+            <strong id="coldDigit">—</strong>
+        </div>
 
-<option value="500">
-500 ticks
-</option>
-
-<option value="1000"
-selected>
-1,000 ticks
-</option>
-
-<option value="5000">
-5,000 ticks
-</option>
-
-</select>
+    </div>
 
 </div>
 
-
-
-<div class="grid">
-
-
-<div class="stat">
-
-<small>
-Total Ticks
-</small>
-
-<strong id="count">
-0
-</strong>
-
-</div>
-
-
-<div class="stat">
-
-<small>
-Sample
-</small>
-
-<strong id="window">
-0
-</strong>
-
-</div>
-
-
-<div class="stat">
-
-<small>
-Expected Digit
-</small>
-
-<strong>
-10%
-</strong>
-
-</div>
-
-
-<div class="stat">
-
-<small>
-Engine
-</small>
-
-<strong id="engine">
-WAITING
-</strong>
-
-</div>
-
-
-</div>
-
-
-
-<!-- =================================================
-DIGITS
-================================================= -->
 
 <div class="card">
 
-<h2>
-Digit Distribution
-</h2>
+    <h2>Digit Transition Analysis</h2>
 
+    <p class="muted">
+        Measures which digits followed another digit
+        in the observed historical sample.
+    </p>
 
-<div
-    id="digits"
-    class="digits"
->
+    <div id="transitions">
+        Waiting for data...
+    </div>
+
 </div>
 
-</div>
-
-
-
-<!-- =================================================
-STATISTICS
-================================================= -->
 
 <div class="card">
 
-<h2>
-Statistical Summary
-</h2>
+    <h2>V3 Statistical Intelligence</h2>
 
+    <div id="signal" class="signal">
 
-<div id="stats">
+        <div class="signal-title">
+            NO SIGNAL
+        </div>
 
-Waiting for data...
+        <p>
+            Waiting for sufficient data.
+        </p>
+
+    </div>
 
 </div>
 
-</div>
-
-
-
-<!-- =================================================
-PATTERNS
-================================================= -->
 
 <div class="card">
 
-<h2>
-Pattern Intelligence
-</h2>
+    <h2>Multi-Window Analysis</h2>
 
-
-<div class="grid">
-
-
-<div class="stat">
-
-<small>
-Longest Streak
-</small>
-
-<strong id="longestStreak">
-0
-</strong>
+    <div id="windows">
+        Waiting...
+    </div>
 
 </div>
 
-
-<div class="stat">
-
-<small>
-Current Streak
-</small>
-
-<strong id="currentStreak">
-0
-</strong>
-
-</div>
-
-
-<div class="stat">
-
-<small>
-Hot Digit
-</small>
-
-<strong id="hotDigit">
-—
-</strong>
-
-</div>
-
-
-<div class="stat">
-
-<small>
-Cold Digit
-</small>
-
-<strong id="coldDigit">
-—
-</strong>
-
-</div>
-
-
-</div>
-
-</div>
-
-
-
-<!-- =================================================
-TRANSITIONS
-================================================= -->
 
 <div class="card">
 
-<h2>
-Digit Transition Analysis
-</h2>
+    <h2>Signal History</h2>
 
-
-<p class="muted">
-
-This measures which digits followed another digit
-in the observed historical sample.
-
-</p>
-
-
-<div
-    id="transitions"
->
-Waiting for data...
-</div>
+    <div id="signalHistory">
+        No signals recorded yet.
+    </div>
 
 </div>
 
-
-
-<!-- =================================================
-SIGNAL
-================================================= -->
 
 <div class="card">
 
-<h2>
-V3 Statistical Intelligence
+    <h2>Backtesting</h2>
 
-</h2>
+    <div class="warning">
+        Historical performance is not a guarantee of
+        future performance. This engine is for
+        statistical observation and validation.
+    </div>
 
+    <br>
 
-<div
-    id="signal"
-    class="signal"
->
-
-<div class="signal-title">
-NO SIGNAL
-</div>
-
-<p>
-Waiting for sufficient data.
-</p>
+    <div id="backtest">
+        Waiting for enough data...
+    </div>
 
 </div>
 
-</div>
-
-
-
-<!-- =================================================
-MULTI WINDOW
-================================================= -->
 
 <div class="card">
 
-<h2>
-Multi-Window Analysis
-</h2>
+    <h2>Recent Ticks</h2>
 
-
-<div
-    id="windows"
->
-Waiting...
-</div>
+    <div id="ticks" class="tick-list">
+    </div>
 
 </div>
-
-
-
-<!-- =================================================
-SIGNAL HISTORY
-================================================= -->
-
-<div class="card">
-
-<h2>
-Signal History
-</h2>
-
-
-<div
-    id="signalHistory"
->
-No signals recorded yet.
-</div>
-
-</div>
-
-
-
-<!-- =================================================
-BACKTEST
-================================================= -->
-
-<div class="card">
-
-<h2>
-Backtesting
-</h2>
-
-
-<div class="warning">
-
-Historical performance is not a guarantee of future
-performance. This engine is being validated before
-any automated trading is considered.
-
-</div>
-
-
-<br>
-
-
-<div
-    id="backtest"
->
-Waiting for enough data...
-</div>
-
-</div>
-
-
-
-<!-- =================================================
-RECENT TICKS
-================================================= -->
-
-<div class="card">
-
-<h2>
-Recent Ticks
-</h2>
-
-
-<div
-    id="ticks"
-    class="tick-list"
->
-</div>
-
-</div>
-
 
 </main>
 
 
-
 <script>
 
-/*
-========================================================
-DERIV MARKET ANALYZER V3
-========================================================
-*/
+let publicSocket = null;
+
+let markets = [];
+
+let ticks = [];
+
+let selectedSymbol = null;
+
+let selectedName = null;
+
+let signalHistory = [];
 
 
-let publicSocket =
-    null;
+/* STATUS */
 
+function setStatus(message, online) {
 
-let authenticatedSocket =
-    null;
+    const status =
+        document.getElementById("status");
 
+    status.textContent = message;
 
-let markets =
-    [];
-
-
-let ticks =
-    [];
-
-
-let selectedSymbol =
-    null;
-
-
-let selectedName =
-    null;
-
-
-let selectedMode =
-    "demo";
-
-
-let selectedAccount =
-    null;
-
-
-let signalHistory =
-    [];
-
-
-let displayCurrency =
-    "USD";
-
-
-
-/*
-========================================================
-LOGIN
-========================================================
-*/
-
-function loginDeriv() {
-
-    window.location.href =
-        "/auth/login";
-
+    status.className =
+        "status " +
+        (online ? "online" : "offline");
 }
 
 
-
-function signupDeriv() {
-
-    window.location.href =
-        "/auth/signup";
-
-}
-
-
-
-/*
-========================================================
-CHECK LOGIN
-========================================================
-*/
-
-async function checkLogin() {
-
-    try {
-
-        const response =
-            await fetch(
-                "/api/config"
-            );
-
-
-        const data =
-            await response.json();
-
-
-        if (
-            data.loggedIn
-        ) {
-
-            document
-                .getElementById(
-                    "loginCard"
-                )
-                .classList
-                .add(
-                    "hidden"
-                );
-
-
-            document
-                .getElementById(
-                    "accountPanel"
-                )
-                .classList
-                .remove(
-                    "hidden"
-                );
-
-
-            loadAccounts();
-
-        }
-
-    }
-
-    catch (error) {
-
-        console.error(
-            error
-        );
-
-    }
-
-}
-
-
-
-/*
-========================================================
-LOGOUT
-========================================================
-*/
-
-async function logout() {
-
-    await fetch(
-        "/api/logout",
-        {
-            method:
-                "POST"
-        }
-    );
-
-
-    location.reload();
-
-}
-
-
-
-/*
-========================================================
-ACCOUNTS
-========================================================
-*/
-
-async function loadAccounts() {
-
-    const container =
-        document.getElementById(
-            "accounts"
-        );
-
-
-    container.innerHTML =
-        "Loading Deriv accounts...";
-
-
-    try {
-
-        const response =
-            await fetch(
-                "/api/accounts"
-            );
-
-
-        const data =
-            await response.json();
-
-
-        if (!response.ok) {
-
-            container.innerHTML =
-                "Could not load accounts.";
-
-            return;
-
-        }
-
-
-        const accounts =
-            data.accounts ||
-            data.data ||
-            [];
-
-
-        if (
-            !accounts.length
-        ) {
-
-            container.innerHTML =
-                "No Options accounts found.";
-
-            return;
-
-        }
-
-
-        container.innerHTML =
-            "";
-
-
-        accounts.forEach(
-            account => {
-
-                const id =
-                    account.account_id ||
-                    account.id;
-
-
-                const currency =
-                    account.currency ||
-                    "USD";
-
-
-                const type =
-                    account.account_type ||
-                    account.type ||
-                    "demo";
-
-
-                const div =
-                    document.createElement(
-                        "div"
-                    );
-
-
-                div.className =
-                    "account-card " +
-                    (
-                        type ===
-                        "real"
-                            ? "real"
-                            : "demo"
-                    );
-
-
-                div.innerHTML =
-
-                    "<strong>" +
-
-                    (
-                        type ===
-                        "real"
-                            ? "REAL"
-                            : "DEMO"
-                    ) +
-
-                    "</strong>" +
-
-                    "<br>" +
-
-                    "<span>" +
-
-                    id +
-
-                    "</span>" +
-
-                    "<br>" +
-
-                    "<span>" +
-
-                    currency +
-
-                    "</span>" +
-
-                    "<br><br>" +
-
-                    "<button>" +
-
-                    "USE THIS ACCOUNT" +
-
-                    "</button>";
-
-
-                div
-                    .querySelector(
-                        "button"
-                    )
-                    .onclick =
-                    function() {
-
-                        selectAccount(
-                            id,
-                            type,
-                            currency
-                        );
-
-                    };
-
-
-                container.appendChild(
-                    div
-                );
-
-            }
-        );
-
-    }
-
-    catch (error) {
-
-        console.error(
-            error
-        );
-
-
-        container.innerHTML =
-            "Account connection failed.";
-
-    }
-
-}
-
-
-
-/*
-========================================================
-ACCOUNT SELECTION
-========================================================
-*/
-
-async function selectAccount(
-    accountId,
-    type,
-    currency
-) {
-
-    selectedAccount =
-        accountId;
-
-
-    selectedMode =
-        type ===
-        "real"
-            ? "real"
-            : "demo";
-
-
-    document.getElementById(
-        "accountId"
-    ).textContent =
-        accountId;
-
-
-    document.getElementById(
-        "accountCurrency"
-    ).textContent =
-        currency;
-
-
-    updateModeButtons();
-
-
-    try {
-
-        const response =
-            await fetch(
-
-                "/api/account/" +
-                encodeURIComponent(
-                    accountId
-                ) +
-                "/ws",
-
-                {
-
-                    method:
-                        "POST"
-
-                }
-
-            );
-
-
-        const data =
-            await response.json();
-
-
-        if (!response.ok) {
-
-            alert(
-                "Could not authenticate account."
-            );
-
-            return;
-
-        }
-
-
-        const wsUrl =
-            data.websocket_url;
-
-
-        if (!wsUrl) {
-
-            alert(
-                "Deriv did not return a WebSocket URL."
-            );
-
-            return;
-
-        }
-
-
-        connectAuthenticated(
-            wsUrl
-        );
-
-    }
-
-    catch (error) {
-
-        console.error(
-            error
-        );
-
-        alert(
-            "Account connection failed."
-        );
-
-    }
-
-}
-
-
-
-/*
-========================================================
-MODE
-========================================================
-*/
-
-function chooseMode(
-    mode
-) {
-
-    selectedMode =
-        mode;
-
-
-    updateModeButtons();
-
-
-    loadAccounts();
-
-}
-
-
-
-function updateModeButtons() {
-
-    document
-        .getElementById(
-            "demoButton"
-        )
-        .classList
-        .toggle(
-            "active",
-            selectedMode ===
-            "demo"
-        );
-
-
-    document
-        .getElementById(
-            "realButton"
-        )
-        .classList
-        .toggle(
-            "active",
-            selectedMode ===
-            "real"
-        );
-
-}
-
-
-
-/*
-========================================================
-AUTHENTICATED WEBSOCKET
-========================================================
-*/
-
-function connectAuthenticated(
-    url
-) {
-
-    if (
-        authenticatedSocket
-    ) {
-
-        try {
-
-            authenticatedSocket.close();
-
-        }
-
-        catch (e) {}
-
-    }
-
-
-    authenticatedSocket =
-        new WebSocket(
-            url
-        );
-
-
-    authenticatedSocket.onopen =
-        function() {
-
-            setStatus(
-                "ACCOUNT CONNECTED - " +
-                selectedMode.toUpperCase(),
-                true
-            );
-
-
-            /*
-            Balance subscription
-            */
-
-            authenticatedSocket.send(
-
-                JSON.stringify({
-
-                    balance:
-                        1,
-
-                    subscribe:
-                        1
-
-                })
-
-            );
-
-        };
-
-
-    authenticatedSocket.onmessage =
-        function(event) {
-
-            let data;
-
-
-            try {
-
-                data =
-                    JSON.parse(
-                        event.data
-                    );
-
-            }
-
-            catch (error) {
-
-                return;
-
-            }
-
-
-            if (
-                data.error
-            ) {
-
-                console.error(
-                    data.error
-                );
-
-                return;
-
-            }
-
-
-            if (
-                data.msg_type ===
-                "balance"
-            ) {
-
-                updateBalance(
-                    data
-                );
-
-            }
-
-        };
-
-
-    authenticatedSocket.onerror =
-        function() {
-
-            console.error(
-                "Authenticated WebSocket error"
-            );
-
-        };
-
-}
-
-
-
-/*
-========================================================
-BALANCE
-========================================================
-*/
-
-function updateBalance(
-    data
-) {
-
-    const balance =
-        data.balance;
-
-
-    if (!balance) {
-        return;
-    }
-
-
-    const amount =
-        Number(
-            balance.balance
-        );
-
-
-    const currency =
-        balance.currency ||
-        "USD";
-
-
-    document.getElementById(
-        "balance"
-    ).textContent =
-
-        amount.toLocaleString(
-            undefined,
-            {
-                maximumFractionDigits:
-                    8
-            }
-        ) +
-        " " +
-        currency;
-
-
-    document.getElementById(
-        "accountCurrency"
-    ).textContent =
-        currency;
-
-
-    updateDisplayConversion(
-        amount,
-        currency
-    );
-
-}
-
-
-
-/*
-========================================================
-CURRENCY DISPLAY
-========================================================
-
-These are DISPLAY currencies.
-
-They do not change the actual
-Deriv account currency.
-
-========================================================
-*/
-
-function changeDisplayCurrency() {
-
-    displayCurrency =
-        document.getElementById(
-            "currency"
-        ).value;
-
-
-    document.getElementById(
-        "displayCurrency"
-    ).textContent =
-        displayCurrency;
-
-
-    document.getElementById(
-        "conversionNote"
-    ).textContent =
-
-        "Display currency selected: " +
-        displayCurrency +
-        ". Live FX conversion will be added later.";
-
-}
-
-
-
-/*
-========================================================
-CONVERSION
-========================================================
-*/
-
-function updateDisplayConversion(
-    amount,
-    currency
-) {
-
-    displayCurrency =
-        document.getElementById(
-            "currency"
-        ).value;
-
-
-    if (
-        currency ===
-        displayCurrency
-    ) {
-
-        document.getElementById(
-            "conversionNote"
-        ).textContent =
-
-            "Account and display currency are the same.";
-
-        return;
-
-    }
-
-
-    document.getElementById(
-        "conversionNote"
-    ).textContent =
-
-        "Account: " +
-        currency +
-        ". Display: " +
-        displayCurrency +
-        ". Live conversion engine will be connected later.";
-
-}
-
-
-
-/*
-========================================================
-PUBLIC MARKET CONNECTION
-========================================================
-*/
+/* PUBLIC CONNECTION */
 
 function connectPublic() {
 
     if (
         publicSocket &&
-        publicSocket.readyState ===
-        WebSocket.OPEN
+        publicSocket.readyState === WebSocket.OPEN
     ) {
-
         loadMarkets();
-
         return;
-
     }
-
 
     setStatus(
         "CONNECTING TO MARKET DATA...",
         false
     );
 
+    publicSocket = new WebSocket(
+        "wss://api.derivws.com/trading/v1/options/ws/public"
+    );
 
-    publicSocket =
-        new WebSocket(
+    publicSocket.onopen = function() {
 
-            "wss://api.derivws.com" +
-            "/trading/v1/options/ws/public"
-
+        setStatus(
+            "MARKET DATA CONNECTED",
+            true
         );
 
-
-    publicSocket.onopen =
-        function() {
-
-            setStatus(
-                "MARKET DATA CONNECTED",
-                true
-            );
+        loadMarkets();
+    };
 
 
-            loadMarkets();
+    publicSocket.onmessage = function(event) {
 
-        };
+        let data;
 
+        try {
+            data = JSON.parse(event.data);
+        }
 
-    publicSocket.onmessage =
-        function(event) {
+        catch (error) {
+            return;
+        }
 
-            let data;
+        if (data.error) {
+            console.error(data.error);
+            return;
+        }
 
+        if (data.msg_type === "active_symbols") {
 
-            try {
+            markets =
+                data.active_symbols || [];
 
-                data =
-                    JSON.parse(
-                        event.data
-                    );
+            renderMarkets();
+        }
 
-            }
+        if (data.msg_type === "history") {
 
-            catch (error) {
+            loadHistory(data);
+        }
 
-                return;
+        if (data.msg_type === "tick") {
 
-            }
-
-
-            if (
-                data.error
-            ) {
-
-                console.error(
-                    data.error
-                );
-
-                return;
-
-            }
+            receiveTick(data);
+        }
+    };
 
 
-            if (
-                data.msg_type ===
-                "active_symbols"
-            ) {
+    publicSocket.onerror = function() {
 
-                markets =
-                    data.active_symbols ||
-                    [];
-
-
-                renderMarkets();
-
-            }
+        setStatus(
+            "MARKET DATA ERROR",
+            false
+        );
+    };
 
 
-            if (
-                data.msg_type ===
-                "history"
-            ) {
+    publicSocket.onclose = function() {
 
-                loadHistory(
-                    data
-                );
-
-            }
-
-
-            if (
-                data.msg_type ===
-                "tick"
-            ) {
-
-                receiveTick(
-                    data
-                );
-
-            }
-
-        };
-
-
-    publicSocket.onerror =
-        function() {
-
-            setStatus(
-                "MARKET DATA ERROR",
-                false
-            );
-
-        };
-
-
-
-    publicSocket.onclose =
-        function() {
-
-            setStatus(
-                "MARKET DATA DISCONNECTED",
-                false
-            );
-
-        };
-
+        setStatus(
+            "MARKET DATA DISCONNECTED",
+            false
+        );
+    };
 }
 
 
-
-/*
-========================================================
-MARKETS
-========================================================
-*/
+/* LOAD MARKETS */
 
 function loadMarkets() {
 
     if (
         !publicSocket ||
-        publicSocket.readyState !==
-        WebSocket.OPEN
+        publicSocket.readyState !== WebSocket.OPEN
     ) {
-
         return;
-
     }
 
-
     publicSocket.send(
-
         JSON.stringify({
-
-            active_symbols:
-                "full",
-
-            req_id:
-                1
-
+            active_symbols: "full",
+            req_id: 1
         })
-
     );
-
 }
 
 
-
-/*
-========================================================
-RENDER MARKETS
-========================================================
-*/
+/* RENDER MARKETS */
 
 function renderMarkets() {
 
     const list =
-        document.getElementById(
-            "marketList"
-        );
-
+        document.getElementById("marketList");
 
     const search =
-        document.getElementById(
-            "search"
-        )
-        .value
-        .toLowerCase()
-        .trim();
-
+        document
+            .getElementById("search")
+            .value
+            .toLowerCase()
+            .trim();
 
     const category =
-        document.getElementById(
-            "category"
-        )
-        .value;
-
+        document.getElementById("category").value;
 
 
     const filtered =
-        markets.filter(
-            market => {
+        markets.filter(function(market) {
 
-                const name =
-                    String(
-                        market.underlying_symbol_name ||
-                        ""
-                    )
-                    .toLowerCase();
+            const name =
+                String(
+                    market.underlying_symbol_name || ""
+                ).toLowerCase();
 
+            const symbol =
+                String(
+                    market.underlying_symbol || ""
+                ).toLowerCase();
 
-                const symbol =
-                    String(
-                        market.underlying_symbol ||
-                        ""
-                    )
-                    .toLowerCase();
-
-
-                const type =
-                    String(
-                        market.market ||
-                        market.underlying_symbol_type ||
-                        ""
-                    )
-                    .toLowerCase();
+            const type =
+                String(
+                    market.market ||
+                    market.underlying_symbol_type ||
+                    ""
+                ).toLowerCase();
 
 
-                const searchOK =
-
-                    !search ||
-
-                    name.includes(
-                        search
-                    ) ||
-
-                    symbol.includes(
-                        search
-                    );
+            const searchOK =
+                !search ||
+                name.includes(search) ||
+                symbol.includes(search);
 
 
-                let categoryOK =
-                    true;
+            let categoryOK = true;
 
 
-                if (
-                    category !==
-                    "all"
-                ) {
+            if (category !== "all") {
 
-                    if (
-                        category ===
-                        "forex"
-                    ) {
+                if (category === "forex") {
 
-                        categoryOK =
-                            type ===
-                            "forex";
-
-                    }
-
-                    else if (
-                        category ===
-                        "crypto"
-                    ) {
-
-                        categoryOK =
-                            type.includes(
-                                "crypto"
-                            );
-
-                    }
-
-                    else if (
-                        category ===
-                        "synthetic"
-                    ) {
-
-                        categoryOK =
-                            type.includes(
-                                "synthetic"
-                            ) ||
-                            name.includes(
-                                "volatility"
-                            ) ||
-                            name.includes(
-                                "crash"
-                            ) ||
-                            name.includes(
-                                "boom"
-                            ) ||
-                            name.includes(
-                                "jump"
-                            );
-
-                    }
-
-                    else {
-
-                        categoryOK =
-                            type.includes(
-                                category
-                            );
-
-                    }
-
+                    categoryOK =
+                        type === "forex";
                 }
 
+                else if (category === "crypto") {
 
-                return (
-                    searchOK &&
-                    categoryOK
-                );
+                    categoryOK =
+                        type.includes("crypto");
+                }
 
+                else if (category === "synthetic") {
+
+                    categoryOK =
+                        type.includes("synthetic") ||
+                        name.includes("volatility") ||
+                        name.includes("crash") ||
+                        name.includes("boom") ||
+                        name.includes("jump");
+                }
+
+                else {
+
+                    categoryOK =
+                        type.includes(category);
+                }
             }
-        );
 
 
+            return searchOK && categoryOK;
 
-    document.getElementById(
-        "marketCount"
-    ).textContent =
+        });
 
+
+    document.getElementById("marketCount").textContent =
         filtered.length +
         " of " +
         markets.length +
         " markets";
 
 
-    list.innerHTML =
-        "";
+    list.innerHTML = "";
 
 
     filtered
-        .slice(
-            0,
-            500
-        )
-        .forEach(
-            market => {
+        .slice(0, 500)
+        .forEach(function(market) {
 
-                const symbol =
-                    market.underlying_symbol;
+            const symbol =
+                market.underlying_symbol;
 
-
-                const name =
-                    market.underlying_symbol_name ||
-                    symbol;
+            const name =
+                market.underlying_symbol_name ||
+                symbol;
 
 
-                const div =
-                    document.createElement(
-                        "div"
-                    );
+            const div =
+                document.createElement("div");
 
 
-                div.className =
-                    "market";
+            div.className = "market";
 
 
-                if (
-                    symbol ===
-                    selectedSymbol
-                ) {
+            if (symbol === selectedSymbol) {
 
-                    div.classList.add(
-                        "selected"
-                    );
-
-                }
-
-
-                div.innerHTML =
-
-                    "<div class='market-name'>" +
-
-                    escapeHTML(
-                        name
-                    ) +
-
-                    "</div>" +
-
-                    "<div class='market-info'>" +
-
-                    escapeHTML(
-                        symbol
-                    ) +
-
-                    " • " +
-
-                    escapeHTML(
-                        market.market ||
-                        market.underlying_symbol_type ||
-                        ""
-                    ) +
-
-                    "</div>";
-
-
-                div.onclick =
-                    function() {
-
-                        selectMarket(
-                            market
-                        );
-
-                    };
-
-
-                list.appendChild(
-                    div
-                );
-
+                div.classList.add("selected");
             }
-        );
 
+
+            div.innerHTML =
+                "<div class='market-name'>" +
+                escapeHTML(name) +
+                "</div>" +
+
+                "<div class='market-info'>" +
+                escapeHTML(symbol) +
+                " • " +
+                escapeHTML(
+                    market.market ||
+                    market.underlying_symbol_type ||
+                    ""
+                ) +
+                "</div>";
+
+
+            div.onclick = function() {
+
+                selectMarket(market);
+            };
+
+
+            list.appendChild(div);
+
+        });
 }
 
 
+/* SELECT MARKET */
 
-/*
-========================================================
-SELECT MARKET
-========================================================
-*/
-
-function selectMarket(
-    market
-) {
+function selectMarket(market) {
 
     selectedSymbol =
         market.underlying_symbol;
-
 
     selectedName =
         market.underlying_symbol_name ||
@@ -2719,21 +820,17 @@ function selectMarket(
         selectedSymbol;
 
 
-    ticks =
-        [];
-
+    ticks = [];
 
     renderMarkets();
 
 
     if (
         publicSocket &&
-        publicSocket.readyState ===
-        WebSocket.OPEN
+        publicSocket.readyState === WebSocket.OPEN
     ) {
 
         publicSocket.send(
-
             JSON.stringify({
 
                 ticks_history:
@@ -2750,14 +847,11 @@ function selectMarket(
 
                 req_id:
                     20
-
             })
-
         );
 
 
         publicSocket.send(
-
             JSON.stringify({
 
                 ticks:
@@ -2768,48 +862,29 @@ function selectMarket(
 
                 req_id:
                     21
-
             })
-
         );
-
     }
-
 }
 
 
+/* HISTORY */
 
-/*
-========================================================
-HISTORY
-========================================================
-*/
+function loadHistory(data) {
 
-function loadHistory(
-    data
-) {
-
-    if (
-        !data.history
-    ) {
-
+    if (!data.history) {
         return;
-
     }
 
 
     const prices =
-        data.history.prices ||
-        [];
-
+        data.history.prices || [];
 
     const times =
-        data.history.times ||
-        [];
+        data.history.times || [];
 
 
-    ticks =
-        [];
+    ticks = [];
 
 
     for (
@@ -2819,92 +894,61 @@ function loadHistory(
     ) {
 
         const price =
-            Number(
-                prices[i]
-            );
+            Number(prices[i]);
 
 
         ticks.push({
 
-            price:
-                price,
+            price: price,
 
             digit:
-                getDigit(
-                    price
-                ),
+                getDigit(price),
 
             time:
                 times[i]
 
         });
-
     }
 
 
     analyze();
 
     showTicks();
-
 }
 
 
+/* LIVE TICK */
 
-/*
-========================================================
-LIVE TICK
-========================================================
-*/
+function receiveTick(data) {
 
-function receiveTick(
-    data
-) {
-
-    if (
-        !data.tick
-    ) {
-
+    if (!data.tick) {
         return;
-
     }
 
 
     const price =
-        Number(
-            data.tick.quote
-        );
+        Number(data.tick.quote);
 
 
     const digit =
-        getDigit(
-            price
-        );
+        getDigit(price);
 
 
     ticks.push({
 
-        price:
-            price,
+        price: price,
 
-        digit:
-            digit,
+        digit: digit,
 
-        time:
-            data.tick.epoch
+        time: data.tick.epoch
 
     });
 
 
-    if (
-        ticks.length >
-        5000
-    ) {
+    if (ticks.length > 5000) {
 
         ticks =
-            ticks.slice(
-                -5000
-            );
-
+            ticks.slice(-5000);
     }
 
 
@@ -2923,25 +967,15 @@ function receiveTick(
     analyze();
 
     showTicks();
-
 }
 
 
+/* DIGIT */
 
-/*
-========================================================
-DIGIT
-========================================================
-*/
-
-function getDigit(
-    price
-) {
+function getDigit(price) {
 
     const text =
-        String(
-            price
-        );
+        String(price);
 
 
     const numbers =
@@ -2951,30 +985,18 @@ function getDigit(
         );
 
 
-    if (
-        !numbers
-    ) {
-
+    if (!numbers) {
         return null;
-
     }
 
 
     return Number(
-        numbers[
-            numbers.length - 1
-        ]
+        numbers[numbers.length - 1]
     );
-
 }
 
 
-
-/*
-========================================================
-ANALYZE
-========================================================
-*/
+/* ANALYZE */
 
 function analyze() {
 
@@ -2987,9 +1009,7 @@ function analyze() {
 
 
     const data =
-        ticks.slice(
-            -sample
-        );
+        ticks.slice(-sample);
 
 
     document.getElementById(
@@ -3004,13 +1024,8 @@ function analyze() {
         data.length;
 
 
-    if (
-        data.length <
-        10
-    ) {
-
+    if (data.length < 10) {
         return;
-
     }
 
 
@@ -3018,186 +1033,112 @@ function analyze() {
         Array(10).fill(0);
 
 
-    data.forEach(
-        tick => {
+    data.forEach(function(tick) {
 
-            if (
-                Number.isInteger(
-                    tick.digit
-                )
-            ) {
+        if (
+            Number.isInteger(tick.digit)
+        ) {
 
-                counts[
-                    tick.digit
-                ]++;
-
-            }
-
+            counts[tick.digit]++;
         }
-    );
+
+    });
 
 
     const total =
         counts.reduce(
-            (
-                a,
-                b
-            ) =>
-                a + b,
+            function(a, b) {
+                return a + b;
+            },
             0
         );
 
 
-    renderDigits(
-        counts,
-        total
-    );
+    renderDigits(counts, total);
 
+    statistics(counts, total);
 
-    statistics(
-        counts,
-        total
-    );
+    patterns(data);
 
-
-    patterns(
-        data
-    );
-
-
-    transitions(
-        data
-    );
-
+    transitions(data);
 
     windows();
 
+    signal(counts, total, data);
 
-    signal(
-        counts,
-        total,
-        data
-    );
-
-
-    backtest(
-        data
-    );
-
+    backtest(data);
 }
 
 
+/* DIGIT DISTRIBUTION */
 
-/*
-========================================================
-DIGIT DISTRIBUTION
-========================================================
-*/
+function renderDigits(counts, total) {
 
-function renderDigits(
-    counts,
-    total
-) {
-
-    let html =
-        "";
+    let html = "";
 
 
-    counts.forEach(
-        (
-            count,
-            digit
-        ) => {
+    counts.forEach(function(count, digit) {
 
-            const pct =
-                count /
-                total *
-                100;
+        const pct =
+            count / total * 100;
 
 
-            html +=
+        html +=
+            "<div class='digit'>" +
 
-                "<div class='digit'>" +
+            "<div class='digit-row'>" +
 
-                "<div class='digit-row'>" +
+            "<strong>" +
+            digit +
+            "</strong>" +
 
-                "<strong>" +
-                digit +
-                "</strong>" +
+            "<span>" +
+            pct.toFixed(2) +
+            "%</span>" +
 
-                "<span>" +
-                pct.toFixed(2) +
-                "%</span>" +
+            "</div>" +
 
-                "</div>" +
+            "<div class='bar'>" +
 
-                "<div class='bar'>" +
+            "<div class='fill' style='width:" +
+            Math.min(100, pct * 5) +
+            "%'></div>" +
 
-                "<div class='fill' " +
-                "style='width:" +
-                Math.min(
-                    100,
-                    pct * 5
-                ) +
-                "%'></div>" +
+            "</div>" +
 
-                "</div>" +
+            "<small>" +
+            count +
+            " occurrences" +
+            "</small>" +
 
-                "<small>" +
+            "</div>";
 
-                count +
-                " occurrences" +
-
-                "</small>" +
-
-                "</div>";
-
-        }
-    );
+    });
 
 
     document.getElementById(
         "digits"
     ).innerHTML =
         html;
-
 }
 
 
+/* STATISTICS */
 
-/*
-========================================================
-STATISTICS
-========================================================
-*/
-
-function statistics(
-    counts,
-    total
-) {
+function statistics(counts, total) {
 
     const max =
-        Math.max(
-            ...counts
-        );
-
+        Math.max(...counts);
 
     const min =
-        Math.min(
-            ...counts
-        );
+        Math.min(...counts);
 
 
     const hot =
-        counts.indexOf(
-            max
-        );
-
+        counts.indexOf(max);
 
     const cold =
-        counts.indexOf(
-            min
-        );
+        counts.indexOf(min);
 
 
     const even =
@@ -3209,8 +1150,7 @@ function statistics(
 
 
     const odd =
-        total -
-        even;
+        total - even;
 
 
     document.getElementById(
@@ -3234,9 +1174,7 @@ function statistics(
             hot +
             " (" +
             (
-                max /
-                total *
-                100
+                max / total * 100
             ).toFixed(2) +
             "%)"
         ) +
@@ -3246,9 +1184,7 @@ function statistics(
             cold +
             " (" +
             (
-                min /
-                total *
-                100
+                min / total * 100
             ).toFixed(2) +
             "%)"
         ) +
@@ -3256,9 +1192,7 @@ function statistics(
         line(
             "Even",
             (
-                even /
-                total *
-                100
+                even / total * 100
             ).toFixed(2) +
             "%"
         ) +
@@ -3266,33 +1200,20 @@ function statistics(
         line(
             "Odd",
             (
-                odd /
-                total *
-                100
+                odd / total * 100
             ).toFixed(2) +
             "%"
         );
-
 }
 
 
+/* PATTERNS */
 
-/*
-========================================================
-PATTERNS
-========================================================
-*/
+function patterns(data) {
 
-function patterns(
-    data
-) {
+    let longest = 1;
 
-    let longest =
-        1;
-
-
-    let current =
-        1;
+    let current = 1;
 
 
     for (
@@ -3307,14 +1228,11 @@ function patterns(
         ) {
 
             current++;
-
         }
 
         else {
 
-            current =
-                1;
-
+            current = 1;
         }
 
 
@@ -3323,18 +1241,14 @@ function patterns(
                 longest,
                 current
             );
-
     }
 
 
-
-    current =
-        1;
+    current = 1;
 
 
     for (
-        let i =
-            data.length - 1;
+        let i = data.length - 1;
         i > 0;
         i--
     ) {
@@ -3345,15 +1259,12 @@ function patterns(
         ) {
 
             current++;
-
         }
 
         else {
 
             break;
-
         }
-
     }
 
 
@@ -3367,30 +1278,19 @@ function patterns(
         "currentStreak"
     ).textContent =
         current;
-
 }
 
 
+/* TRANSITIONS */
 
-/*
-========================================================
-TRANSITIONS
-========================================================
-*/
-
-function transitions(
-    data
-) {
+function transitions(data) {
 
     const matrix =
         Array.from(
-            {
-                length:
-                    10
-            },
-
-            () =>
-                Array(10).fill(0)
+            { length: 10 },
+            function() {
+                return Array(10).fill(0);
+            }
         );
 
 
@@ -3403,62 +1303,40 @@ function transitions(
         const previous =
             data[i - 1].digit;
 
-
         const next =
             data[i].digit;
 
 
         if (
-            Number.isInteger(
-                previous
-            ) &&
-            Number.isInteger(
-                next
-            )
+            Number.isInteger(previous) &&
+            Number.isInteger(next)
         ) {
 
-            matrix[
-                previous
-            ][
-                next
-            ]++;
-
+            matrix[previous][next]++;
         }
-
     }
 
 
-
     const recent =
-        data[
-            data.length - 1
-        ].digit;
+        data[data.length - 1].digit;
 
 
     if (
-        !Number.isInteger(
-            recent
-        )
+        !Number.isInteger(recent)
     ) {
-
         return;
-
     }
 
 
     const row =
-        matrix[
-            recent
-        ];
+        matrix[recent];
 
 
     const total =
         row.reduce(
-            (
-                a,
-                b
-            ) =>
-                a + b,
+            function(a, b) {
+                return a + b;
+            },
             0
         );
 
@@ -3471,53 +1349,42 @@ function transitions(
             "Not enough transition data.";
 
         return;
-
     }
 
 
     const ranking =
         row
             .map(
-                (
-                    count,
-                    digit
-                ) => ({
+                function(count, digit) {
 
-                    digit,
-                    count
+                    return {
+                        digit: digit,
+                        count: count
+                    };
 
-                })
+                }
             )
             .sort(
-                (
-                    a,
-                    b
-                ) =>
-                    b.count -
-                    a.count
+                function(a, b) {
+                    return b.count - a.count;
+                }
             )
-            .slice(
-                0,
-                5
-            );
+            .slice(0, 5);
 
 
     document.getElementById(
         "transitions"
     ).innerHTML =
 
-        "<p>" +
-
-        "After digit " +
+        "<p>After digit " +
         recent +
         ":</p>" +
 
         ranking
             .map(
-                item =>
+                function(item) {
 
-                    line(
-
+                    return line(
                         "Digit " +
                         item.digit,
 
@@ -3527,20 +1394,15 @@ function transitions(
                             100
                         ).toFixed(2) +
                         "%"
+                    );
 
-                    )
+                }
             )
             .join("");
-
 }
 
 
-
-/*
-========================================================
-MULTI WINDOWS
-========================================================
-*/
+/* MULTI WINDOWS */
 
 function windows() {
 
@@ -3554,112 +1416,81 @@ function windows() {
         ];
 
 
-    let html =
-        "";
+    let html = "";
 
 
-    sizes.forEach(
-        size => {
+    sizes.forEach(function(size) {
+
+        if (ticks.length < size) {
+            return;
+        }
+
+
+        const data =
+            ticks.slice(-size);
+
+
+        const counts =
+            Array(10).fill(0);
+
+
+        data.forEach(function(tick) {
 
             if (
-                ticks.length <
-                size
+                Number.isInteger(tick.digit)
             ) {
 
-                return;
-
+                counts[tick.digit]++;
             }
 
-
-            const data =
-                ticks.slice(
-                    -size
-                );
+        });
 
 
-            const counts =
-                Array(10).fill(0);
+        const max =
+            Math.max(...counts);
+
+        const min =
+            Math.min(...counts);
 
 
-            data.forEach(
-                tick => {
+        const hot =
+            counts.indexOf(max);
 
-                    if (
-                        Number.isInteger(
-                            tick.digit
-                        )
-                    ) {
-
-                        counts[
-                            tick.digit
-                        ]++;
-
-                    }
-
-                }
-            );
+        const cold =
+            counts.indexOf(min);
 
 
-            const max =
-                Math.max(
-                    ...counts
-                );
+        html +=
 
+            "<div class='analysis-line'>" +
 
-            const min =
-                Math.min(
-                    ...counts
-                );
+            "<span>" +
+            size +
+            " ticks</span>" +
 
+            "<span>" +
 
-            const hot =
-                counts.indexOf(
-                    max
-                );
+            "Hot " +
+            hot +
+            " (" +
+            (
+                max / size * 100
+            ).toFixed(2) +
+            "%)" +
 
+            " • Cold " +
+            cold +
+            " (" +
+            (
+                min / size * 100
+            ).toFixed(2) +
+            "%)" +
 
-            const cold =
-                counts.indexOf(
-                    min
-                );
+            "</span>" +
 
+            "</div>";
 
-            html +=
-
-                "<div class='analysis-line'>" +
-
-                "<span>" +
-                size +
-                " ticks</span>" +
-
-                "<span>" +
-
-                "Hot " +
-                hot +
-                " (" +
-                (
-                    max /
-                    size *
-                    100
-                ).toFixed(2) +
-                "%)" +
-
-                " • Cold " +
-                cold +
-                " (" +
-                (
-                    min /
-                    size *
-                    100
-                ).toFixed(2) +
-                "%)" +
-
-                "</span>" +
-
-                "</div>";
-
-        }
-    );
+    });
 
 
     document.getElementById(
@@ -3667,69 +1498,41 @@ function windows() {
     ).innerHTML =
         html ||
         "Not enough data.";
-
 }
 
 
+/* SIGNAL */
 
-/*
-========================================================
-SIGNAL ENGINE
-========================================================
-*/
+function signal(counts, total, data) {
 
-function signal(
-    counts,
-    total,
-    data
-) {
-
-    if (
-        total <
-        100
-    ) {
+    if (total < 100) {
 
         document.getElementById(
             "engine"
         ).textContent =
             "COLLECTING";
 
-
         return;
-
     }
 
 
     const max =
-        Math.max(
-            ...counts
-        );
+        Math.max(...counts);
 
 
     const hot =
-        counts.indexOf(
-            max
-        );
+        counts.indexOf(max);
 
 
     const hotPct =
-        max /
-        total *
-        100;
+        max / total * 100;
 
 
     const deviation =
         Math.abs(
-            hotPct -
-            10
+            hotPct - 10
         );
 
-
-    /*
-    Momentum:
-
-    Compare first half with second half.
-    */
 
     const half =
         Math.floor(
@@ -3738,31 +1541,25 @@ function signal(
 
 
     const first =
-        data.slice(
-            0,
-            half
-        );
-
+        data.slice(0, half);
 
     const second =
-        data.slice(
-            half
-        );
+        data.slice(half);
 
 
     const firstCount =
         first.filter(
-            tick =>
-                tick.digit ===
-                hot
+            function(tick) {
+                return tick.digit === hot;
+            }
         ).length;
 
 
     const secondCount =
         second.filter(
-            tick =>
-                tick.digit ===
-                hot
+            function(tick) {
+                return tick.digit === hot;
+            }
         ).length;
 
 
@@ -3783,112 +1580,47 @@ function signal(
 
 
     const momentum =
-        secondPct -
-        firstPct;
+        secondPct - firstPct;
 
 
-    /*
-    Conservative score.
-    */
-
-    let score =
-        0;
+    let score = 0;
 
 
-    if (
-        deviation >=
-        2
-    ) {
+    if (deviation >= 2) {
+        score += 20;
+    }
 
-        score +=
-            20;
+    if (deviation >= 4) {
+        score += 20;
+    }
 
+    if (Math.abs(momentum) >= 2) {
+        score += 20;
+    }
+
+    if (Math.abs(momentum) >= 4) {
+        score += 20;
+    }
+
+    if (total >= 500) {
+        score += 20;
     }
 
 
-    if (
-        deviation >=
-        4
-    ) {
+    let level = "NO SIGNAL";
 
-        score +=
-            20;
 
+    if (score >= 70) {
+        level = "STRONG WATCH";
     }
 
-
-    if (
-        Math.abs(
-            momentum
-        ) >=
-        2
-    ) {
-
-        score +=
-            20;
-
+    else if (score >= 45) {
+        level = "MODERATE WATCH";
     }
 
-
-    if (
-        Math.abs(
-            momentum
-        ) >=
-        4
-    ) {
-
-        score +=
-            20;
-
+    else if (score >= 25) {
+        level = "WEAK WATCH";
     }
-
-
-    if (
-        total >=
-        500
-    ) {
-
-        score +=
-            20;
-
-    }
-
-
-
-    let level =
-        "NO SIGNAL";
-
-
-    if (
-        score >=
-        70
-    ) {
-
-        level =
-            "STRONG WATCH";
-
-    }
-
-    else if (
-        score >=
-        45
-    ) {
-
-        level =
-            "MODERATE WATCH";
-
-    }
-
-    else if (
-        score >=
-        25
-    ) {
-
-        level =
-            "WEAK WATCH";
-
-    }
-
 
 
     document.getElementById(
@@ -3902,208 +1634,54 @@ function signal(
     ).innerHTML =
 
         "<div class='signal-title'>" +
-
         level +
-
         "</div>" +
 
-        "<p>" +
-
-        "Hot digit: " +
+        "<p>Hot digit: " +
         hot +
-
         "</p>" +
 
-        "<p>" +
-
-        "Frequency: " +
+        "<p>Frequency: " +
         hotPct.toFixed(2) +
-        "%"
+        "%</p>" +
 
-        "</p>" +
-
-        "<p>" +
-
-        "Deviation from 10%: " +
-
+        "<p>Deviation from 10%: " +
         deviation.toFixed(2) +
+        " percentage points</p>" +
 
-        " percentage points"
-
-        "</p>" +
-
-        "<p>" +
-
-        "Frequency momentum: " +
-
+        "<p>Frequency momentum: " +
         (
             momentum >= 0
                 ? "+"
                 : ""
         ) +
-
         momentum.toFixed(2) +
+        " percentage points</p>" +
 
-        " percentage points"
-
-        "</p>" +
-
-        "<p>" +
-
-        "Statistical score: " +
+        "<p>Statistical score: " +
         score +
-        "/100"
-
-        "</p>" +
+        "/100</p>" +
 
         "<div class='progress'>" +
 
-        "<div class='progress-fill' " +
-
-        "style='width:" +
+        "<div class='progress-fill' style='width:" +
         score +
         "%'></div>" +
 
         "</div>" +
 
         "<p class='muted'>" +
-
-        "This is a statistical observation, not a guarantee of the next outcome."
-
+        "This is a statistical observation, " +
+        "not a guarantee of the next outcome." +
         "</p>";
-
-
-
-    /*
-    Store signal.
-    */
-
-    if (
-        level !==
-        "NO SIGNAL"
-    ) {
-
-        const last =
-            data[
-                data.length - 1
-            ];
-
-
-        signalHistory.unshift({
-
-            time:
-                new Date()
-                    .toLocaleTimeString(),
-
-            market:
-                selectedName,
-
-            level:
-                level,
-
-            digit:
-                hot,
-
-            score:
-                score,
-
-            price:
-                last.price
-
-        });
-
-
-        signalHistory =
-            signalHistory.slice(
-                0,
-                30
-            );
-
-
-        renderSignalHistory();
-
-    }
-
 }
 
 
+/* BACKTEST */
 
-/*
-========================================================
-SIGNAL HISTORY
-========================================================
-*/
+function backtest(data) {
 
-function renderSignalHistory() {
-
-    if (
-        !signalHistory.length
-    ) {
-
-        return;
-
-    }
-
-
-    document.getElementById(
-        "signalHistory"
-    ).innerHTML =
-
-        signalHistory
-            .map(
-                item =>
-
-                    "<div class='analysis-line'>" +
-
-                    "<span>" +
-
-                    item.time +
-
-                    " • " +
-
-                    item.level +
-
-                    "</span>" +
-
-                    "<span>" +
-
-                    item.market +
-
-                    " • Digit " +
-
-                    item.digit +
-
-                    " • " +
-
-                    item.score +
-
-                    "/100" +
-
-                    "</span>" +
-
-                    "</div>"
-
-            )
-            .join("");
-
-}
-
-
-
-/*
-========================================================
-BACKTEST
-========================================================
-*/
-
-function backtest(
-    data
-) {
-
-    if (
-        data.length <
-        200
-    ) {
+    if (data.length < 200) {
 
         document.getElementById(
             "backtest"
@@ -4111,34 +1689,25 @@ function backtest(
             "Need at least 200 ticks.";
 
         return;
-
     }
 
 
-    const lookback =
-        100;
+    const lookback = 100;
 
+    let signals = 0;
 
-    let signals =
-        0;
-
-
-    let hits =
-        0;
+    let hits = 0;
 
 
     for (
-        let i =
-            lookback;
-        i <
-        data.length - 1;
+        let i = lookback;
+        i < data.length - 1;
         i++
     ) {
 
         const sample =
             data.slice(
-                i -
-                lookback,
+                i - lookback,
                 i
             );
 
@@ -4147,70 +1716,48 @@ function backtest(
             Array(10).fill(0);
 
 
-        sample.forEach(
-            tick => {
+        sample.forEach(function(tick) {
 
-                if (
-                    Number.isInteger(
-                        tick.digit
-                    )
-                ) {
+            if (
+                Number.isInteger(tick.digit)
+            ) {
 
-                    counts[
-                        tick.digit
-                    ]++;
-
-                }
-
+                counts[tick.digit]++;
             }
-        );
+
+        });
 
 
         const max =
-            Math.max(
-                ...counts
-            );
+            Math.max(...counts);
 
 
         const hot =
-            counts.indexOf(
-                max
-            );
+            counts.indexOf(max);
 
 
         const pct =
-            max /
-            lookback *
-            100;
+            max / lookback * 100;
 
 
-        if (
-            pct >=
-            13
-        ) {
+        if (pct >= 13) {
 
             signals++;
 
 
             if (
-                data[i].digit ===
-                hot
+                data[i].digit === hot
             ) {
 
                 hits++;
-
             }
-
         }
-
     }
 
 
     const rate =
         signals
-            ? hits /
-              signals *
-              100
+            ? hits / signals * 100
             : 0;
 
 
@@ -4221,122 +1768,76 @@ function backtest(
         "<div class='grid'>" +
 
         "<div class='stat'>" +
-
         "<small>Signals</small>" +
-
         "<strong>" +
         signals +
         "</strong>" +
-
         "</div>" +
 
         "<div class='stat'>" +
-
         "<small>Hits</small>" +
-
         "<strong>" +
         hits +
         "</strong>" +
-
         "</div>" +
 
         "<div class='stat'>" +
-
         "<small>Misses</small>" +
-
         "<strong>" +
-
         (
-            signals -
-            hits
+            signals - hits
         ) +
-
         "</strong>" +
-
         "</div>" +
 
         "<div class='stat'>" +
-
         "<small>Hit Rate</small>" +
-
         "<strong>" +
-
         rate.toFixed(2) +
-
         "%</strong>" +
-
         "</div>" +
 
         "</div>";
-
 }
 
 
-
-/*
-========================================================
-RECENT TICKS
-========================================================
-*/
+/* RECENT TICKS */
 
 function showTicks() {
 
     const box =
-        document.getElementById(
-            "ticks"
-        );
+        document.getElementById("ticks");
 
 
-    box.innerHTML =
-        "";
+    box.innerHTML = "";
 
 
     ticks
-        .slice(
-            -40
-        )
+        .slice(-40)
         .reverse()
-        .forEach(
-            tick => {
+        .forEach(function(tick) {
 
-                const span =
-                    document.createElement(
-                        "span"
-                    );
+            const span =
+                document.createElement("span");
 
 
-                span.className =
-                    "tick";
+            span.className = "tick";
 
 
-                span.textContent =
+            span.textContent =
+                tick.price +
+                " → " +
+                tick.digit;
 
-                    tick.price +
-                    " → " +
-                    tick.digit;
 
-
-                box.appendChild(
-                    span
-                );
-
-            }
-        );
-
+            box.appendChild(span);
+        });
 }
 
 
+/* HELPER */
 
-/*
-========================================================
-HELPERS
-========================================================
-*/
-
-function line(
-    name,
-    value
-) {
+function line(name, value) {
 
     return
 
@@ -4351,93 +1852,51 @@ function line(
         "</strong>" +
 
         "</div>";
-
 }
 
 
+function escapeHTML(text) {
 
-function escapeHTML(
-    text
-) {
+    return String(text)
 
-    return String(
-        text
-    )
+        .replace(/&/g, "&amp;")
 
-        .replace(
-            /&/g,
-            "&amp;"
-        )
+        .replace(/</g, "&lt;")
 
-        .replace(
-            /</g,
-            "&lt;"
-        )
+        .replace(/>/g, "&gt;")
 
-        .replace(
-            />/g,
-            "&gt;"
-        )
+        .replace(/"/g, "&quot;")
 
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-
-        .replace(
-            /'/g,
-            "&#039;"
-        );
-
+        .replace(/'/g, "&#039;");
 }
 
 
+/* EVENTS */
 
-/*
-========================================================
-EVENTS
-========================================================
-*/
-
-document.getElementById(
-    "search"
-)
-.addEventListener(
-    "input",
-    renderMarkets
-);
+document
+    .getElementById("search")
+    .addEventListener(
+        "input",
+        renderMarkets
+    );
 
 
-document.getElementById(
-    "category"
-)
-.addEventListener(
-    "change",
-    renderMarkets
-);
+document
+    .getElementById("category")
+    .addEventListener(
+        "change",
+        renderMarkets
+    );
 
 
-document.getElementById(
-    "sample"
-)
-.addEventListener(
-    "change",
-    analyze
-);
-
-
-
-/*
-========================================================
-START
-========================================================
-*/
-
-checkLogin();
+document
+    .getElementById("sample")
+    .addEventListener(
+        "change",
+        analyze
+    );
 
 </script>
 
-
 </body>
-
 </html>

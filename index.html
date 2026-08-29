@@ -1534,19 +1534,23 @@ async function connectAuthenticatedSocket(){
             );
         };
 
-        accountWS.onclose = () => {
+        accountWS.onclose = event => {
 
-            log(
-                "Authenticated WebSocket closed."
-            );
+    log(
+        "Authenticated WebSocket closed." +
+        " Code: " +
+        event.code +
+        " Reason: " +
+        (event.reason || "none")
+    );
 
-            accountWS = null;
+    accountWS = null;
 
-            document.getElementById(
-                "accountConnection"
-            ).textContent =
-                "DISCONNECTED";
-        };
+    document.getElementById(
+        "accountConnection"
+    ).textContent =
+        "DISCONNECTED";
+};
 
     }
     catch(error){

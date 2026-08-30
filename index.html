@@ -1,1133 +1,1559 @@
 <!DOCTYPE html><html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Mauvey — Signal Analyzer</title>
-
-<style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#ffffff">
+  <title>Mauvey — Deriv Trading</title>  <style>
     * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
     body {
-        font-family: Arial, Helvetica, sans-serif;
-        background: #08090d;
-        color: #ffffff;
-        min-height: 100vh;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f7f7f8;
+      color: #111111;
+      min-height: 100vh;
     }
 
-    button {
-        font-family: inherit;
+    button,
+    input,
+    select {
+      font: inherit;
     }
 
     .app {
-        width: 100%;
-        max-width: 1100px;
-        margin: auto;
-        padding: 20px;
+      width: 100%;
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 22px 18px 40px;
     }
 
     /* HEADER */
+
     .header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 28px;
     }
 
     .brand {
-        display: flex;
-        align-items: center;
-        gap: 12px;
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.8px;
     }
 
-    .logo {
-        width: 48px;
-        height: 48px;
-        border-radius: 14px;
-        background: linear-gradient(135deg, #9b5cff, #5e32ff);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 21px;
-        font-weight: 900;
+    .connection {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 12px;
+      color: #777;
     }
 
-    .brand h1 {
-        font-size: 25px;
-        letter-spacing: -0.5px;
+    .connection-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #bdbdbd;
     }
 
-    .brand p {
-        color: #858995;
-        font-size: 12px;
-        margin-top: 3px;
+    .connection-dot.connected {
+      background: #20a464;
     }
 
-    .status {
-        display: flex;
-        align-items: center;
-        gap: 7px;
-        color: #9ea2ad;
-        font-size: 12px;
-    }
-
-    .status-dot {
-        width: 8px;
-        height: 8px;
-        background: #36d98b;
-        border-radius: 50%;
-        box-shadow: 0 0 10px rgba(54,217,139,.6);
-    }
-
-    /* HERO */
-    .hero {
-        background: linear-gradient(145deg, #12141d, #0d0e14);
-        border: 1px solid #20222c;
-        border-radius: 22px;
-        padding: 26px;
-        margin-bottom: 18px;
-    }
-
-    .hero h2 {
-        font-size: 26px;
-        margin-bottom: 8px;
-    }
-
-    .hero p {
-        color: #8f939f;
-        font-size: 14px;
-        line-height: 1.6;
-        max-width: 720px;
-    }
-
-    /* CONTROLS */
-    .controls {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 15px;
-        margin-bottom: 18px;
-    }
+    /* CARDS */
 
     .card {
-        background: #101117;
-        border: 1px solid #20222c;
-        border-radius: 18px;
-        padding: 20px;
+      background: #ffffff;
+      border: 1px solid #e8e8e8;
+      border-radius: 16px;
+      padding: 18px;
+      margin-bottom: 14px;
     }
 
     .card-title {
-        font-size: 13px;
-        color: #9296a3;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        margin-bottom: 14px;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 13px;
     }
 
-    .mode-buttons {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 8px;
+    /* INPUT */
+
+    .input-row {
+      display: flex;
+      gap: 9px;
     }
 
-    .mode-btn {
-        border: 1px solid #292c37;
-        background: #171921;
-        color: #aeb2bd;
-        padding: 12px 5px;
-        border-radius: 10px;
-        cursor: pointer;
-        font-weight: 700;
-        font-size: 12px;
-        transition: .2s;
+    .input {
+      width: 100%;
+      min-width: 0;
+      border: 1px solid #dddddd;
+      background: #fafafa;
+      border-radius: 10px;
+      padding: 12px 13px;
+      outline: none;
+      color: #111;
     }
 
-    .mode-btn:hover {
-        border-color: #7450ff;
+    .input:focus {
+      border-color: #111;
+      background: #fff;
     }
 
-    .mode-btn.active {
-        background: #6d43ff;
-        border-color: #6d43ff;
-        color: white;
+    .connect-btn {
+      border: 0;
+      border-radius: 10px;
+      padding: 0 17px;
+      background: #111;
+      color: #fff;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
     }
 
-    .batch-row {
-        display: flex;
-        gap: 10px;
+    .connect-btn:active {
+      transform: scale(0.98);
     }
 
-    input {
-        width: 100%;
-        background: #171921;
-        border: 1px solid #292c37;
-        color: white;
-        border-radius: 10px;
-        padding: 13px;
-        outline: none;
+    /* BALANCE */
+
+    .balance-label {
+      color: #777;
+      font-size: 12px;
+      margin-bottom: 5px;
     }
 
-    input:focus {
-        border-color: #7450ff;
+    .balance {
+      font-size: 30px;
+      font-weight: 800;
+      letter-spacing: -1px;
+    }
+
+    .currency {
+      font-size: 13px;
+      color: #777;
+      margin-left: 4px;
+      font-weight: 500;
+    }
+
+    /* CONTROLS */
+
+    .controls {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 12px;
+      color: #777;
+      margin-bottom: 7px;
+    }
+
+    .field select,
+    .field input {
+      width: 100%;
+      border: 1px solid #dddddd;
+      background: #fafafa;
+      border-radius: 10px;
+      padding: 11px 12px;
+      outline: none;
     }
 
     /* START */
-    .start-section {
-        margin-bottom: 18px;
-    }
 
     .start-btn {
-        width: 100%;
-        border: none;
-        border-radius: 16px;
-        padding: 17px;
-        background: linear-gradient(135deg, #8057ff, #5c32ed);
-        color: white;
-        font-size: 16px;
-        font-weight: 800;
-        cursor: pointer;
-        box-shadow: 0 10px 35px rgba(92,50,237,.2);
-        transition: .2s;
+      width: 100%;
+      height: 52px;
+      border: 0;
+      border-radius: 13px;
+      background: #111;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      margin-top: 4px;
     }
 
-    .start-btn:hover {
-        transform: translateY(-1px);
+    .start-btn.running {
+      background: #b3261e;
     }
 
-    .start-btn:active {
-        transform: scale(.99);
+    .start-btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
     }
 
-    /* SIGNAL */
-    .signal-card {
-        background: #101117;
-        border: 1px solid #20222c;
-        border-radius: 20px;
-        padding: 24px;
-        margin-bottom: 18px;
+    /* STATUS */
+
+    .status-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
-    .signal-top {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
+    .status-indicator {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #bdbdbd;
+      flex-shrink: 0;
     }
 
-    .signal-label {
-        color: #8f939f;
-        font-size: 12px;
-        text-transform: uppercase;
-        letter-spacing: 1px;
+    .status-indicator.active {
+      background: #20a464;
+      animation: pulse 1.4s infinite;
     }
 
-    .signal-batch {
-        font-size: 12px;
-        color: #777b87;
+    @keyframes pulse {
+      0% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0.35;
+      }
+      100% {
+        opacity: 1;
+      }
     }
 
-    .signal-main {
-        text-align: center;
-        padding: 25px 10px;
+    .status-text {
+      font-size: 14px;
+      font-weight: 600;
     }
 
-    .signal-type {
-        font-size: 43px;
-        font-weight: 900;
-        letter-spacing: -1px;
-        margin-bottom: 8px;
+    /* CURRENT TRADE */
+
+    .trade-market {
+      font-size: 18px;
+      font-weight: 800;
+      margin-bottom: 3px;
     }
 
-    .signal-sub {
-        color: #979ba6;
-        font-size: 14px;
+    .trade-type {
+      color: #777;
+      font-size: 13px;
+      margin-bottom: 17px;
     }
 
-    .confidence {
-        margin-top: 22px;
+    .trade-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
     }
 
-    .confidence-header {
-        display: flex;
-        justify-content: space-between;
-        color: #9b9faa;
-        font-size: 12px;
-        margin-bottom: 8px;
+    .trade-stat {
+      background: #f7f7f8;
+      border-radius: 10px;
+      padding: 11px;
     }
 
-    .confidence-bar {
-        width: 100%;
-        height: 8px;
-        background: #1b1d25;
-        border-radius: 10px;
-        overflow: hidden;
+    .trade-stat-label {
+      font-size: 10px;
+      color: #777;
+      margin-bottom: 4px;
     }
 
-    .confidence-fill {
-        width: 0%;
-        height: 100%;
-        background: #7952ff;
-        border-radius: 10px;
-        transition: width .7s ease;
+    .trade-stat-value {
+      font-size: 13px;
+      font-weight: 750;
     }
 
-    /* STATS */
-    .stats {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 12px;
-        margin-bottom: 18px;
-    }
-
-    .stat {
-        background: #101117;
-        border: 1px solid #20222c;
-        border-radius: 16px;
-        padding: 18px;
-    }
-
-    .stat-title {
-        color: #858995;
-        font-size: 11px;
-        text-transform: uppercase;
-        margin-bottom: 9px;
-    }
-
-    .stat-value {
-        font-size: 23px;
-        font-weight: 800;
-    }
-
-    /* HISTORY */
-    .history {
-        background: #101117;
-        border: 1px solid #20222c;
-        border-radius: 18px;
-        overflow: hidden;
-    }
+    /* TRADE HISTORY */
 
     .history-header {
-        padding: 18px 20px;
-        border-bottom: 1px solid #20222c;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
     }
 
-    .history-header h3 {
-        font-size: 15px;
+    .history-count {
+      color: #777;
+      font-size: 11px;
     }
 
-    .clear-btn {
-        background: transparent;
-        color: #858995;
-        border: none;
-        cursor: pointer;
-        font-size: 12px;
+    .trade-list {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      max-height: 300px;
+      overflow-y: auto;
     }
 
-    .history-table {
-        width: 100%;
-        border-collapse: collapse;
+    .trade-row {
+      display: grid;
+      grid-template-columns: 32px 1fr auto auto;
+      gap: 8px;
+      align-items: center;
+      padding: 11px 9px;
+      border-radius: 10px;
+      background: #f7f7f8;
+      font-size: 12px;
     }
 
-    .history-table th,
-    .history-table td {
-        padding: 13px 15px;
-        text-align: left;
-        border-bottom: 1px solid #1c1e26;
-        font-size: 12px;
+    .trade-number {
+      color: #777;
     }
 
-    .history-table th {
-        color: #6f737f;
-        text-transform: uppercase;
-        font-size: 10px;
+    .trade-contract {
+      font-weight: 700;
     }
 
-    .history-table td {
-        color: #c2c5cd;
+    .trade-result {
+      font-weight: 750;
     }
 
-    .tag {
-        display: inline-block;
-        padding: 5px 8px;
-        border-radius: 7px;
-        background: #1c1e27;
-        color: #b5b8c2;
-        font-size: 10px;
-        font-weight: 700;
+    .win {
+      color: #16834c;
+    }
+
+    .loss {
+      color: #c62828;
+    }
+
+    .pending {
+      color: #777;
     }
 
     .empty {
-        text-align: center;
-        padding: 35px;
-        color: #646874;
-        font-size: 13px;
+      text-align: center;
+      color: #888;
+      font-size: 13px;
+      padding: 18px 0 6px;
     }
 
-    /* FOOTER */
+    /* ANALYSIS */
+
+    .analysis-summary {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 13px;
+    }
+
+    .analysis-stat {
+      background: #f7f7f8;
+      border-radius: 10px;
+      padding: 10px;
+    }
+
+    .analysis-stat small {
+      display: block;
+      color: #777;
+      font-size: 10px;
+      margin-bottom: 4px;
+    }
+
+    .analysis-stat strong {
+      font-size: 13px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
     .footer {
-        text-align: center;
-        color: #50535d;
-        font-size: 11px;
-        padding: 25px 0 10px;
+      text-align: center;
+      color: #aaa;
+      font-size: 10px;
+      margin-top: 25px;
     }
 
-    /* MOBILE */
-    @media (max-width: 700px) {
+    @media (max-width: 380px) {
+      .trade-grid {
+        grid-template-columns: 1fr 1fr;
+      }
 
-        .app {
-            padding: 14px;
-        }
-
-        .controls {
-            grid-template-columns: 1fr;
-        }
-
-        .stats {
-            grid-template-columns: repeat(2, 1fr);
-        }
-
-        .mode-buttons {
-            grid-template-columns: repeat(2, 1fr);
-        }
-
-        .signal-type {
-            font-size: 34px;
-        }
-
-        .hero h2 {
-            font-size: 22px;
-        }
-
-        .status {
-            display: none;
-        }
+      .controls {
+        grid-template-columns: 1fr;
+      }
     }
-</style>
+  </style></head><body>  <main class="app"><!-- HEADER -->
 
-</head><body><div class="app"><!-- HEADER -->
 <header class="header">
+  <div class="brand">MAUVEY</div>
 
-    <div class="brand">
-
-        <div class="logo">
-            M
-        </div>
-
-        <div>
-            <h1>Mauvey</h1>
-            <p>Signal Analysis System</p>
-        </div>
-
-    </div>
-
-    <div class="status">
-        <span class="status-dot"></span>
-        System Ready
-    </div>
-
+  <div class="connection">
+    <span id="connectionDot" class="connection-dot"></span>
+    <span id="connectionText">Not connected</span>
+  </div>
 </header>
 
 
-<!-- HERO -->
-<section class="hero">
+<!-- PAT CONNECTION -->
 
-    <h2>Analyze the next signal.</h2>
+<section class="card">
 
-    <p>
-        Mauvey analyzes the sequence supplied to it and produces
-        a structured signal based on the selected market rule.
-        Choose a mode, define the batch, then start the analysis.
-    </p>
+  <div class="card-title">Deriv connection</div>
+
+  <div class="input-row">
+
+    <input
+      id="patInput"
+      class="input"
+      type="password"
+      placeholder="Enter PAT"
+      autocomplete="off"
+    >
+
+    <button
+      id="connectBtn"
+      class="connect-btn"
+      type="button"
+    >
+      Connect
+    </button>
+
+  </div>
 
 </section>
 
 
-<!-- CONTROLS -->
-<section class="controls">
+<!-- BALANCE -->
 
-    <div class="card">
+<section class="card">
 
-        <div class="card-title">
-            Analysis Mode
-        </div>
+  <div class="balance-label">Account balance</div>
 
-        <div class="mode-buttons">
+  <div class="balance">
+    <span id="balance">0.00</span>
+    <span id="currency" class="currency">USD</span>
+  </div>
 
-            <button class="mode-btn active"
-                    data-mode="EVEN / ODD">
-                EVEN / ODD
-            </button>
+</section>
 
-            <button class="mode-btn"
-                    data-mode="OVER / UNDER">
-                OVER / UNDER
-            </button>
 
-            <button class="mode-btn"
-                    data-mode="EVEN">
-                EVEN
-            </button>
+<!-- TRADING SETTINGS -->
 
-            <button class="mode-btn"
-                    data-mode="ODD">
-                ODD
-            </button>
+<section class="card">
 
-        </div>
+  <div class="card-title">Trading settings</div>
 
+  <div class="controls">
+
+    <div class="field">
+      <label for="batchSize">Batch trades</label>
+
+      <input
+        id="batchSize"
+        type="number"
+        min="1"
+        max="100"
+        value="10"
+      >
     </div>
 
+    <div class="field">
+      <label for="baseStake">Base stake</label>
 
-    <div class="card">
-
-        <div class="card-title">
-            Batch Configuration
-        </div>
-
-        <div class="batch-row">
-
-            <input
-                id="batchInput"
-                type="number"
-                min="1"
-                max="1000"
-                value="10"
-                placeholder="Batch size"
-            >
-
-        </div>
-
+      <input
+        id="baseStake"
+        type="number"
+        min="0.01"
+        step="0.01"
+        value="1.00"
+      >
     </div>
+
+  </div>
 
 </section>
 
 
 <!-- START -->
-<section class="start-section">
 
-    <button
-        class="start-btn"
-        id="startBtn">
-
-        START ANALYSIS
-
-    </button>
-
-</section>
+<button
+  id="startBtn"
+  class="start-btn"
+  type="button"
+  disabled
+>
+  START MAUVEY
+</button>
 
 
-<!-- SIGNAL -->
-<section class="signal-card">
+<!-- STATUS -->
 
-    <div class="signal-top">
+<section class="card" style="margin-top:14px;">
 
-        <div class="signal-label">
-            Current Signal
-        </div>
+  <div class="card-title">Status</div>
 
-        <div
-            class="signal-batch"
-            id="batchDisplay">
+  <div class="status-box">
 
-            Batch — 
+    <span
+      id="statusIndicator"
+      class="status-indicator"
+    ></span>
 
-        </div>
+    <span
+      id="statusText"
+      class="status-text"
+    >
+      Waiting for connection
+    </span>
 
-    </div>
-
-
-    <div class="signal-main">
-
-        <div
-            class="signal-type"
-            id="signalType">
-
-            WAITING
-
-        </div>
-
-        <div
-            class="signal-sub"
-            id="signalDescription">
-
-            Start the analyzer to generate a signal.
-
-        </div>
-
-
-        <div class="confidence">
-
-            <div class="confidence-header">
-
-                <span>
-                    Signal Strength
-                </span>
-
-                <span id="confidenceText">
-                    0%
-                </span>
-
-            </div>
-
-            <div class="confidence-bar">
-
-                <div
-                    class="confidence-fill"
-                    id="confidenceFill">
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
+  </div>
 
 </section>
 
 
-<!-- STATS -->
-<section class="stats">
+<!-- ANALYSIS -->
 
-    <div class="stat">
+<section id="analysisCard" class="card hidden">
 
-        <div class="stat-title">
-            Analyses
-        </div>
+  <div class="card-title">Market analysis</div>
 
-        <div
-            class="stat-value"
-            id="analysisCount">
-            0
-        </div>
+  <div id="analysisText" class="status-text">
+    Analyzing the latest 1,000 ticks...
+  </div>
 
+  <div class="analysis-summary">
+
+    <div class="analysis-stat">
+      <small>Markets</small>
+      <strong id="marketsAnalyzed">0</strong>
     </div>
 
-
-    <div class="stat">
-
-        <div class="stat-title">
-            Even
-        </div>
-
-        <div
-            class="stat-value"
-            id="evenCount">
-            0
-        </div>
-
+    <div class="analysis-stat">
+      <small>Best market</small>
+      <strong id="bestMarket">—</strong>
     </div>
 
-
-    <div class="stat">
-
-        <div class="stat-title">
-            Odd
-        </div>
-
-        <div
-            class="stat-value"
-            id="oddCount">
-            0
-        </div>
-
+    <div class="analysis-stat">
+      <small>Signal</small>
+      <strong id="bestSignal">—</strong>
     </div>
 
-
-    <div class="stat">
-
-        <div class="stat-title">
-            Batch
-        </div>
-
-        <div
-            class="stat-value"
-            id="batchCount">
-            0
-        </div>
-
-    </div>
+  </div>
 
 </section>
 
 
-<!-- HISTORY -->
-<section class="history">
+<!-- CURRENT TRADE -->
 
-    <div class="history-header">
+<section id="currentTradeCard" class="card hidden">
 
-        <h3>
-            Signal History
-        </h3>
+  <div class="card-title">Current trade</div>
 
-        <button
-            class="clear-btn"
-            id="clearBtn">
+  <div
+    id="tradeMarket"
+    class="trade-market"
+  >
+    —
+  </div>
 
-            Clear
+  <div
+    id="tradeType"
+    class="trade-type"
+  >
+    —
+  </div>
 
-        </button>
+  <div class="trade-grid">
 
+    <div class="trade-stat">
+      <div class="trade-stat-label">Batch</div>
+      <div id="tradeBatch" class="trade-stat-value">0 / 0</div>
     </div>
 
+    <div class="trade-stat">
+      <div class="trade-stat-label">Stake</div>
+      <div id="tradeStake" class="trade-stat-value">0.00</div>
+    </div>
 
-    <table class="history-table">
+    <div class="trade-stat">
+      <div class="trade-stat-label">Result</div>
+      <div id="tradeResult" class="trade-stat-value">—</div>
+    </div>
 
-        <thead>
+  </div>
 
-            <tr>
+</section>
 
-                <th>
-                    #
-                </th>
 
-                <th>
-                    Mode
-                </th>
+<!-- TRADE HISTORY -->
 
-                <th>
-                    Signal
-                </th>
+<section class="card">
 
-                <th>
-                    Strength
-                </th>
+  <div class="history-header">
 
-                <th>
-                    Batch
-                </th>
+    <div class="card-title" style="margin:0;">
+      Trades
+    </div>
 
-            </tr>
+    <div
+      id="historyCount"
+      class="history-count"
+    >
+      0 trades
+    </div>
 
-        </thead>
+  </div>
 
-        <tbody id="historyBody">
+  <div id="tradeList" class="trade-list">
 
-            <tr id="emptyRow">
+    <div id="emptyTrades" class="empty">
+      No trades yet.
+    </div>
 
-                <td
-                    colspan="5"
-                    class="empty">
-
-                    No analysis performed yet.
-
-                </td>
-
-            </tr>
-
-        </tbody>
-
-    </table>
+  </div>
 
 </section>
 
 
 <div class="footer">
-
-    Mauvey • Signal Analysis System
-
+  MAUVEY · Deriv Market Analyzer
 </div>
 
-</div><script>
+  </main>  <script>
 
     /*
-        MAUVEY
-        --------------------------------
-        Interface + basic demonstration
-        signal engine.
-
-        IMPORTANT:
-        This front-end does not claim to
-        predict random outcomes.
-
-        Replace the analysis engine with
-        the actual verified data/API logic
-        when connecting Mauvey to a live
-        source.
-    */
-
-
-    let selectedMode = "EVEN / ODD";
-
-    let analysisCount = 0;
-    let evenCount = 0;
-    let oddCount = 0;
-    let batchCount = 0;
+     * ============================================================
+     * MAUVEY FRONTEND
+     * ============================================================
+     *
+     * This file provides the user interface.
+     *
+     * The actual Deriv WebSocket/API connection, 1,000-tick
+     * analysis, strategy engine and trade execution should be
+     * connected through the backend.
+     *
+     * The functions below are intentionally separated so that
+     * the real trading engine can be plugged in without rebuilding
+     * the interface.
+     *
+     * ============================================================
+     */
 
 
-    /* MODE BUTTONS */
+    const state = {
 
-    const modeButtons =
-        document.querySelectorAll(".mode-btn");
+      connected: false,
+
+      running: false,
+
+      balance: 0,
+
+      currency: "USD",
+
+      batchSize: 10,
+
+      baseStake: 1,
+
+      currentStake: 1,
+
+      batchTradeNumber: 0,
+
+      totalTrades: 0,
+
+      trades: [],
+
+      currentMarket: null,
+
+      currentContract: null
+
+    };
 
 
-    modeButtons.forEach(button => {
+    /* ELEMENTS */
 
-        button.addEventListener("click", () => {
+    const patInput =
+      document.getElementById("patInput");
 
-            modeButtons.forEach(btn => {
-                btn.classList.remove("active");
-            });
+    const connectBtn =
+      document.getElementById("connectBtn");
 
-            button.classList.add("active");
+    const startBtn =
+      document.getElementById("startBtn");
 
-            selectedMode =
-                button.dataset.mode;
+    const connectionDot =
+      document.getElementById("connectionDot");
 
-        });
+    const connectionText =
+      document.getElementById("connectionText");
+
+    const balanceElement =
+      document.getElementById("balance");
+
+    const currencyElement =
+      document.getElementById("currency");
+
+    const batchSizeInput =
+      document.getElementById("batchSize");
+
+    const baseStakeInput =
+      document.getElementById("baseStake");
+
+    const statusIndicator =
+      document.getElementById("statusIndicator");
+
+    const statusText =
+      document.getElementById("statusText");
+
+    const analysisCard =
+      document.getElementById("analysisCard");
+
+    const analysisText =
+      document.getElementById("analysisText");
+
+    const marketsAnalyzed =
+      document.getElementById("marketsAnalyzed");
+
+    const bestMarket =
+      document.getElementById("bestMarket");
+
+    const bestSignal =
+      document.getElementById("bestSignal");
+
+    const currentTradeCard =
+      document.getElementById("currentTradeCard");
+
+    const tradeMarket =
+      document.getElementById("tradeMarket");
+
+    const tradeType =
+      document.getElementById("tradeType");
+
+    const tradeBatch =
+      document.getElementById("tradeBatch");
+
+    const tradeStake =
+      document.getElementById("tradeStake");
+
+    const tradeResult =
+      document.getElementById("tradeResult");
+
+    const tradeList =
+      document.getElementById("tradeList");
+
+    const emptyTrades =
+      document.getElementById("emptyTrades");
+
+    const historyCount =
+      document.getElementById("historyCount");
+
+
+    /* ------------------------------------------------------------
+       UI HELPERS
+    ------------------------------------------------------------ */
+
+    function setStatus(message, active = false) {
+
+      statusText.textContent = message;
+
+      if (active) {
+
+        statusIndicator.classList.add("active");
+
+      } else {
+
+        statusIndicator.classList.remove("active");
+
+      }
+
+    }
+
+
+    function updateBalance(balance, currency = state.currency) {
+
+      state.balance = Number(balance) || 0;
+
+      state.currency = currency;
+
+      balanceElement.textContent =
+        state.balance.toFixed(2);
+
+      currencyElement.textContent =
+        state.currency;
+
+    }
+
+
+    function setConnected(value) {
+
+      state.connected = value;
+
+      if (value) {
+
+        connectionDot.classList.add("connected");
+
+        connectionText.textContent = "Connected";
+
+        startBtn.disabled = false;
+
+        connectBtn.textContent = "Connected";
+
+      } else {
+
+        connectionDot.classList.remove("connected");
+
+        connectionText.textContent = "Not connected";
+
+        startBtn.disabled = true;
+
+        connectBtn.textContent = "Connect";
+
+      }
+
+    }
+
+
+    /* ------------------------------------------------------------
+       PAT CONNECTION
+    ------------------------------------------------------------ */
+
+    connectBtn.addEventListener("click", async () => {
+
+      const pat = patInput.value.trim();
+
+      if (!pat) {
+
+        setStatus("Enter your Deriv PAT first.");
+
+        patInput.focus();
+
+        return;
+
+      }
+
+      connectBtn.disabled = true;
+
+      setStatus("Connecting to Deriv...", true);
+
+      try {
+
+        /*
+         * PLACEHOLDER
+         *
+         * Replace this section with the real backend/API
+         * authentication call.
+         *
+         * Example:
+         *
+         * const response = await fetch("/api/connect", {
+         *   method: "POST",
+         *   headers: {
+         *     "Content-Type": "application/json"
+         *   },
+         *   body: JSON.stringify({ pat })
+         * });
+         *
+         * const data = await response.json();
+         *
+         * updateBalance(data.balance, data.currency);
+         */
+
+        await fakeConnection();
+
+        setConnected(true);
+
+        updateBalance(
+          state.balance,
+          state.currency
+        );
+
+        setStatus(
+          "Connected. Ready to analyze.",
+          false
+        );
+
+      } catch (error) {
+
+        console.error(error);
+
+        setConnected(false);
+
+        setStatus(
+          "Connection failed."
+        );
+
+      } finally {
+
+        connectBtn.disabled = false;
+
+      }
 
     });
 
 
-    /* RANDOM DEMONSTRATION ENGINE */
+    async function fakeConnection() {
 
-    function generateSignal(mode) {
+      /*
+       * Temporary development placeholder.
+       * This MUST be replaced by the actual Deriv
+       * authentication connection.
+       */
 
-        const randomNumber =
-            Math.floor(Math.random() * 100);
+      await new Promise(resolve =>
+        setTimeout(resolve, 700)
+      );
+
+      state.balance = 0;
+
+    }
 
 
-        let signal;
+    /* ------------------------------------------------------------
+       START / STOP
+    ------------------------------------------------------------ */
 
-        if (mode === "EVEN") {
+    startBtn.addEventListener("click", async () => {
 
-            signal = "EVEN";
+      if (!state.connected) {
 
-        }
+        setStatus("Connect to Deriv first.");
 
-        else if (mode === "ODD") {
+        return;
 
-            signal = "ODD";
+      }
 
-        }
+      if (state.running) {
 
-        else if (mode === "EVEN / ODD") {
+        stopMauvey();
 
-            signal =
-                randomNumber % 2 === 0
-                ? "EVEN"
-                : "ODD";
+      } else {
 
-        }
+        startMauvey();
 
-        else if (mode === "OVER / UNDER") {
+      }
 
-            signal =
-                randomNumber >= 50
-                ? "OVER"
-                : "UNDER";
+    });
+
+
+    function startMauvey() {
+
+      state.batchSize =
+        Math.max(
+          1,
+          Math.min(
+            100,
+            Number(batchSizeInput.value) || 10
+          )
+        );
+
+      state.baseStake =
+        Math.max(
+          0.01,
+          Number(baseStakeInput.value) || 1
+        );
+
+      state.currentStake =
+        state.baseStake;
+
+      state.batchTradeNumber = 0;
+
+      state.running = true;
+
+      startBtn.textContent = "STOP MAUVEY";
+
+      startBtn.classList.add("running");
+
+      analysisCard.classList.remove("hidden");
+
+      setStatus(
+        "Analyzing all markets...",
+        true
+      );
+
+      /*
+       * Start the real Mauvey analysis engine.
+       */
+
+      runMauveyCycle();
+
+    }
+
+
+    function stopMauvey() {
+
+      state.running = false;
+
+      startBtn.textContent = "START MAUVEY";
+
+      startBtn.classList.remove("running");
+
+      setStatus(
+        "Mauvey stopped.",
+        false
+      );
+
+    }
+
+
+    /* ------------------------------------------------------------
+       MAUVEY CYCLE
+    ------------------------------------------------------------ */
+
+    async function runMauveyCycle() {
+
+      if (!state.running) return;
+
+      /*
+       * ========================================================
+       * STEP 1
+       *
+       * Analyze all available markets using the latest
+       * 1,000 ticks.
+       * ========================================================
+       */
+
+      setStatus(
+        "Analyzing all markets using 1,000 ticks...",
+        true
+      );
+
+      analysisText.textContent =
+        "Analyzing the latest 1,000 ticks...";
+
+      /*
+       * This is where the real strategy engine will be called.
+       */
+
+      const signal =
+        await analyzeMarkets();
+
+
+      if (!state.running) return;
+
+
+      if (!signal) {
+
+        analysisText.textContent =
+          "No valid setup found. Continuing analysis...";
+
+        setStatus(
+          "No qualifying market. Analyzing again...",
+          true
+        );
+
+        setTimeout(
+          runMauveyCycle,
+          1500
+        );
+
+        return;
+
+      }
+
+
+      /*
+       * ========================================================
+       * STEP 2
+       *
+       * Valid setup found.
+       *
+       * Mauvey now executes the selected batch.
+       *
+       * IMPORTANT:
+       *
+       * There is NO new market analysis between individual
+       * trades in this batch.
+       * ========================================================
+       */
+
+      state.currentMarket =
+        signal.market;
+
+      state.currentContract =
+        signal.contract;
+
+      state.batchTradeNumber = 0;
+
+      state.currentStake =
+        state.baseStake;
+
+      bestMarket.textContent =
+        signal.market;
+
+      bestSignal.textContent =
+        signal.contract;
+
+      analysisText.textContent =
+        "Valid setup found.";
+
+      setStatus(
+        `${signal.market} selected — executing batch.`,
+        true
+      );
+
+
+      await executeBatch(signal);
+
+
+      if (!state.running) return;
+
+
+      /*
+       * Batch complete.
+       *
+       * Reset and analyze again.
+       */
+
+      setStatus(
+        "Batch complete. Re-analyzing markets...",
+        true
+      );
+
+      setTimeout(
+        runMauveyCycle,
+        500
+      );
+
+    }
+
+
+    /* ------------------------------------------------------------
+       MARKET ANALYSIS
+    ------------------------------------------------------------ */
+
+    async function analyzeMarkets() {
+
+      /*
+       * ========================================================
+       * REAL ENGINE GOES HERE
+       * ========================================================
+       *
+       * The final engine will:
+       *
+       * 1. Obtain all eligible Deriv markets.
+       *
+       * 2. Request the latest 1,000 ticks.
+       *
+       * 3. Extract the last digit of every tick.
+       *
+       * 4. Count digits 0-9.
+       *
+       * 5. Calculate percentages.
+       *
+       * 6. Find the most appearing digit.
+       *
+       * 7. Find the second-most appearing digit.
+       *
+       * 8. Calculate EVEN/ODD percentage.
+       *
+       * 9. Test EVEN strategy.
+       *
+       * 10. Test ODD strategy.
+       *
+       * 11. Test OVER 3 strategy.
+       *
+       * 12. Test UNDER 7 strategy.
+       *
+       * 13. Return the strongest valid opportunity.
+       *
+       * ========================================================
+       */
+
+
+      /*
+       * Temporary placeholder.
+       *
+       * It deliberately returns null because we do NOT want
+       * fake/random trading logic in the real Mauvey system.
+       */
+
+      await new Promise(resolve =>
+        setTimeout(resolve, 800)
+      );
+
+      return null;
+
+    }
+
+
+    /* ------------------------------------------------------------
+       BATCH EXECUTION
+    ------------------------------------------------------------ */
+
+    async function executeBatch(signal) {
+
+      for (
+        let i = 1;
+        i <= state.batchSize;
+        i++
+      ) {
+
+        if (!state.running) return;
+
+
+        state.batchTradeNumber = i;
+
+
+        updateCurrentTrade(
+          signal,
+          "PENDING"
+        );
+
+
+        setStatus(
+          `Executing trade ${i} of ${state.batchSize}...`,
+          true
+        );
+
+
+        /*
+         * Execute ONE trade.
+         *
+         * No market analysis happens here.
+         */
+
+        const result =
+          await executeTrade(
+            signal,
+            state.currentStake
+          );
+
+
+        if (!state.running) return;
+
+
+        addTrade({
+          number: state.totalTrades + 1,
+          market: signal.market,
+          contract: signal.contract,
+          stake: state.currentStake,
+          result: result.result,
+          profit: result.profit
+        });
+
+
+        /*
+         * Update balance from the actual Deriv result.
+         */
+
+        if (
+          typeof result.balance !== "undefined"
+        ) {
+
+          updateBalance(
+            result.balance,
+            result.currency || state.currency
+          );
 
         }
 
 
         /*
-            Demonstration confidence only.
-            It is NOT a probability estimate.
-        */
+         * MARTINGALE
+         *
+         * Loss = double the next stake.
+         * Win = return to base stake.
+         */
 
-        const confidence =
-            Math.floor(
-                55 + Math.random() * 40
-            );
+        if (result.result === "LOSS") {
 
+          state.currentStake *= 2;
 
-        return {
-            signal,
-            confidence
-        };
+        } else if (
+          result.result === "WIN"
+        ) {
 
-    }
-
-
-    /* START ANALYSIS */
-
-    const startBtn =
-        document.getElementById("startBtn");
-
-
-    startBtn.addEventListener("click", () => {
-
-        const batchInput =
-            document.getElementById("batchInput");
-
-
-        const batch =
-            Number(batchInput.value);
-
-
-        if (!batch || batch < 1) {
-
-            alert("Enter a valid batch size.");
-
-            return;
+          state.currentStake =
+            state.baseStake;
 
         }
 
 
-        startBtn.disabled = true;
-
-        startBtn.textContent =
-            "ANALYZING...";
-
-
-        setTimeout(() => {
-
-            const result =
-                generateSignal(selectedMode);
+        updateCurrentTrade(
+          signal,
+          result.result
+        );
 
 
-            analysisCount++;
+        /*
+         * Give the UI time to display the result.
+         *
+         * The real implementation can synchronize directly
+         * with the Deriv contract result.
+         */
 
-            batchCount += batch;
+        await new Promise(resolve =>
+          setTimeout(resolve, 300)
+        );
 
-
-            if (result.signal === "EVEN") {
-                evenCount++;
-            }
-
-            if (result.signal === "ODD") {
-                oddCount++;
-            }
-
-
-            updateSignal(
-                result,
-                batch
-            );
-
-
-            addHistory(
-                result,
-                batch
-            );
-
-
-            updateStats();
-
-
-            startBtn.disabled = false;
-
-            startBtn.textContent =
-                "START ANALYSIS";
-
-        }, 650);
-
-    });
-
-
-    /* UPDATE SIGNAL */
-
-    function updateSignal(result, batch) {
-
-        const signalType =
-            document.getElementById("signalType");
-
-
-        const signalDescription =
-            document.getElementById(
-                "signalDescription"
-            );
-
-
-        const confidenceFill =
-            document.getElementById(
-                "confidenceFill"
-            );
-
-
-        const confidenceText =
-            document.getElementById(
-                "confidenceText"
-            );
-
-
-        const batchDisplay =
-            document.getElementById(
-                "batchDisplay"
-            );
-
-
-        signalType.textContent =
-            result.signal;
-
-
-        signalDescription.textContent =
-            selectedMode +
-            " analysis completed for batch " +
-            batch +
-            ".";
-
-
-        confidenceFill.style.width =
-            result.confidence + "%";
-
-
-        confidenceText.textContent =
-            result.confidence + "%";
-
-
-        batchDisplay.textContent =
-            "Batch " + batch;
+      }
 
     }
 
 
-    /* HISTORY */
+    /* ------------------------------------------------------------
+       TRADE EXECUTION
+    ------------------------------------------------------------ */
 
-    function addHistory(result, batch) {
+    async function executeTrade(
+      signal,
+      stake
+    ) {
 
-        const tbody =
-            document.getElementById(
-                "historyBody"
-            );
+      /*
+       * ========================================================
+       * REAL DERIV BUY CALL GOES HERE.
+       * ========================================================
+       *
+       * The final implementation should:
+       *
+       * - Send the correct contract proposal
+       * - Buy the contract
+       * - Monitor the contract
+       * - Wait for the actual result
+       * - Return WIN / LOSS
+       * - Return actual profit/loss
+       * - Return updated balance
+       *
+       * NO RANDOM RESULT SHOULD BE USED.
+       *
+       * ========================================================
+       */
 
 
-        const emptyRow =
-            document.getElementById(
-                "emptyRow"
-            );
+      /*
+       * Temporary development response.
+       * This MUST be replaced before live trading.
+       */
+
+      await new Promise(resolve =>
+        setTimeout(resolve, 700)
+      );
 
 
-        if (emptyRow) {
-            emptyRow.remove();
-        }
+      return {
 
+        result: "PENDING",
+
+        profit: 0,
+
+        balance: state.balance,
+
+        currency: state.currency
+
+      };
+
+    }
+
+
+    /* ------------------------------------------------------------
+       CURRENT TRADE UI
+    ------------------------------------------------------------ */
+
+    function updateCurrentTrade(
+      signal,
+      result
+    ) {
+
+      currentTradeCard.classList.remove(
+        "hidden"
+      );
+
+      tradeMarket.textContent =
+        signal.market;
+
+      tradeType.textContent =
+        signal.contract;
+
+      tradeBatch.textContent =
+        `${state.batchTradeNumber} / ${state.batchSize}`;
+
+      tradeStake.textContent =
+        `${state.currentStake.toFixed(2)} ${state.currency}`;
+
+      tradeResult.textContent =
+        result;
+
+
+      tradeResult.classList.remove(
+        "win",
+        "loss",
+        "pending"
+      );
+
+
+      if (result === "WIN") {
+
+        tradeResult.classList.add("win");
+
+      } else if (result === "LOSS") {
+
+        tradeResult.classList.add("loss");
+
+      } else {
+
+        tradeResult.classList.add("pending");
+
+      }
+
+    }
+
+
+    /* ------------------------------------------------------------
+       TRADE HISTORY
+    ------------------------------------------------------------ */
+
+    function addTrade(trade) {
+
+      state.totalTrades++;
+
+      state.trades.unshift(trade);
+
+      /*
+       * Keep the interface lightweight.
+       */
+
+      if (state.trades.length > 100) {
+
+        state.trades =
+          state.trades.slice(0, 100);
+
+      }
+
+      renderTrades();
+
+    }
+
+
+    function renderTrades() {
+
+      tradeList.innerHTML = "";
+
+      historyCount.textContent =
+        `${state.trades.length} trades`;
+
+
+      if (state.trades.length === 0) {
+
+        tradeList.appendChild(
+          emptyTrades
+        );
+
+        return;
+
+      }
+
+
+      state.trades.forEach(trade => {
 
         const row =
-            document.createElement("tr");
+          document.createElement("div");
+
+        row.className =
+          "trade-row";
 
 
-        row.innerHTML = `
+        const number =
+          document.createElement("div");
 
-            <td>
-                ${analysisCount}
-            </td>
+        number.className =
+          "trade-number";
 
-            <td>
-                <span class="tag">
-                    ${selectedMode}
-                </span>
-            </td>
-
-            <td>
-                <strong>
-                    ${result.signal}
-                </strong>
-            </td>
-
-            <td>
-                ${result.confidence}%
-            </td>
-
-            <td>
-                ${batch}
-            </td>
-
-        `;
+        number.textContent =
+          `#${trade.number}`;
 
 
-        tbody.prepend(row);
+        const contract =
+          document.createElement("div");
+
+        contract.className =
+          "trade-contract";
+
+        contract.textContent =
+          `${trade.market} · ${trade.contract}`;
+
+
+        const result =
+          document.createElement("div");
+
+        result.className =
+          "trade-result";
+
+        result.textContent =
+          trade.result;
+
+
+        if (trade.result === "WIN") {
+
+          result.classList.add("win");
+
+        } else if (
+          trade.result === "LOSS"
+        ) {
+
+          result.classList.add("loss");
+
+        }
+
+
+        const profit =
+          document.createElement("div");
+
+        profit.className =
+          "trade-result";
+
+        const amount =
+          Number(trade.profit) || 0;
+
+        profit.textContent =
+          `${amount >= 0 ? "+" : ""}${amount.toFixed(2)}`;
+
+
+        if (amount >= 0) {
+
+          profit.classList.add("win");
+
+        } else {
+
+          profit.classList.add("loss");
+
+        }
+
+
+        row.appendChild(number);
+
+        row.appendChild(contract);
+
+        row.appendChild(result);
+
+        row.appendChild(profit);
+
+        tradeList.appendChild(row);
+
+      });
 
     }
 
 
-    /* STATISTICS */
+    /* ------------------------------------------------------------
+       INITIAL STATE
+    ------------------------------------------------------------ */
 
-    function updateStats() {
+    setConnected(false);
 
-        document.getElementById(
-            "analysisCount"
-        ).textContent =
-            analysisCount;
+    updateBalance(0, "USD");
 
-
-        document.getElementById(
-            "evenCount"
-        ).textContent =
-            evenCount;
+    renderTrades();
 
 
-        document.getElementById(
-            "oddCount"
-        ).textContent =
-            oddCount;
+    /*
+     * Prevent accidental page refresh while running.
+     */
 
+    window.addEventListener(
+      "beforeunload",
+      (event) => {
 
-        document.getElementById(
-            "batchCount"
-        ).textContent =
-            batchCount;
+        if (state.running) {
 
-    }
+          event.preventDefault();
 
+          event.returnValue = "";
 
-    /* CLEAR HISTORY */
+        }
 
-    document
-        .getElementById("clearBtn")
-        .addEventListener("click", () => {
+      }
+    );
 
-            const tbody =
-                document.getElementById(
-                    "historyBody"
-                );
-
-
-            tbody.innerHTML = `
-
-                <tr id="emptyRow">
-
-                    <td
-                        colspan="5"
-                        class="empty">
-
-                        No analysis performed yet.
-
-                    </td>
-
-                </tr>
-
-            `;
-
-
-            analysisCount = 0;
-            evenCount = 0;
-            oddCount = 0;
-            batchCount = 0;
-
-
-            updateStats();
-
-
-            document.getElementById(
-                "signalType"
-            ).textContent = "WAITING";
-
-
-            document.getElementById(
-                "signalDescription"
-            ).textContent =
-                "Start the analyzer to generate a signal.";
-
-
-            document.getElementById(
-                "confidenceFill"
-            ).style.width = "0%";
-
-
-            document.getElementById(
-                "confidenceText"
-            ).textContent = "0%";
-
-
-            document.getElementById(
-                "batchDisplay"
-            ).textContent = "Batch —";
-
-        });
-
-</script></body>
+  </script></body>
 </html>

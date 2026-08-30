@@ -1949,60 +1949,44 @@ function lastDisplayedDigit(
    HISTORY
 ========================================================= */
 
-async function getHistory(
-    market
-){
+async function getHistory(market) {
 
     setMain(
         "ANALYZING " + market.name,
         "Reading the last 1,000 actual Deriv ticks..."
     );
 
-
     setProgress(20);
 
+    const response = await wsRequest(
+        publicWS,
+        {
+            ticks_history: market.symbol,
+            count: 1000,
+            end: "latest",
+            style: "ticks"
+        },
+        30000
+    );
 
-    const response =
-        await wsRequest(
-            publicWS,
-            {
-                ticks_history:
-                    market.symbol,
-
-                count:
-                    1000,
-
-                end:
-                    "latest",
-
-                style:
-                    "ticks",
-
-                subscribe:
-                    0
-            },
-            30000
+    if (response.error) {
+        throw new Error(
+            response.error.message ||
+            "Historical tick request failed."
         );
-
+    }
 
     const prices =
-        response?.history?.prices ||
-        [];
+        response?.history?.prices || [];
 
-
-    if(
-        prices.length < 1000
-    ){
-
+    if (prices.length < 1000) {
         throw new Error(
             market.name +
             " returned only " +
             prices.length +
             " historical ticks."
         );
-
     }
-
 
     market.pip =
         Number(
@@ -2011,11 +1995,8 @@ async function getHistory(
             0
         );
 
-
     return prices;
-
-}
-
+    }
 
 /* =========================================================
    ANALYZE 0-9
